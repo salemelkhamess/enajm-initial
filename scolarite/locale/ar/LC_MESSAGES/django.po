@@ -2111,7 +2111,7 @@ msgstr ""
 "الإدارة."
 
 msgid "Notes des devoirs et examens"
-msgstr "نقاط الفروض والامتحانات"
+msgstr "نقاط الاختبارات والامتحانات"
 
 msgid "Notes saisies"
 msgstr "النقاط المدخلة"

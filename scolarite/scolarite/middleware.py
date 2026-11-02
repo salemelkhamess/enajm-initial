@@ -7,7 +7,7 @@ from django.utils import translation
 PUBLIC_PATHS = [
     r'^/(?:(?:fr|ar)/?)?$',                   # page de connexion
     r'^/(?:fr|ar)/language/',                 # changement de langue
-    r'^/i18n/',
+    r'^/(?:(?:fr|ar)/)?i18n/',                # setlang de Django (avec ou sans préfixe de langue)
     r'^/static/',
     r'^/media/',
     r'^/favicon\.ico$',
