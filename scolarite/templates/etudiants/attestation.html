@@ -1,0 +1,585 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block styles %}
+<style>
+    @media print {
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            text-align: right;
+            direction: rtl;
+            font-size: 14px;
+            padding: 20px;
+            margin: 0;
+        }
+        .no-print {
+            display: none;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            line-height: 1.4;
+        }
+        .photo-box {
+            width: 60px;
+            height: 80px;
+            border: 2px solid #000;
+            float: left;
+            margin-left: 20px;
+            margin-top: 20px;
+        }
+        .title-box {
+            border: 2px solid #000;
+            padding: 10px;
+            text-align: center;
+            margin: 20px 0;
+            font-weight: bold;
+        }
+        .form-line {
+            margin: 15px 0;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            border-bottom: 1px solid #000;
+            padding-bottom: 5px;
+        }
+        .form-line-double {
+            display: flex;
+            margin: 15px 0;
+        }
+        .form-line-left {
+            flex: 1;
+            margin-left: 20px;
+            border-bottom: 1px solid #000;
+            padding-bottom: 5px;
+        }
+        .form-line-right {
+            flex: 1;
+            margin-right: 20px;
+            border-bottom: 1px solid #000;
+            padding-bottom: 5px;
+        }
+        .content-text {
+            text-align: justify;
+            line-height: 1.8;
+            margin: 30px 0;
+            font-size: 14px;
+        }
+        .commitment-list {
+            margin: 20px 0;
+            padding-right: 20px;
+        }
+        .commitment-item {
+            margin: 15px 0;
+            line-height: 1.8;
+        }
+        .signature-section {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 60px;
+        }
+        .signature-box {
+            text-align: center;
+            width: 200px;
+        }
+        .signature-line {
+            border-bottom: 1px solid #000;
+            margin: 40px 0 10px 0;
+            height: 1px;
+        }
+    }
+
+    /* Styles pour l'affichage à l'écran */
+    .attestation-container {
+        font-family: 'Arial', sans-serif;
+        line-height: 1.6;
+        padding: 30px;
+        border: 1px solid #ddd;
+        background-color: white;
+        margin-bottom: 30px;
+        font-size: 14px;
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    /* Styles conditionnels selon la langue */
+    .attestation-container.rtl {
+        text-align: right;
+        direction: rtl;
+    }
+
+    .attestation-container.ltr {
+        text-align: left;
+        direction: ltr;
+    }
+
+    /* Styles d'écran identiques aux styles d'impression */
+    .screen-header {
+        text-align: center;
+        margin-bottom: 40px;
+        line-height: 1.4;
+    }
+    .screen-photo-box {
+        width: 60px;
+        height: 80px;
+        border: 2px solid #000;
+        float: left;
+        margin-left: 20px;
+        margin-top: 20px;
+    }
+    .screen-title-box {
+        border: 2px solid #000;
+        padding: 10px;
+        text-align: center;
+        margin: 20px 0;
+        font-weight: bold;
+    }
+    .screen-form-line {
+        margin: 15px 0;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        border-bottom: 1px solid #000;
+        padding-bottom: 5px;
+    }
+    .screen-form-line-double {
+        display: flex;
+        margin: 15px 0;
+    }
+    .screen-form-line-left {
+        flex: 1;
+        margin-left: 20px;
+        border-bottom: 1px solid #000;
+        padding-bottom: 5px;
+    }
+    .screen-form-line-right {
+        flex: 1;
+        margin-right: 20px;
+        border-bottom: 1px solid #000;
+        padding-bottom: 5px;
+    }
+    .screen-content-text {
+        text-align: justify;
+        line-height: 1.8;
+        margin: 30px 0;
+        font-size: 14px;
+    }
+    .screen-commitment-list {
+        margin: 20px 0;
+        padding-right: 20px;
+    }
+    .screen-commitment-item {
+        margin: 15px 0;
+        line-height: 1.8;
+    }
+    .screen-signature-section {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 60px;
+    }
+    .screen-signature-box {
+        text-align: center;
+        width: 200px;
+    }
+    .screen-signature-line {
+        border-bottom: 1px solid #000;
+        margin: 40px 0 10px 0;
+        height: 1px;
+    }
+
+    /* Ajustements pour LTR */
+    .attestation-container.ltr .screen-photo-box {
+        float: right;
+        margin-right: 20px;
+        margin-left: 0;
+    }
+    .attestation-container.ltr .screen-form-line {
+        justify-content: flex-start;
+    }
+    .attestation-container.ltr .screen-commitment-list {
+        padding-left: 20px;
+        padding-right: 0;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="no-print">
+    <div class="box">
+        <div class="box-body">
+            <a onclick="printDiv('printme')" class="btn btn-primary" style="width: 200px">
+                <i class="fa fa-print"></i> {% trans "Imprimer l'attestation" %}
+            </a>
+            <a href="{% url 'etudiant_list' %}" class="btn btn-default">
+                <i class="fa fa-arrow-left"></i> {% trans "Retour" %}
+            </a>
+        </div>
+    </div>
+</div>
+
+<div id="printme" class="attestation-container {% if LANGUAGE_CODE == 'ar'  %}rtl{% else %}ltr{% endif %}">
+    <!-- En-tête -->
+    <div class="screen-header header">
+        <div class="screen-photo-box photo-box"></div>
+        {% if LANGUAGE_CODE == 'ar' or LANGUAGE_CODE == 'ar-ma' %}
+            <h3 style="font-size: 16px; margin: 5px 0;">الجمهورية الإسلامية الموريتانية</h3>
+            <p style="font-size: 12px; margin: 2px 0;">شرف - عدل - أخاء</p>
+            <h4 style="font-size: 14px; margin: 5px 0;">الوزارة الأولى</h4>
+            <h4 style="font-size: 14px; margin: 5px 0;">المدرسة الوطنية للإدارة والصحافة</h4>
+            <h4 style="font-size: 14px; margin: 5px 0;">والقضاء</h4>
+        {% else %}
+            <h3 style="font-size: 16px; margin: 5px 0;">République Islamique de Mauritanie</h3>
+            <p style="font-size: 12px; margin: 2px 0;">Honneur - Justice - Fraternité</p>
+            <h4 style="font-size: 14px; margin: 5px 0;">Présidence</h4>
+            <h4 style="font-size: 14px; margin: 5px 0;">École Nationale d'Administration, de Journalisme</h4>
+            <h4 style="font-size: 14px; margin: 5px 0;">et de Magistrature</h4>
+        {% endif %}
+    </div>
+
+    <!-- Titre dans un cadre -->
+    <div class="screen-title-box title-box">
+        {% if LANGUAGE_CODE == 'ar'  %}
+            <h2 style="font-size: 16px; margin: 0;">شكلية التعهد عند التسجيل</h2>
+        {% else %}
+            <h2 style="font-size: 16px; margin: 0;">Formulaire d'engagement à l'inscription</h2>
+        {% endif %}
+    </div>
+
+    <!-- Informations personnelles -->
+
+    <div style="clear: both; margin-top: 30px;" {% if LANGUAGE_CODE == 'ar' or LANGUAGE_CODE == 'ar-ma' %}dir="rtl"{% else %}dir="ltr"{% endif %}>
+
+    <!-- Matricule -->
+     <div class="screen-form-line-double form-line-double">
+        <div class="screen-form-line-left form-line-left">
+        {% if LANGUAGE_CODE == 'ar' or LANGUAGE_CODE == 'ar-ma' %}
+            <span>الرقم:</span>
+            <span>{{ etudiant.matricule }}</span>
+        {% else %}
+            <span>Numéro:</span>
+            <span>{{ etudiant.matricule }}</span>
+        {% endif %}
+    </div>
+     </div>
+
+    <!-- Nom -->
+   <div class="screen-form-line-double form-line-double">
+        <div class="screen-form-line-left form-line-left">        {% if LANGUAGE_CODE == 'ar' or LANGUAGE_CODE == 'ar-ma' %}
+            <span>اللقب:</span>
+            <span>{{ etudiant.nom }}</span>
+        {% else %}
+            <span>Nom:</span>
+            <span>{{ etudiant.nom }}</span>
+        {% endif %}
+    </div>
+   </div>
+    <!-- Prénom -->
+       <div class="screen-form-line-double form-line-double">
+        <div class="screen-form-line-left form-line-left">
+        {% if LANGUAGE_CODE == 'ar' or LANGUAGE_CODE == 'ar-ma' %}
+            <span>الاسم:</span>
+            <span>{{ etudiant.prenom }}</span>
+        {% else %}
+            <span>Prénom:</span>
+            <span>{{ etudiant.prenom }}</span>
+        {% endif %}
+    </div>
+
+       </div>
+    <!-- Numéro national & Situation familiale -->
+    <div class="screen-form-line-double form-line-double">
+        <div class="screen-form-line-left form-line-left">
+            {% if LANGUAGE_CODE == 'ar' or LANGUAGE_CODE == 'ar-ma' %}
+                <span>الرقم الوطني:</span>
+                <span>{{ etudiant.nni }}</span>
+            {% else %}
+                <span>N° National:</span>
+                <span>{{ etudiant.nni }}</span>
+            {% endif %}
+        </div>
+        <div class="screen-form-line-right form-line-right">
+            {% if LANGUAGE_CODE == 'ar' or LANGUAGE_CODE == 'ar-ma' %}
+                <span>الحالة الاجتماعية:</span>
+                <span>{{ etudiant.get_situation_amoureuse_display }}</span>
+            {% else %}
+                <span>Situation familiale:</span>
+                <span>{{ etudiant.get_situation_amoureuse_display }}</span>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Date de naissance & nombre d'enfants -->
+    <div class="screen-form-line-double form-line-double">
+        <div class="screen-form-line-left form-line-left">
+            {% if LANGUAGE_CODE == 'ar' or LANGUAGE_CODE == 'ar-ma' %}
+                <span>تاريخ وجهة الميلاد:</span>
+                <span>{{ etudiant.date_naissance }}</span>
+            {% else %}
+                <span>Date de naissance:</span>
+                <span>{{ etudiant.date_naissance }}</span>
+            {% endif %}
+        </div>
+        <div class="screen-form-line-right form-line-right">
+            {% if LANGUAGE_CODE == 'ar' or LANGUAGE_CODE == 'ar-ma' %}
+                <span>عدد الأطفال:</span>
+                <span>{{ etudiant.nombre_enfants }}</span>
+            {% else %}
+                <span>Nombre d'enfants:</span>
+                <span>{{ etudiant.nombre_enfants }}</span>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Diplômes -->
+        <div class="screen-form-line-double form-line-double">
+
+<div class="screen-form-line form-line">
+    {% if LANGUAGE_CODE == 'ar' or LANGUAGE_CODE == 'ar-ma' %}
+        <span>الشهادات:</span>
+        <span>
+            {% for diplome in etudiant.diplomes %}
+                {% if diplome == 'B' %}
+                    الشهادة الإعدادية
+                {% elif diplome == 'BAC' %}
+                    البكالوريا
+                {% elif diplome == 'L' %}
+                    الإجازة
+                {% elif diplome == 'M' %}
+                    الماجستير
+                {% elif diplome == 'D' %}
+                    الدكتوراه
+                {% else %}
+                    {{ diplome }}
+                {% endif %}
+                {% if not forloop.last %}، {% endif %}
+            {% endfor %}
+        </span>
+    {% else %}
+        <span>Diplômes:</span>
+        <span>
+            {% for diplome in etudiant.diplomes %}
+                {% if diplome == 'B' %}
+                    Brevet
+                {% elif diplome == 'BAC' %}
+                    Baccalauréat
+                {% elif diplome == 'L' %}
+                    Licence
+                {% elif diplome == 'M' %}
+                    Maîtrise
+                {% elif diplome == 'D' %}
+                    Doctorat
+                {% else %}
+                    {{ diplome }}
+                {% endif %}
+                {% if not forloop.last %}, {% endif %}
+            {% endfor %}
+        </span>
+    {% endif %}
+</div>
+    </div>
+    <!-- Téléphone et Email -->
+    <div class="screen-form-line-double form-line-double">
+        <div class="screen-form-line-left form-line-left">
+            {% if LANGUAGE_CODE == 'ar' or LANGUAGE_CODE == 'ar-ma' %}
+                <span>رقم الهاتف:</span>
+                <span>{{ etudiant.telephone }}</span>
+            {% else %}
+                <span>Téléphone:</span>
+                <span>{{ etudiant.telephone }}</span>
+            {% endif %}
+        </div>
+        <div class="screen-form-line-right form-line-right">
+            {% if LANGUAGE_CODE == 'ar' or LANGUAGE_CODE == 'ar-ma' %}
+                <span>البريد الإلكتروني:</span>
+                <span>{{ etudiant.email }}</span>
+            {% else %}
+                <span>Email:</span>
+                <span>{{ etudiant.email }}</span>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+
+    <!-- Texte principal -->
+    <div class="screen-content-text content-text">
+        {% if LANGUAGE_CODE == 'ar' or LANGUAGE_CODE == 'ar-ma' %}
+            <p>والمقبول لدى المدرسة الوطنية للإدارة والصحافة، والقضاء أتعهد بخدمة الدولة الموريتانية لمدة (10) سنوات بعد انتهاء تكويني طبقا للنصوص المعمول بها.</p>
+            <p>و أتعهد كذلك بوصفي تلميذا موظفا بالمدرسة الوطنية للإدارة والصحافة والقضاء:</p>
+        {% else %}
+            <p>Admis à l'École Nationale d'Administration, de Journalisme et de Magistrature, je m'engage à servir l'État mauritanien pendant (10) ans après la fin de ma formation conformément aux textes en vigueur.</p>
+            <p>Je m'engage également en tant qu'élève-fonctionnaire à l'École Nationale d'Administration, de Journalisme et de Magistrature :</p>
+        {% endif %}
+    </div>
+
+    <!-- Liste des engagements -->
+    <div class="screen-commitment-list commitment-list">
+        {% if LANGUAGE_CODE == 'ar' or LANGUAGE_CODE == 'ar-ma' %}
+            <div class="screen-commitment-item commitment-item">
+                • باحترام النظام الداخلي للمدرسة، وفي حالة عدم الالتزام بهذا التعهد أعتبر نفسي متنازلا عن حقي كتلميذ موظف.
+            </div>
+            <div class="screen-commitment-item commitment-item">
+                • كما أتعهد بإجراء التدريبات العسكرية والإدارية.
+            </div>
+            <div class="screen-commitment-item commitment-item">
+                • وأتعهد بتعويض الدولة في حالة انقطاعي عن الدراسة بالمدرسة الوطنية للإدارة والصحافة والقضاء بمحض إرادتي ولأسباب غير تلك المتعلقة بضعف النتائج أو العجز البدني، وكذلك في حالة انقطاعي عن المهنة قبل انتهاء مدة التعاقد.
+            </div>
+        {% else %}
+            <div class="screen-commitment-item commitment-item">
+                • À respecter le règlement intérieur de l'école, et en cas de non-respect de cet engagement, je me considère comme ayant renoncé à mon droit d'élève-fonctionnaire.
+            </div>
+            <div class="screen-commitment-item commitment-item">
+                • Je m'engage également à effectuer la formation militaire et administrative.
+            </div>
+            <div class="screen-commitment-item commitment-item">
+                • Je m'engage à dédommager l'État en cas d'abandon de mes études à l'École Nationale d'Administration, de Journalisme et de Magistrature de mon propre gré et pour des raisons autres que celles liées à la faiblesse des résultats ou à l'incapacité physique, ainsi qu'en cas d'abandon de la profession avant la fin de la période contractuelle.
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Section des signatures -->
+    <div class="screen-signature-section signature-section">
+        <div class="screen-signature-box signature-box">
+            {% if LANGUAGE_CODE == 'ar' or LANGUAGE_CODE == 'ar-ma' %}
+                <p style="margin-bottom: 5px;">بتاريخ</p>
+                <p style="margin: 0;">{{ date|date:"Y/m/d" }}</p>
+                <div class="screen-signature-line signature-line"></div>
+                <p style="margin: 5px 0; font-size: 12px;">المعني</p>
+            {% else %}
+                <p style="margin-bottom: 5px;">Date :</p>
+                <p style="margin: 0;">{{ date|date:"d/m/Y" }}</p>
+                <div class="screen-signature-line signature-line"></div>
+                <p style="margin: 5px 0; font-size: 12px;">L'intéressé(e)</p>
+            {% endif %}
+        </div>
+
+        <div class="screen-signature-box signature-box">
+            {% if LANGUAGE_CODE == 'ar' or LANGUAGE_CODE == 'ar-ma' %}
+                <p style="margin-bottom: 5px;">بتاريخ</p>
+                <p style="margin: 0;">{{ date|date:"Y/m/d" }}</p>
+                <div class="screen-signature-line signature-line"></div>
+                <p style="margin: 5px 0; font-size: 12px;">توقيع المدير(ة)</p>
+            {% else %}
+                <p style="margin-bottom: 5px;">Date :</p>
+                <p style="margin: 0;">{{ date|date:"d/m/Y" }}</p>
+                <div class="screen-signature-line signature-line"></div>
+                <p style="margin: 5px 0; font-size: 12px;">Signature du Directeur</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function printDiv(divName) {
+    var printContents = document.getElementById(divName).innerHTML;
+
+    var printWindow = window.open('', '_blank');
+    printWindow.document.open();
+    printWindow.document.write(`
+        <html>
+            <head>
+                <title>شكلية التعهد عند التسجيل</title>
+                <meta charset="UTF-8">
+                <style>
+                    body {
+                        font-family: 'Arial', sans-serif;
+                        line-height: 1.6;
+                        text-align: right;
+                        direction: rtl;
+                        font-size: 14px;
+                        padding: 20px;
+                        margin: 0;
+                    }
+                    .header {
+                        text-align: center;
+                        margin-bottom: 40px;
+                        line-height: 1.4;
+                    }
+                    .photo-box {
+                        width: 60px;
+                        height: 80px;
+                        border: 2px solid #000;
+                        float: left;
+                        margin-left: 20px;
+                        margin-top: 20px;
+                    }
+                    .title-box {
+                        border: 2px solid #000;
+                        padding: 10px;
+                        text-align: center;
+                        margin: 20px 0;
+                        font-weight: bold;
+                    }
+                    .form-line {
+                        margin: 15px 0;
+                        display: flex;
+                        align-items: center;
+                        justify-content: flex-end;
+                        border-bottom: 1px solid #000;
+                        padding-bottom: 5px;
+                    }
+                    .form-line-double {
+                        display: flex;
+                        margin: 15px 0;
+                    }
+                    .form-line-left {
+                        flex: 1;
+                        margin-left: 20px;
+                        border-bottom: 1px solid #000;
+                        padding-bottom: 5px;
+                    }
+                    .form-line-right {
+                        flex: 1;
+                        margin-right: 20px;
+                        border-bottom: 1px solid #000;
+                        padding-bottom: 5px;
+                    }
+                    .content-text {
+                        text-align: justify;
+                        line-height: 1.8;
+                        margin: 30px 0;
+                        font-size: 14px;
+                    }
+                    .commitment-list {
+                        margin: 20px 0;
+                        padding-right: 20px;
+                    }
+                    .commitment-item {
+                        margin: 15px 0;
+                        line-height: 1.8;
+                    }
+                    .signature-section {
+                        display: flex;
+                        justify-content: space-between;
+                        margin-top: 60px;
+                    }
+                    .signature-box {
+                        text-align: center;
+                        width: 200px;
+                    }
+                    .signature-line {
+                        border-bottom: 1px solid #000;
+                        margin: 40px 0 10px 0;
+                        height: 1px;
+                    }
+                </style>
+            </head>
+            <body>
+                ${printContents}
+                <script>
+                    window.onload = function() {
+                        setTimeout(function() {
+                            window.print();
+                            window.close();
+                        }, 500);
+                    };
+                <\/script>
+            </body>
+        </html>
+    `);
+    printWindow.document.close();
+}
+</script>
+{% endblock %}

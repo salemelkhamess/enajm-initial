@@ -1,0 +1,442 @@
+{% extends 'base.html' %}
+{% load role_tags %}
+{% load i18n %} {# Nécessaire pour {% trans %} #}
+{% block content %}
+<div class="container-fluid">
+{% if user|has_any_role:"ADMIN,POINTEUR,SUPER_ADMIN" %}
+
+    <div class="row " style="margin-top: 20px">
+    <div class="col-lg-4 col-xs-6">
+  <div class="small-box bg-info">
+    <div class="inner">
+      <h5> {% trans "Statistiques détaillées des professeurs" %}</h5>
+      <p>                   </p>
+    </div>
+    <div class="icon">
+      <i class="ion ion-person"></i>
+    </div>
+<a  href="{% url 'professor_stats' %}"class="small-box-footer"  style="color: black!important;">
+  {% trans "Plus d'info" %} <i class="fa fa-arrow-circle-right"></i>
+</a>
+
+  </div>
+</div>
+<div class="col-lg-4 col-xs-6">
+  <div class="small-box bg-info">
+    <div class="inner">
+      <h5> {% trans "Statistiques détaillées des etudiants" %}</h5>
+      <p>                   </p>
+    </div>
+    <div class="icon">
+      <i class="ion ion-person"></i>
+    </div>
+<a href="{% url 'student_stats' %}"  class="small-box-footer"  style="color: black!important;">
+  {% trans "Plus d'info" %} <i class="fa fa-arrow-circle-right"></i>
+</a>
+
+  </div>
+</div>
+<div class="col-lg-4 col-xs-6">
+  <div class="small-box bg-info">
+    <div class="inner">
+      <h5> {% trans "Statistiques détaillées des cours" %}</h5>
+      <p>
+</p>
+    </div>
+    <div class="icon">
+      <i class="bi bi"></i>
+    </div>
+<a  href="{% url 'course_progress' %}"class="small-box-footer" style="color: black!important;">
+  {% trans "Plus d'info" %} <i class="fa fa-arrow-circle-right"></i>
+</a>
+
+  </div>
+</div>
+
+    </div>
+
+  <div class="row">
+{% include "partials/dashboard_box.html" with color="blue" number=total_professeurs label=_("Professeurs") icon="ion-person" %}
+{% include "partials/dashboard_box.html" with color="red" number=total_secteurs label=_("Secteurs") icon="ion-university" %}
+{% include "partials/dashboard_box.html" with color="green" number=total_salles label=_("Salles") icon="ion-home" %}
+{% include "partials/dashboard_box.html" with color="blue" number=total_absences_professeurs label=_("Abs. profs (semaine)") icon="ion-close-circled" %}
+{% include "partials/dashboard_box.html" with color="red" number=total_absences_etudiants label=_("Abs. étudiants (semaine)") icon="ion-close-round" %}
+
+{% for s in secteurs_etudiants %}
+    {% include "partials/dashboard_box.html" with color="green" number=s.number label=s.label icon=s.icon url=s.url  %}
+{% endfor %}
+  </div>
+
+{% endif %}
+
+
+</div>
+
+{% endblock %}
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Variables pour stocker les instances de graphiques
+    let profDailyChart = null;
+    let profPieChart = null;
+    let studentDailyChart = null;
+    let studentClassChart = null;
+    let weeklyChart = null;
+    let completionRateChart = null;
+
+    // Fonction pour charger toutes les statistiques
+    function updateAllStats() {
+        const startDate = document.getElementById('startDate').value;
+        const endDate = document.getElementById('endDate').value;
+
+        if (!startDate || !endDate) {
+            alert('{% trans "Veuillez sélectionner les deux dates" %}');
+            return;
+        }
+
+        if (new Date(startDate) > new Date(endDate)) {
+            alert('{% trans "La date de début doit être antérieure à la date de fin" %}');
+            return;
+        }
+
+        showLoading();
+
+        // Charger les stats des professeurs
+        fetch(`{% url 'professor_stats_ajax' %}?start_date=${startDate}&end_date=${endDate}`)
+            .then(response => response.json())
+            .then(data => updateProfessorStats(data))
+            .catch(error => console.error('Erreur stats profs:', error));
+
+        // Charger les stats des étudiants
+        fetch(`{% url 'student_stats_ajax' %}?start_date=${startDate}&end_date=${endDate}`)
+            .then(response => response.json())
+            .then(data => updateStudentStats(data))
+            .catch(error => console.error('Erreur stats étudiants:', error));
+
+
+    }
+
+    // Mettre à jour les statistiques des professeurs
+    function updateProfessorStats(data) {
+        document.getElementById('profPresentCount').textContent = data.total_present;
+        document.getElementById('profAbsentCount').textContent = data.total_absent;
+
+        // Mettre à jour le tableau des profs
+        const tbody = document.getElementById('profTableBody');
+        tbody.innerHTML = '';
+
+        data.prof_stats.forEach((prof, index) => {
+            tbody.innerHTML += `
+                <tr>
+                    <td>${index + 1}</td>
+                    <td>${prof.professeur__prenom} ${prof.professeur__nom}</td>
+                    <td>${prof.absences}</td>
+                    <td>${prof.retards || 0}</td>
+                </tr>
+            `;
+        });
+
+        // Mettre à jour les graphiques des profs
+        updateProfCharts(data);
+    }
+
+    // Mettre à jour les graphiques des professeurs
+    function updateProfCharts(data) {
+        // Graphique quotidien
+        if (profDailyChart) profDailyChart.destroy();
+
+        const ctx1 = document.getElementById('profDailyChart').getContext('2d');
+        profDailyChart = new Chart(ctx1, {
+            type: 'bar',
+            data: {
+                labels: data.chart_labels,
+                datasets: [
+                    {
+                        label: '{% trans "Présences" %}',
+                        data: data.chart_present,
+                        backgroundColor: 'rgba(40, 167, 69, 0.8)',
+                        borderColor: 'rgba(40, 167, 69, 1)',
+                        borderWidth: 1
+                    },
+                    {
+                        label: '{% trans "Absences" %}',
+                        data: data.chart_absent,
+                        backgroundColor: 'rgba(220, 53, 69, 0.8)',
+                        borderColor: 'rgba(220, 53, 69, 1)',
+                        borderWidth: 1
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'top' }
+                },
+                scales: {
+                    y: { beginAtZero: true }
+                }
+            }
+        });
+
+        // Graphique camembert
+        if (profPieChart) profPieChart.destroy();
+
+        const totalPresent = data.total_present;
+        const totalAbsent = data.total_absent;
+        const totalRetard = data.total_retard || 0;
+        const totalConge = data.total_conge || 0;
+
+        const ctx2 = document.getElementById('profPieChart').getContext('2d');
+        profPieChart = new Chart(ctx2, {
+            type: 'doughnut',
+            data: {
+                labels: ['{% trans "Présences" %}', '{% trans "Absences" %}', '{% trans "Retards" %}', '{% trans "Congés" %}'],
+                datasets: [{
+                    data: [totalPresent, totalAbsent, totalRetard, totalConge],
+                    backgroundColor: [
+                        'rgba(40, 167, 69, 0.8)',
+                        'rgba(220, 53, 69, 0.8)',
+                        'rgba(255, 193, 7, 0.8)',
+                        'rgba(23, 162, 184, 0.8)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'bottom' }
+                }
+            }
+        });
+    }
+
+    // Mettre à jour les statistiques des étudiants
+    function updateStudentStats(data) {
+        document.getElementById('studentPresentCount').textContent = data.total_present;
+        document.getElementById('studentAbsentCount').textContent = data.total_absent;
+
+        // Mettre à jour le tableau des classes
+        const classTbody = document.getElementById('classTableBody');
+        classTbody.innerHTML = '';
+
+        data.secteur_stats.forEach(stat => {
+            classTbody.innerHTML += `
+                <tr>
+                    <td>${stat.secteur_nom}</td>
+                    <td>${stat.present}</td>
+                    <td>${stat.absent}</td>
+                    <td>
+                        <div class="progress progress-xs">
+                            <div class="progress-bar bg-success" style="width: ${stat.taux_presence}%"></div>
+                        </div>
+                        <span class="badge bg-success">${stat.taux_presence.toFixed(1)}%</span>
+                    </td>
+                </tr>
+            `;
+        });
+
+        // Mettre à jour le tableau des étudiants
+        const studentTbody = document.getElementById('studentTableBody');
+        studentTbody.innerHTML = '';
+
+        data.student_stats.forEach(student => {
+            studentTbody.innerHTML += `
+                <tr>
+                    <td>${student.etudiant__prenom} ${student.etudiant__nom}</td>
+                    <td>${student.secteur_nom}</td>
+                    <td><span class="badge bg-danger">${student.absences}</span></td>
+                </tr>
+            `;
+        });
+
+        // Mettre à jour les graphiques des étudiants
+        updateStudentCharts(data);
+    }
+
+    // Mettre à jour les graphiques des étudiants
+    function updateStudentCharts(data) {
+        // Graphique quotidien
+        if (studentDailyChart) studentDailyChart.destroy();
+
+        const ctx1 = document.getElementById('studentDailyChart').getContext('2d');
+        studentDailyChart = new Chart(ctx1, {
+            type: 'bar',
+            data: {
+                labels: data.chart_labels,
+                datasets: [
+                    {
+                        label: '{% trans "Présences" %}',
+                        data: data.chart_present,
+                        backgroundColor: 'rgba(40, 167, 69, 0.8)',
+                        borderColor: 'rgba(40, 167, 69, 1)',
+                        borderWidth: 1
+                    },
+                    {
+                        label: '{% trans "Absences" %}',
+                        data: data.chart_absent,
+                        backgroundColor: 'rgba(220, 53, 69, 0.8)',
+                        borderColor: 'rgba(220, 53, 69, 1)',
+                        borderWidth: 1
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'top' }
+                },
+                scales: {
+                    y: { beginAtZero: true }
+                }
+            }
+        });
+
+        // Graphique par classe
+        if (studentClassChart) studentClassChart.destroy();
+
+        const ctx2 = document.getElementById('studentClassChart').getContext('2d');
+        studentClassChart = new Chart(ctx2, {
+            type: 'pie',
+            data: {
+                labels: data.secteur_stats.map(stat => stat.secteur_nom),
+                datasets: [{
+                    data: data.secteur_stats.map(stat => stat.absent),
+                    backgroundColor: [
+                        '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0',
+                        '#9966FF', '#FF9F40', '#8AC249', '#EA5545'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'right' }
+                }
+            }
+        });
+    }
+
+    // Mettre à jour les statistiques des cours
+    function updateCourseStats(data) {
+        // Mettre à jour le tableau des matières
+        const tbody = document.getElementById('matieresTableBody');
+        tbody.innerHTML = '';
+
+        data.stats_par_matiere.forEach(matiere => {
+            tbody.innerHTML += `
+                <tr>
+                    <td>${matiere.nom}</td>
+                    <td>${matiere.total_seances}</td>
+                    <td>${matiere.seances_effectuees}</td>
+                    <td>${matiere.seances_annulees}</td>
+                    <td>${matiere.seances_reportees}</td>
+                    <td>
+                        <div class="progress progress-xs">
+                            <div class="progress-bar bg-success" style="width: ${matiere.taux_realisation}%"></div>
+                        </div>
+                        <span class="badge bg-success">${matiere.taux_realisation.toFixed(1)}%</span>
+                    </td>
+                </tr>
+            `;
+        });
+
+        // Mettre à jour les graphiques des cours
+        updateCourseCharts(data);
+    }
+
+    // Mettre à jour les graphiques des cours
+    function updateCourseCharts(data) {
+        // Graphique hebdomadaire
+        if (weeklyChart) weeklyChart.destroy();
+
+        const ctx1 = document.getElementById('weeklyChart').getContext('2d');
+        weeklyChart = new Chart(ctx1, {
+            type: 'bar',
+            data: {
+                labels: data.weekly_data.map(week => `Semaine ${week.week}`),
+                datasets: [
+                    {
+                        label: '{% trans "Effectuées" %}',
+                        data: data.weekly_data.map(week => week.effectue),
+                        backgroundColor: 'rgba(40, 167, 69, 0.8)',
+                        borderColor: 'rgba(40, 167, 69, 1)',
+                        borderWidth: 1
+                    },
+                    {
+                        label: '{% trans "Annulées" %}',
+                        data: data.weekly_data.map(week => week.annule),
+                        backgroundColor: 'rgba(220, 53, 69, 0.8)',
+                        borderColor: 'rgba(220, 53, 69, 1)',
+                        borderWidth: 1
+                    },
+                    {
+                        label: '{% trans "Reportées" %}',
+                        data: data.weekly_data.map(week => week.reporte),
+                        backgroundColor: 'rgba(255, 193, 7, 0.8)',
+                        borderColor: 'rgba(255, 193, 7, 1)',
+                        borderWidth: 1
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'top' }
+                },
+                scales: {
+                    y: { beginAtZero: true }
+                }
+            }
+        });
+
+        // Graphique de taux de réalisation
+        if (completionRateChart) completionRateChart.destroy();
+
+        const taux = data.taux_realisation;
+        const ctx2 = document.getElementById('completionRateChart').getContext('2d');
+        completionRateChart = new Chart(ctx2, {
+            type: 'doughnut',
+            data: {
+                labels: ['{% trans "Réalisé" %}', '{% trans "Restant" %}'],
+                datasets: [{
+                    data: [taux, 100 - taux],
+                    backgroundColor: [
+                        'rgba(40, 167, 69, 0.8)',
+                        'rgba(220, 53, 69, 0.8)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '70%',
+                plugins: {
+                    legend: { display: false }
+                }
+            }
+        });
+    }
+
+    // Fonctions utilitaires
+    function showLoading() {
+        document.getElementById('loading').style.display = 'block';
+    }
+
+    function hideLoading() {
+        document.getElementById('loading').style.display = 'none';
+    }
+
+    // Initialisation au chargement de la page
+    document.addEventListener('DOMContentLoaded', function() {
+        updateAllStats();
+    });
+</script>
+{% endblock %}

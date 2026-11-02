@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% load i18n i18n_jours %}
+{% block content %}
+<div class="box box-primary">
+    <div class="box-header with-border">
+        <h3 class="box-title">{% trans "Ma présence et contenu enseigné" %} — {{ c.matiere.nom }} ({{ c.secteur.nom }})</h3>
+    </div>
+    <div class="box-body">
+        <form method="get" class="form-inline" style="margin-bottom:15px;">
+            <label>{% trans "Date du cours" %} ({{ c.jour|jour_i18n }}, {{ c.heure_debut|time:"H:i" }}-{{ c.heure_fin|time:"H:i" }}) :&nbsp;</label>
+            <input type="date" name="date" value="{{ date|date:'Y-m-d' }}" max="{% now 'Y-m-d' %}" class="form-control" data-no-default>
+            <button class="btn btn-default">{% trans "Afficher" %}</button>
+            <a href="{% url 'espace_prof' %}" class="btn btn-link">{% trans "Retour" %}</a>
+        </form>
+        {% if erreur %}<div class="alert alert-danger">{{ erreur }}</div>{% else %}
+        <form method="post">
+            {% csrf_token %}
+            <input type="hidden" name="date" value="{{ date|date:'Y-m-d' }}">
+            <div class="form-grid-3">
+                <div class="form-group">
+                    <label>{% trans "Ma présence" %}</label>
+                    <select name="etat_presence" class="form-control" required>
+                        <option value="present" {% if not pointage or pointage.etat == 'present' %}selected{% endif %}>{% trans "Présent" %}</option>
+                        <option value="retard" {% if pointage.etat == 'retard' %}selected{% endif %}>{% trans "En retard" %}</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>{% trans "État du cours" %}</label>
+                    <select name="etat_cours" class="form-control" required>
+                        {% for val, lib in etats_cours %}
+                        <option value="{{ val }}" {% if cours.etat == val %}selected{% endif %}>{{ lib }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group full-row">
+                    <label>{% trans "Contenu enseigné" %}</label>
+                    <textarea name="contenu" rows="5" class="form-control">{{ cours.contenu|default_if_none:"" }}</textarea>
+                </div>
+                <div class="form-group full-row">
+                    <label>{% trans "Remarques" %}</label>
+                    <textarea name="remarques" rows="2" class="form-control">{{ cours.remarques|default_if_none:"" }}</textarea>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-success"><i class="fa fa-save"></i> {% trans "Enregistrer" %}</button>
+        </form>
+        {% endif %}
+    </div>
+</div>
+{% if historique %}
+<div class="box">
+    <div class="box-header with-border"><h3 class="box-title">{% trans "Derniers cours enregistrés" %}</h3></div>
+    <div class="box-body table-responsive">
+        <table class="table table-bordered">
+            <thead><tr><th>{% trans "Date" %}</th><th>{% trans "État du cours" %}</th><th>{% trans "Contenu enseigné" %}</th></tr></thead>
+            <tbody>{% for h in historique %}<tr><td>{{ h.date_cours|date:"d/m/Y" }}</td><td>{{ h.get_etat_display }}</td><td>{{ h.contenu|default_if_none:""|truncatechars:120 }}</td></tr>{% endfor %}</tbody>
+        </table>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

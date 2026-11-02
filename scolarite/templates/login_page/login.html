@@ -1,0 +1,165 @@
+{% load static i18n %}
+
+<!DOCTYPE html>
+<html lang="{{ request.LANGUAGE_CODE|default:'fr' }}" dir="{% if request.LANGUAGE_CODE == 'ar' %}rtl{% else %}ltr{% endif %}">
+<head>
+  <meta charset="UTF-8">
+  <title>ENAJM - Connexion</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Bootstrap -->
+  <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+
+  <!-- Style personnalisé -->
+  <style>
+    body {
+
+    }
+
+    .login-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .login-box {
+      background: rgba(255, 255, 255, 0.95);
+      padding: 40px 30px;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+      width: 100%;
+      max-width: 500px;
+      text-align: center;
+    }
+
+    .login-box img.logo {
+      width: 100px;
+      margin-bottom: 10px;
+    }
+
+    .login-title {
+      font-size: 20px;
+      font-weight: bold;
+      color: green;
+    }
+
+    .login-title-ar {
+      font-family: 'Scheherazade', serif;
+      font-size: 18px;
+      color: #444;
+      margin-bottom: 20px;
+    }
+
+    .form-control {
+      border-radius: 6px;
+      margin-bottom: 15px;
+    }
+
+    .btn-login {
+      border-radius: 6px;
+      width: 100%;
+    }
+
+    /* Labels alignés au début de la ligne (gauche en français, droite en arabe) */
+    .login-box form { text-align: start; }
+    .login-box label { display: block; text-align: start; font-weight: 600; margin-bottom: 5px; }
+
+    .password-wrap { position: relative; }
+    .password-wrap .form-control { padding-inline-end: 40px; }
+    .password-toggle {
+      position: absolute;
+      top: 0;
+      inset-inline-end: 0;
+      height: 34px;
+      width: 40px;
+      background: none;
+      border: 0;
+      color: #777;
+      cursor: pointer;
+    }
+    .password-toggle:hover { color: #333; }
+
+    /* Sélecteur de langue */
+    .lang-switch { display: flex; justify-content: flex-end; gap: 6px; margin: -20px -10px 10px; }
+    .lang-switch form { margin: 0; }
+    .lang-switch button {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: #fff; border: 1px solid #ddd; border-radius: 6px;
+      padding: 4px 10px; font-size: 13px; cursor: pointer; color: #333;
+    }
+    .lang-switch button:hover { background: #f4f4f4; }
+    .lang-switch button.active { border-color: #00a157; color: #00a157; font-weight: 600; }
+    .lang-switch img { width: 20px; height: 13px; }
+
+    .login-box-msg {
+      margin-bottom: 20px;
+      font-weight: 500;
+    }
+  </style>
+</head>
+<body >
+
+<div class="login-container">
+  <div class="login-box">
+    <div class="lang-switch">
+      <form action="{% url 'set_language' %}" method="post">
+        {% csrf_token %}
+        <input type="hidden" name="language" value="fr">
+        <input type="hidden" name="next" value="/fr/">
+        <button type="submit" class="{% if request.LANGUAGE_CODE != 'ar' %}active{% endif %}">
+          <img src="{% static 'dist/img/france.png' %}" alt=""> Français
+        </button>
+      </form>
+      <form action="{% url 'set_language' %}" method="post">
+        {% csrf_token %}
+        <input type="hidden" name="language" value="ar">
+        <input type="hidden" name="next" value="/ar/">
+        <button type="submit" class="{% if request.LANGUAGE_CODE == 'ar' %}active{% endif %}">
+          <img src="{% static 'dist/img/ar.svg' %}" alt=""> العربية
+        </button>
+      </form>
+    </div>
+    <img src="{% static 'dist/img/logo.jpeg' %}" class="logo" alt="Logo ENAJM">
+          <div class="login-title">    المدرسة الوطنية للإدارة والصحافة والقضاء</div>
+
+    <div class="login-title-ar">École Nationale d'Administration Judiciaire et de Magistrature</div>
+
+<p class="login-box-msg">{% trans "Veuillez vous connecter" %}</p>
+
+    <form action="" method="post">
+      {% csrf_token %}
+      <label for="email">{% trans "Email" %}</label>
+      <input type="text" id="email" name="email" class="form-control" placeholder="" required autofocus>
+      <label for="password">{% trans "password" %}</label>
+      <div class="password-wrap">
+        <input type="password" id="password" name="password" class="form-control" placeholder="" required>
+        <button type="button" class="password-toggle" id="togglePassword"
+                aria-label="{% trans 'Afficher/masquer le mot de passe' %}" title="{% trans 'Afficher/masquer le mot de passe' %}">
+          <i class="fa fa-eye" aria-hidden="true"></i>
+        </button>
+      </div>
+      <button type="submit" class="btn btn-primary btn-login">{% trans "Se connecter" %}</button>
+    </form>
+  </div>
+</div>
+
+<!-- Scripts -->
+<script src="{% static 'plugins/jQuery/jQuery-2.2.0.min.js' %}"></script>
+<script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
+<script>
+  // Afficher / masquer le mot de passe
+  (function () {
+    var input = document.getElementById('password');
+    var btn = document.getElementById('togglePassword');
+    btn.addEventListener('click', function () {
+      var visible = input.type === 'text';
+      input.type = visible ? 'password' : 'text';
+      btn.querySelector('i').className = visible ? 'fa fa-eye' : 'fa fa-eye-slash';
+      input.focus();
+    });
+  })();
+</script>
+</body>
+</html>

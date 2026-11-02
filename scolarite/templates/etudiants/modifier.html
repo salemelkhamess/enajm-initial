@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block content %}
+<div class="box">
+<div class="box-header">
+        <h2>{% trans "Modifier le statut de labsence" %}</h2>
+
+</div>
+<div class="box-body">
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-success">{% trans "Enregistrer" %}</button>
+    <a href="{% url 'liste_absences_non_justifiees' %}" class="btn btn-secondary">{% trans "Annuler" %}</a>
+</form>
+</div>
+</div>
+{% endblock %}

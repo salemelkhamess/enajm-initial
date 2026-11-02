@@ -1,0 +1,54 @@
+# Utiliser une image Python officielle
+FROM python:3.12
+
+# Définir le dossier de travail
+WORKDIR /app
+
+# Copier les fichiers
+COPY . /app
+
+# Installer les dépendances
+RUN pip install --no-cache-dir -r requirements.txt
+
+RUN pip install --no-cache-dir openpyxl
+
+# Installer PyMySQL explicitement (sécurise l'installation)
+RUN pip install --no-cache-dir PyMySQL==1.1.2
+
+# Installer django-environ (pour lire .env)
+RUN pip install django-environ
+
+# Exposer le port
+EXPOSE 7373
+
+# Commande de lancement
+CMD ["python", "manage.py", "runserver", "0.0.0.0:7373"]
+
+# CMD ["sh", "-c", "python manage.py migrate && python manage.py runserver 0.0.0.0:7373"]
+
+
+
+
+# FROM python:3.12
+
+# # Keeps Python from generating .pyc files in the container
+# ENV PYTHONDONTWRITEBYTECODE=1
+
+# # Turns off buffering for easier container logging
+# ENV PYTHONUNBUFFERED=1
+
+# WORKDIR /app
+
+# # install psycopg2 dependencies
+# # RUN apk update \
+# #     && apk add postgresql-dev gcc python3-dev musl-dev
+
+# COPY ./requirements.txt /app
+# # RUN python -m pip install --upgrade pip
+# RUN pip install -r requirements.txt
+
+
+
+# COPY . /app
+# COPY ./entrypoint-prod.sh /app
+

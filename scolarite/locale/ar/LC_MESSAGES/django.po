@@ -1,0 +1,2159 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-05-10 22:36+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
+
+#: templates/partials/sidebar.html:12
+msgid "Online"
+msgstr ""
+
+#: templates/partials/sidebar.html:18
+msgid "Search..."
+msgstr ""
+
+#: templates/partials/sidebar.html:26
+msgid "ENAJM"
+msgstr ""
+
+#: templates/partials/sidebar.html:29 templates/partials/sidebar.html:32
+msgid "Accueil"
+msgstr "الصفحة الرئيسية"
+
+#: templates/partials/sidebar.html:39
+msgid "Secteurs"
+msgstr "الأقسام"
+
+#: templates/partials/sidebar.html:43
+msgid "Liste des secteurs"
+msgstr "قائمة الأقسام"
+
+#: templates/partials/sidebar.html:44
+msgid "Liste des branches"
+msgstr "  الشعبة "
+
+#: templates/partials/sidebar.html:45
+msgid "Matiére"
+msgstr "المواد الدراسية"
+
+#: templates/partials/sidebar.html:52
+msgid "Année"
+msgstr "السنة"
+
+#: templates/partials/sidebar.html:56
+msgid "Création"
+msgstr "إضافة"
+
+#: templates/partials/sidebar.html:57
+msgid "Trimestre"
+msgstr "المستوى الدراسي"
+
+#: templates/partials/sidebar.html:64
+msgid "Salles"
+msgstr "القاعات"
+
+#: templates/partials/sidebar.html:68 templates/partials/sidebar.html:79
+#: templates/partials/sidebar.html:94 templates/partials/sidebar.html:108
+msgid "Liste"
+msgstr "القائمة"
+
+#: templates/partials/sidebar.html:75
+msgid "Etudiant"
+msgstr "التلاميذ الموظفون"
+
+#: templates/partials/sidebar.html:80
+msgid "Absence"
+msgstr "الغياب"
+
+#: templates/partials/sidebar.html:81 templates/partials/sidebar.html:126
+msgid "Rapport"
+msgstr "التقا رير"
+
+#: templates/partials/sidebar.html:82
+msgid "List des pv"
+msgstr "قائمة محاضر الضبط"
+
+#: templates/partials/sidebar.html:90
+msgid "Proffesseurs"
+msgstr "الأساتذة"
+
+#: templates/partials/sidebar.html:95
+msgid "Pointage"
+msgstr "الحضور"
+
+#: templates/partials/sidebar.html:96
+msgid "Rapport Absence"
+msgstr " يومية حضور الأساتذة"
+
+#: templates/partials/sidebar.html:97
+msgid "Emploitemps"
+msgstr " الجدول الزمني"
+
+#: templates/partials/sidebar.html:98
+msgid "Permutation"
+msgstr "تبديل"
+
+#: templates/partials/sidebar.html:104
+msgid "Evaluations"
+msgstr "التقييمات"
+
+#: templates/partials/sidebar.html:109
+msgid "Note"
+msgstr "الدرجة"
+
+#: templates/partials/sidebar.html:110
+msgid "Bulletin"
+msgstr "كشوف الدرجات"
+
+#: templates/partials/sidebar.html:116
+msgid "Conférences"
+msgstr "قاعات المؤتمرات "
+
+#: templates/partials/sidebar.html:120
+msgid "Céation"
+msgstr "إضافة"
+
+#: templates/partials/sidebar.html:130
+msgid "Absence par matier"
+msgstr "الغياب حسب المادة"
+
+#: templates/partials/sidebar.html:136
+msgid "Paramétres"
+msgstr "الإعدادات"
+
+#: templates/partials/sidebar.html:140الطلاب الموظفون
+msgid "Entéte"
+msgstr "الرئيسية"
+
+#: templates/partials/sidebar.html:141
+msgid "Groupe"
+msgstr "المجموعة"
+
+#: templates/partials/sidebar.html:142
+msgid "Utilisateurs"
+msgstr "المستخدمين"
+
+#: templates/login.html:6
+msgid "Bienvenue à ENAJM"
+msgstr "مرحبا بكم في ENAJM"
+
+#: templates/login.html:11
+msgid "Se connecter"
+msgstr "تسجيل الدخول"
+
+msgid "Veuillez vous connecter"
+msgstr "الرجاء تسجيل الدخول"
+
+# année
+msgid "Liste des Années"
+msgstr "قائمة السنوات"
+
+msgid "Ajouter une année"
+msgstr "إضافة سنة"
+
+msgid "Classe"
+msgstr "الفصل"
+
+msgid "Secteur"
+msgstr "الفصل"
+
+msgid "Numéro Année"
+msgstr "رقم السنة"
+
+msgid "Modifier"
+msgstr "تعديل"
+
+msgid "Supprimer"
+msgstr "حذف"
+
+msgid "Aucune année enregistrée."
+msgstr "لا توجد سنة مسجلة."
+
+msgid "Modifier une Année"
+msgstr "تعديل السنة"
+
+msgid "Créer une Année"
+msgstr "إضافة سنة"
+
+msgid "Annuler"
+msgstr "إلغاء"
+
+msgid "formation"
+msgstr "القسم"
+
+msgid "numero_annee"
+msgstr "رقم السنة"
+
+msgid "Le numéro de l'année doit être supérieur à 0."
+msgstr "يجب أن يكون رقم السنة أكبر من 0."
+
+# emploie
+msgid "Emploi du temps"
+msgstr " الجدول الزمني"
+
+msgid "Ajouter une séance"
+msgstr "إضافة حصة"
+
+msgid "séances"
+msgstr "الحصص"
+
+msgid "Matière"
+msgstr "المادة"
+
+msgid "Professeur"
+msgstr "الأستاذ"
+
+msgid "Salle"
+msgstr "القاعة"
+
+msgid "Jour"
+msgstr "اليوم"
+
+msgid "Heures"
+msgstr "الساعات"
+
+msgid "Actions"
+msgstr "الإجراءات"
+
+msgid "Aucun emploi du temps pour ce secteur"
+msgstr "لا يوجد جدول زمني لهذا القسم"
+
+msgid "Aucun secteur avec emploi du temps trouvé."
+msgstr "لم يتم العثور على أي قسم يحتوي على جدول زمني."
+
+# emploie creation
+msgid "Création d'emploi du temps par classe"
+msgstr "إضافة  الجدول الزمني حسب القسم"
+
+msgid "Afficher la grille"
+msgstr "عرض الشبكة الزمنية"
+
+msgid "Emploi du temps pour"
+msgstr " الجدول الزمني لقسم"
+
+msgid "Enregistrer"
+msgstr "حفظ"
+
+msgid "Créneau"
+msgstr "الفترة الزمنية"
+
+msgid "-- Matière --"
+msgstr "-- المادة الدراسية --"
+
+msgid "-- Professeur --"
+msgstr "-- الأستاذ --"
+
+msgid "-- Salle --"
+msgstr "-- القاعة --"
+
+msgid "Succès!"
+msgstr "تم بنجاح!"
+
+msgid "Emploi du temps enregistré avec succès!"
+msgstr "تم حفظ جدول المواعيد بنجاح"
+
+msgid "Erreur!"
+msgstr "خطأ!"
+
+msgid "Une erreur est survenue"
+msgstr "حدثت مشكلة"
+
+msgid "OK"
+msgstr "موافق"
+
+msgid "Notification"
+msgstr "إشعار"
+
+msgid "Département"
+msgstr "القسم"
+
+msgid "Lundi"
+msgstr "الاثنين"
+
+msgid "Mardi"
+msgstr "الثلاثاء"
+
+msgid "Mercredi"
+msgstr "الأربعاء"
+
+msgid "Jeudi"
+msgstr "الخميس"
+
+msgid "Vendredi"
+msgstr "الجمعة"
+
+msgid "Samedi"
+msgstr "السبت"
+
+msgid "Annee"
+msgstr "السنة"
+
+msgid "ch"
+msgstr "تغيير الجدول الزمني ل"
+
+msgid "Liste des départements"
+msgstr "قائمة الأقسام"
+
+msgid "Ajouter un département"
+msgstr "إضافة قسم"
+
+msgid "Nom"
+msgstr "الاسم"
+
+msgid "Aucun département trouvé."
+msgstr "لم يتم العثور على أي قسم."
+
+msgid "Créer un departement"
+msgstr "إضافة قسم"
+
+msgid "Modifier un departement"
+msgstr " تعديل قسم"
+
+msgid "Confirmer la suppression du département"
+msgstr "تأكيد حذف القسم"
+
+msgid "evs"
+msgstr "هل أنت متأكد أنك تريد حذف القسم ؟"
+
+msgid "Liste des classes"
+msgstr "قائمة الفروع"
+
+msgid "AJ"
+msgstr "إضافة "
+
+msgid "un classe"
+msgstr "فصل دراسي "
+
+msgid "Nom du classe"
+msgstr "الفصل الدراسي "
+
+msgid "Departement associée"
+msgstr " القسم "
+
+msgid "Confirmer la suppression"
+msgstr "تأكيد الحذف"
+
+msgid "Liste des Matières"
+msgstr "قائمة المواد"
+
+msgid "Ajouter une matière"
+msgstr "إضافة مادة"
+
+msgid "Coefficient"
+msgstr "الضارب"
+
+msgid "Aucune matière trouvée."
+msgstr "لم يتم العثور على أي مادة."
+
+msgid "Modifier la matière"
+msgstr "تعديل المادة"
+
+msgid "Mettre à jour"
+msgstr "تحديث"
+
+msgid "Supprimer la matière"
+msgstr "حذف المادة"
+
+msgid "Êtes-vous sûr de vouloir supprimer"
+msgstr "هل أنت متأكد أنك تريد حذف"
+
+msgid "Liste des trimestres"
+msgstr "قائمة الفصول الدراسية"
+
+msgid "Ajouter un trimestre"
+msgstr "إضافة فصل دراسي"
+
+msgid "Nom Ar"
+msgstr "الاسم بالعربية"
+
+msgid "Début"
+msgstr "بداية"
+
+msgid "Fin"
+msgstr "نهاية"
+
+msgid "Aucun trimestre trouvé."
+msgstr "لم يتم العثور على أي فصل دراسي."
+
+msgid "Nom (Français)"
+msgstr "الاسم (بالفرنسية)"
+
+msgid "Nom (Arabe)"
+msgstr "الاسم (بالعربية)"
+
+msgid "Numéro"
+msgstr "الرقم"
+
+msgid "Créer"
+msgstr "إضافة"
+
+msgid "un trimestre"
+msgstr "فصل دراسي"
+
+msgid "Liste des Salles"
+msgstr "قائمة القاعات"
+
+msgid "Ajouter une salle"
+msgstr "إضافة قاعة"
+
+msgid "Capacité"
+msgstr "السعة"
+
+msgid "Description"
+msgstr "الوصف"
+
+msgid "Aucune salle trouvée."
+msgstr "لم يتم العثور على أي قاعة."
+
+msgid "Modifier une salle"
+msgstr "تعديل القاعة"
+
+msgid "Retour"
+msgstr "رجوع"
+
+msgid "Confirmation de suppression"
+msgstr "تأكيد الحذف"
+
+msgid "Voulez-vous vraiment supprimer la salle"
+msgstr "هل تريد حقًا حذف القاعة"
+
+msgid "Liste des étudiants"
+msgstr "قائمة   التلاميذ الموظفين "
+
+msgid "Ajouter un étudiant"
+msgstr "إضافة  التلميذ الموظف"
+
+msgid "Photo"
+msgstr "الصورة"
+
+msgid "Matricule"
+msgstr " رقم التسجيل"
+
+msgid "Departement"
+msgstr "القسم"
+
+msgid "Pas de photo"
+msgstr "لا توجد صورة"
+
+msgid "Aucun étudiant trouvé."
+msgstr "لم يتم العثور على أي طالب"
+
+msgid "Homme"
+msgstr "ذكر"
+
+msgid "Femme"
+msgstr "أنثى"
+
+msgid "Étudiant"
+msgstr "التلميذ  الموظف"
+
+msgid "Étudiants"
+msgstr "التلاميذ الموظفون"
+
+msgid "Prénom"
+msgstr "اللقب"
+
+msgid "Date de naissance"
+msgstr "تاريخ الميلاد"
+
+msgid "Lieu de naissance"
+msgstr "مكان الميلاد"
+
+msgid "Sexe"
+msgstr "الجنس"
+
+msgid "Téléphone"
+msgstr "الهاتف"
+
+msgid "Email"
+msgstr "البريد الإلكتروني"
+
+msgid "NNI"
+msgstr "الرقم الوطني"
+
+msgid "Formation"
+msgstr "القسم"
+
+msgid "Liste des absences des étudiants"
+msgstr "قائمة غيابات   التلاميذ الموظفين "
+
+msgid "Ajouter absence"
+msgstr "إضافة غياب"
+
+msgid "Oui,Non"
+msgstr "نعم,لا"
+
+msgid "Justification"
+msgstr "التبرير"
+
+msgid "Date justification"
+msgstr "تاريخ التبرير"
+
+msgid "Aucune présence enregistrée."
+msgstr "لا توجد حضور مسجل."
+
+msgid "Présent"
+msgstr "حاضر"
+
+msgid "Du:"
+msgstr "من:"
+
+msgid "Au:"
+msgstr "إلى:"
+
+msgid "Filtrer"
+msgstr "تصفية"
+
+msgid "Imprimer"
+msgstr "طباعة"
+
+msgid "Rapport des absences des matières"
+msgstr "تقرير غيابات المواد"
+
+msgid "Liste des présences"
+msgstr "قائمة الحضور"
+
+msgid "Nombre d'absences"
+msgstr "عدد الغيابات"
+
+msgid "Aucune absence enregistrée."
+msgstr "لا توجد غيابات مسجلة."
+
+msgid "Liste des PV"
+msgstr "  قائمة محاضر الضبط"
+
+msgid "Ajouter un PV"
+msgstr "إضافة محضر ضبط"
+
+msgid "Type"
+msgstr "النوع"
+
+msgid "Date"
+msgstr "التاريخ"
+
+msgid "Aucun PV enregistré."
+msgstr "لا يوجد محاضر  ضبط مسجلة."
+
+msgid "Type de PV"
+msgstr "نوع محضر الضبط"
+
+msgid "Étudiant concerné"
+msgstr "التلميذ   الموظف المعني"
+
+msgid "Contenu"
+msgstr "المحتوى"
+
+msgid "Date du PV"
+msgstr "تاريخ المحضر"
+
+msgid "Voulez-vous vraiment supprimer le PV de"
+msgstr "هل تريد حقاً حذف محضر الضبط الخاص بـ"
+
+msgid "Oui, supprimer"
+msgstr "نعم، احذف"
+
+msgid "Recherche entre deux dates"
+msgstr "البحث بين تاريخين"
+
+msgid "Date début"
+msgstr "تاريخ البداية"
+
+msgid "Date fin"
+msgstr "تاريخ النهاية"
+
+msgid "Rechercher"
+msgstr "بحث"
+
+msgid "Rapport des PV"
+msgstr "تقرير محاضر الضبط"
+
+msgid "Aucun PV trouvé pour cette période."
+msgstr "لا توجد محاضر ضبط لهذه الفترة."
+
+msgid "Liste des professeurs"
+msgstr "قائمة الأساتذة"
+
+msgid "Ajouter un professeur"
+msgstr "إضافة أستاذ"
+
+msgid "Spécialité"
+msgstr "التخصص"
+
+msgid "Aucun professeur trouvé."
+msgstr "لا يوجد أساتذة."
+
+msgid "Modifier un professeur"
+msgstr "تعديل أستاذ"
+
+msgid "Liste des présences des professeurs"
+msgstr "قائمة حضور الأساتذة"
+
+msgid "Ajouter une présence"
+msgstr "إضافة حضور"
+
+msgid "Aucune présence trouvée."
+msgstr "لم يتم العثور على حضور."
+
+msgid "Liste des Pointages"
+msgstr "قائمة سجل حضور الأساتذة"
+
+msgid "Ajouter un pointage"
+msgstr " إضافة تسجيل حضور"
+
+msgid "Séance"
+msgstr "الحصة"
+
+msgid "État"
+msgstr "الحالة"
+
+msgid "Détails"
+msgstr "التفاصيل"
+
+msgid "Détails du pointage"
+msgstr "تفاصيل  تسجيل الحضور "
+
+msgid "Séance:"
+msgstr "الحصة:"
+
+msgid "Salle:"
+msgstr "القاعة:"
+
+msgid "État:"
+msgstr "الحالة:"
+
+msgid "Heure arrivée:"
+msgstr "وقت الوصول:"
+
+msgid "Non renseignée"
+msgstr "غير محدد"
+
+msgid "Heure départ:"
+msgstr "وقت المغادرة:"
+
+msgid "Remarques:"
+msgstr "ملاحظات:"
+
+msgid "Aucune remarque"
+msgstr "لا توجد ملاحظات"
+
+msgid "Fermer"
+msgstr "إغلاق"
+
+msgid "Aucun pointage trouvé"
+msgstr "لا يوجد  تسجيل حضور"
+
+msgid "Êtes-vous sûr ?"
+msgstr "هل أنت متأكد؟"
+
+msgid "Cette action est irréversible !"
+msgstr "هذا الإجراء لا يمكن التراجع عنه!"
+
+msgid "Oui, supprimer !"
+msgstr "نعم، احذف!"
+
+msgid "Première"
+msgstr "الأولى"
+
+msgid "Précédent"
+msgstr "السابق"
+
+msgid "Suivant"
+msgstr "التالي"
+
+msgid "Dernière"
+msgstr "الأخيرة"
+
+msgid "Liste des évaluations"
+msgstr "قائمة التقييمات"
+
+msgid "Ajouter une évaluation"
+msgstr "إضافة تقييم"
+
+msgid "Ajouter"
+msgstr "إضافة"
+
+msgid "une évaluation"
+msgstr "تقييم"
+
+msgid "Type évaluation"
+msgstr "نوع التقييم"
+
+msgid "Liste des entêtes"
+msgstr "قائمة العناوين الرئيسية"
+
+msgid "الاسم (العربية)"
+msgstr "الاسم (بالعربية)"
+
+msgid "Description (Français)"
+msgstr "الوصف (بالفرنسية)"
+
+msgid "الوصف (العربية)"
+msgstr "الوصف (بالعربية)"
+
+msgid "Titre (Français)"
+msgstr "العنوان (بالفرنسية)"
+
+msgid "العنوان (العربية)"
+msgstr "العنوان (بالعربية)"
+
+msgid "Sous-Titre (Français)"
+msgstr "العنوان الفرعي (بالفرنسية)"
+
+msgid "العنوان الفرعي (العربية)"
+msgstr "العنوان الفرعي (بالعربية)"
+
+msgid "Logo"
+msgstr "الشعار"
+
+msgid "Modifier une entête"
+msgstr "تعديل الرئيسية"
+
+msgid "Ajouter une entête"
+msgstr "إضافة الرئيسية"
+
+msgid "Liste des notes"
+msgstr "قائمة الدرجات"
+
+msgid "Ajouter/Modifier une note"
+msgstr "إضافة/تعديل درجة"
+
+msgid "Ajouter/Modifier une note spéciale"
+msgstr "إضافة درجة خاصة"
+
+msgid "Évaluation"
+msgstr "التقييم"
+
+msgid "Note /20"
+msgstr "الدرجة /20"
+
+msgid "Devoir"
+msgstr "الاِختبار "
+
+msgid "Examen"
+msgstr "الاِمْتِحَان"
+
+msgid "Note du Directeur"
+msgstr "درجة المدير"
+
+msgid "Note d'étude académique"
+msgstr "درجة الدراسة الأكاديمية"
+
+msgid "Note de Formation"
+msgstr "درجة التدريب"
+
+msgid "Saisir les notes pour une évaluation"
+msgstr "إدخال الدرجات للتقييم"
+
+msgid "-- Choisir la Formation --"
+msgstr "--  اختر القسم --"
+
+msgid "-- Choisir le Secteur --"
+msgstr "--  الصف الدراسي --"
+
+msgid "-- Choisir le Trimestre --"
+msgstr "--  اختر الفصل الدراسي --"
+
+msgid "-- Type d'évaluation --"
+msgstr "-- نوع التقييم --"
+
+msgid "Évaluation :"
+msgstr "التقييم :"
+
+msgid "Note / 20"
+msgstr "الدرجة / 20"
+
+msgid "Enregistrer les notes"
+msgstr "حفظ الدرجات"
+
+msgid "Gestion des notes spéciales"
+msgstr "إدارة الدرجات الخاصة"
+
+msgid "-- Formation --"
+msgstr "-- القسم --"
+
+msgid "-- Secteur --"
+msgstr "-- الصف الدراسي --"
+
+msgid "-- Trimestre --"
+msgstr "--الفصل المدرسي --"
+
+msgid "Note Directeur"
+msgstr "درجة المدير"
+
+msgid "Note Étude"
+msgstr "درجة الدراسة"
+
+msgid "Note Formation"
+msgstr "درجة التكوين"
+
+msgid "Aucun étudiant trouvé pour ce secteur."
+msgstr "لم يتم العثور على أي موظف لهذا الصف الدراسي."
+
+msgid "Start Date"
+msgstr "تاريخ البدء"
+
+msgid "End Date"
+msgstr "تاريخ الانتهاء"
+
+msgid "Search"
+msgstr "بحث"
+
+msgid "Print"
+msgstr "طباعة"
+
+msgid "Teacher Attendance Report"
+msgstr "تقرير حضور الأساتذة"
+
+msgid "Teacher Attendance Daily"
+msgstr "يومية حضور الأساتذة"
+
+msgid "Time"
+msgstr "التوقيت"
+
+msgid "Specialty"
+msgstr "التخصص"
+
+msgid "Subject"
+msgstr "المادة"
+
+msgid "Teacher"
+msgstr "الأستاذ"
+
+msgid "Status"
+msgstr "الوضعية"
+
+msgid "Present"
+msgstr "حاضر"
+
+msgid "Absent"
+msgstr "غائب"
+
+msgid "Absence Summary by Teacher"
+msgstr "ملخص الغيابات حسب الأساتذة"
+
+msgid "Number of Absences"
+msgstr "عدد الغيابات"
+
+msgid "Imprimer le formulaire"
+msgstr "طباعة النموذج"
+
+msgid "Enregistrement des séance"
+msgstr "تسجيل الحصص"
+
+msgid "Creation du pointage"
+msgstr "إضافة محضر الحضور"
+
+msgid "et"
+msgstr " الجدول الزمني"
+
+msgid "pvl"
+msgstr "  قائمة محاضر الضبط"
+
+#: templates/partials/sidebar.html:83
+msgid "Rapport des pvs"
+msgstr "تقرير  محاضر الضبط"
+
+msgid "Dashboard"
+msgstr "لوحة القيادة"
+
+msgid "Control panel"
+msgstr "لوحة التحكم"
+
+msgid "Home"
+msgstr "الصفحة الرئيسية"
+
+msgid "Professeurs"
+msgstr "الأساتذة"
+
+msgid "Pointages aujourd'hui"
+msgstr " تسجيلات الحضور اليوم"
+
+msgid "Cours aujourd'hui"
+msgstr "الدروس اليوم"
+
+msgid "PVs"
+msgstr "المحاضر"
+
+msgid "Abs. profs (semaine)"
+msgstr "غيابات الأساتذة (الأسبوع)"
+
+msgid "Abs. étudiants (semaine)"
+msgstr "غيابات التلاميذ (الأسبوع)"
+
+msgid "Absences Étudiants"
+msgstr "غيابات التلاميذ الموظفين"
+
+msgid "Plus d'info"
+msgstr "مزيد من المعلومات"
+
+msgid "Absences Professeurs"
+msgstr "غيابات الأساتذة"
+
+msgid "RapportA"
+msgstr " تقرير غياب التلاميذ الموظفين"
+
+msgid "Pointage matiere"
+msgstr " تسجيل حضور المواد "
+
+msgid "Ajouter pointage matière"
+msgstr "إضافة تسجيل مادة"
+
+msgid "Modifier pointage matière"
+msgstr "تعديل تسجيل مادة"
+
+msgid "Liste des pointages des matières"
+msgstr "قائمة تسجيلات المواد"
+
+msgid "Ajouter pointage"
+msgstr "إضافة تسجيل مادة"
+
+msgid "Date du cours"
+msgstr "تاريخ الدرس"
+
+msgid "Heure de début"
+msgstr "ساعة البداية"
+
+msgid "Heure de fin"
+msgstr "ساعة النهاية"
+
+msgid "Contenu enseigné"
+msgstr "المحتوى المُدرس"
+
+msgid "Remarques"
+msgstr "ملاحظات"
+
+msgid "Décrivez le contenu enseigné..."
+msgstr "اشرح المحتوى المُدرس..."
+
+msgid "Ajoutez des remarques éventuelles..."
+msgstr "أضف الملاحظات إن وُجدت..."
+
+msgid "Effectué"
+msgstr "تمّ"
+
+msgid "Annulé"
+msgstr "ملغى"
+
+msgid "Reporté"
+msgstr "مؤجل"
+
+msgid "Supprimer pointage matière"
+msgstr "حذف تسجيل المادة"
+
+msgid "Êtes-vous sûr de vouloir supprimer ce pointage ?"
+msgstr "هل أنت متأكد من أنك تريد حذف هذا التسجيل؟"
+
+msgid "Matière:"
+msgstr "المادة:"
+
+msgid "Professeur:"
+msgstr "الأستاذ:"
+
+msgid "Heures:"
+msgstr "الساعات:"
+
+msgid "Profile"
+msgstr "الملف الشخصي"
+
+msgid "Sign out"
+msgstr "تسجيل الخروج"
+
+msgid "formulaire de présence aux contrôles"
+msgstr "شكلية الحضور في الامتحانات"
+
+msgid "Rapport des pointages de matière"
+msgstr "تقرير تسجيلات المواد"
+
+msgid "Tous les trimestres"
+msgstr "كل الثلاثيات"
+
+msgid "Réinitialiser"
+msgstr "إعادة التعيين"
+
+msgid "Toutes les années"
+msgstr "كل السنوات"
+
+msgid "Tous les secteurs"
+msgstr "كل الأقسام"
+
+msgid "Tous les états"
+msgstr "كل الحالات"
+
+msgid "lengthMenu"
+msgstr "عرض _MENU_ "
+
+msgid "zeroRecords"
+msgstr "لا توجد نتائج"
+
+msgid "info"
+msgstr "عرض _START_ إلى _END_ من _TOTAL_ "
+
+msgid "infoEmpty"
+msgstr "لا توجد بيانات متاحة"
+
+msgid "infoFiltered"
+msgstr "(تمت التصفية من _MAX_  إجمالية)"
+
+msgid "search"
+msgstr "بحث:"
+
+msgid "first"
+msgstr "الأول"
+
+msgid "last"
+msgstr "الأخير"
+
+msgid "next"
+msgstr "التالي"
+
+msgid "previous"
+msgstr "السابق"
+
+msgid "loadingRecords"
+msgstr "جاري التحميل..."
+
+msgid "processing"
+msgstr "جاري المعالجة..."
+
+msgid "emptyTable"
+msgstr "لا توجد بيانات متاحة في الجدول"
+
+msgid "Saisie des présences"
+msgstr "تسجيل حضور الموظفين"
+
+msgid "Afficher les étudiants"
+msgstr "عرض الموظفين"
+
+msgid "imprimer attestation d inscription"
+msgstr "طباعة  شكلية التعهد عند التسجيل"
+
+msgid "imprimer carte employé"
+msgstr "طباعة بطاقة الموظف"
+
+msgid "Emploie des temps par classe"
+msgstr "الجدول الزمني للحصص الدراسية حسب الفصول"
+
+msgid "Célibataire"
+msgstr "عازب"
+
+msgid "Marié(e)"
+msgstr "متزوج(ة)"
+
+msgid "Divorcé(e)"
+msgstr "مطلق(ة)"
+
+msgid "Situation amoureuse"
+msgstr " الحالة الإجتماعية"
+
+msgid "Brevet"
+msgstr "شهادة التعليم المتوسط"
+
+msgid "Baccalauréat"
+msgstr "بكالوريا"
+
+msgid "Licence"
+msgstr "إجازة"
+
+msgid "Maîtrise"
+msgstr "ماستر"
+
+msgid "Doctorat"
+msgstr "دكتوراه"
+
+msgid "Diplômes"
+msgstr "الشهادات"
+
+msgid "Nombre d'enfants"
+msgstr "عدد الأطفال"
+
+msgid "Imprimer l'attestation"
+msgstr "طباعة شكلية التعهد عند التسجيل"
+
+msgid "fiche scolaire"
+msgstr "شكلية المدرسة"
+
+msgid "Liste par classe"
+msgstr "القائمة حسب الفصل"
+
+msgid "Teaching Progress Dashboard"
+msgstr "لوحة متابعة التقدم في التدريس"
+
+msgid "Period from"
+msgstr "الفترة من"
+
+msgid "to"
+msgstr "إلى"
+
+msgid "Total Sessions"
+msgstr "إجمالي المواد"
+
+msgid "Completed Sessions"
+msgstr "المواد المكتملة"
+
+msgid "Postponed Sessions"
+msgstr "المواد المؤجلة"
+
+msgid "Canceled Sessions"
+msgstr "المواد الملغاة"
+
+msgid "Weekly Progress"
+msgstr "التقدم الأسبوعي"
+
+msgid "Global Completion Rate"
+msgstr "معدل الإنجاز العام"
+
+msgid "Statistics by Subject"
+msgstr "إحصائيات حسب المادة"
+
+msgid "Completed"
+msgstr "مكتملة"
+
+msgid "Canceled"
+msgstr "ملغاة"
+
+msgid "Postponed"
+msgstr "مؤجلة"
+
+msgid "Completion Rate"
+msgstr "معدل الإنجاز"
+
+msgid "Statistics by Teacher"
+msgstr "إحصائيات حسب الأستاذ"
+
+msgid "Week"
+msgstr "الأسبوع"
+
+msgid "Statistiques des Absences Professeurs"
+msgstr "إحصائيات غيابات الأساتذة"
+
+msgid "Période d'analyse"
+msgstr "فترة التحليل"
+
+msgid "Date de début"
+msgstr "تاريخ البداية"
+
+msgid "Date de fin"
+msgstr "تاريخ النهاية"
+
+msgid "Chargement..."
+msgstr "جاري التحميل..."
+
+msgid "Chargement des données..."
+msgstr "جاري تحميل البيانات..."
+
+msgid "Présences"
+msgstr "الحضور"
+
+msgid "Absences"
+msgstr "الغيابات"
+
+msgid "Retards"
+msgstr "التأخيرات"
+
+msgid "Taux d'absence"
+msgstr "معدل الغياب"
+
+msgid "Période analysée"
+msgstr "الفترة التي تم تحليلها"
+
+msgid "Évolution quotidienne"
+msgstr "التطور اليومي"
+
+msgid "Répartition globale"
+msgstr "التوزيع العام"
+
+msgid "Professeurs avec le plus d'absences"
+msgstr "الأساتذة الأكثر غيابا"
+
+msgid "Rang"
+msgstr "الرتبة"
+
+msgid "Veuillez sélectionner les deux dates"
+msgstr "الرجاء تحديد التاريخين"
+
+msgid "La date de début doit être antérieure à la date de fin"
+msgstr "يجب أن يكون تاريخ البداية قبل تاريخ النهاية"
+
+msgid "Erreur lors du chargement des données"
+msgstr "خطأ أثناء تحميل البيانات"
+
+msgid "jours"
+msgstr "أيام"
+
+msgid "Congés"
+msgstr "الإجازات"
+
+msgid "Statistiques Étudiants"
+msgstr "إحصائيات التلاميذ"
+
+msgid "Statistiques des Présences Étudiants"
+msgstr "إحصائيات حضور التلاميذ"
+
+msgid "Toutes"
+msgstr "الكل"
+
+msgid "Justifié"
+msgstr "مبرر"
+
+msgid "Non justifié"
+msgstr "غير مبرر "
+
+msgid "Justifiées"
+msgstr "المبررة"
+
+msgid "Répartition par classe"
+msgstr "التوزيع حسب الأقسام"
+
+msgid "Taux de présence par classe"
+msgstr "معدل الحضور حسب الأقسام"
+
+msgid "Étudiants les plus absents"
+msgstr "التلاميذ الأكثر غيابا"
+
+msgid "Taux de presence"
+msgstr "معدل الحضور"
+
+msgid "Statistiques détaillées des professeurs"
+msgstr "إحصائيات مفصلة عن الأساتذة"
+
+msgid "Statistiques détaillées des etudiants"
+msgstr "إحصائيات مفصلة عن التلاميذ الموظفين"
+
+msgid "Statistiques détaillées des cours"
+msgstr "إحصائيات مفصلة عن الدروس"
+
+msgid "paramètres général"
+msgstr "الإعدادات العامة "
+
+msgid "Triche"
+msgstr "غش"
+
+msgid "Retard"
+msgstr "تأخير"
+
+msgid "attestation d inscription"
+msgstr "إفادة تسجيل"
+
+msgid "Rôles"
+msgstr "الأدوار"
+
+msgid "Liste de Utilisateurs"
+msgstr "قائمة المستخدمين"
+
+msgid "Créer un utilisateur"
+msgstr "إضافة مستخدم"
+
+msgid "Adresse"
+msgstr "العنوان"
+
+msgid "Adresse email"
+msgstr " البريد الإلكتروني"
+
+msgid "Mot de passe"
+msgstr "كلمة السر"
+
+msgid "Nouveau mot de passe"
+msgstr "كلمة المرور الجديدة"
+
+msgid "Curriculum Vitae"
+msgstr "سيرة ذاتية"
+
+msgid "Lettre de Motivation"
+msgstr "رسالة تحفيزية"
+
+msgid "Diplôme National"
+msgstr " ملف التسجيل"
+
+msgid "Attestation"
+msgstr "ملف طبي"
+
+msgid "Relevé de Notes"
+msgstr " الملف التربوي (المحاضر + القرارات)"
+
+msgid "Autre"
+msgstr "آخر"
+
+msgid "Document d'étudiant"
+msgstr "وثيقة التلميذ الموظفون"
+
+msgid "Documents des étudiants"
+msgstr "وثائق التلميذ الموظف"
+
+msgid "Fichier PDF"
+msgstr "ملف PDF"
+
+msgid "Date d'upload"
+msgstr "تاريخ الرفع"
+
+msgid "Documents de"
+msgstr "وثائق"
+
+msgid "Ajouter un document"
+msgstr "إضافة وثيقة"
+
+msgid "Fichier"
+msgstr "الملف"
+
+msgid "Type de document"
+msgstr "نوع الوثيقة"
+
+msgid "Aucun document trouvé"
+msgstr "لا توجد وثائق"
+
+msgid "Voir le document"
+msgstr "عرض الوثيقة"
+
+msgid "Êtes-vous sûr de vouloir supprimer ce document ?"
+msgstr "هل أنت متأكد من رغبتك في حذف هذه الوثيقة؟"
+
+msgid "Gérer les documents"
+msgstr "إدارة المستندات"
+
+msgid "Voir Carte"
+msgstr "عرض بطاقة التلميذ الموظف"
+
+msgid "roles"
+msgstr "الصلاحيات "
+
+msgid "Liste des Rôles"
+msgstr "  قائمة الصلاحيات "
+
+msgid "This password is too common."
+msgstr "كلمة المرور هذه شائعة جداً"
+
+msgid "This password is entirely numeric."
+msgstr "كلمة المرور هذه تتكون من أرقام فقط"
+
+msgid "Old password"
+msgstr "كلمة المرور القديمة"
+
+msgid "New password"
+msgstr "كلمة المرور الجديدة"
+
+msgid "New password confirmation"
+msgstr "تأكيد كلمة المرور الجديدة"
+
+msgid "The two passwords don't match."
+msgstr "كلمتا المرور غير متطابقتين"
+
+msgid "Your information has been updated!"
+msgstr "!تم تحديث معلوماتك بنجاح"
+
+msgid "Your password has been changed!"
+msgstr "!تم تغيير كلمة المرور بنجاح"
+
+msgid "Mon Profil"
+msgstr "ملفي الشخصي"
+
+msgid "Ancien mot de passe"
+msgstr "كلمة المرور القديمة"
+
+msgid "Confirmation du nouveau mot de passe"
+msgstr "تأكيد كلمة المرور الجديدة"
+
+msgid "Informations personnelles"
+msgstr "المعلومات الشخصية"
+
+msgid "Changement de mot de passe"
+msgstr "تغيير كلمة المرور"
+
+msgid "Changer le mot de passe"
+msgstr "تغيير كلمة المرور"
+
+msgid "Administrateur"
+msgstr "مدير"
+
+msgid "Super Administrateur"
+msgstr "مدير عام"
+
+msgid "Médecin"
+msgstr "طبيب"
+
+msgid "Manager"
+msgstr " إدارة التقييم والدرجات"
+
+msgid "Pointeur"
+msgstr "إدارة الشؤون الدراسية"
+
+msgid "Pointer"
+msgstr "إدارة الشؤون الدراسية"
+
+msgid "Informations du cours"
+msgstr "  معلومات  الحصصة"
+
+msgid "Absences non justifiées"
+msgstr "الغيابات غير المبررة"
+
+msgid "Modifier le statut de labsence"
+msgstr "تغيير حالة الغياب"
+
+msgid "Motif de l'absence"
+msgstr "سبب الغياب"
+
+msgid "Number of Absencese"
+msgstr " عدد الحصص"
+
+msgid "Heures absentes"
+msgstr " عدد الساعات"
+
+msgid "Absence des professeur par heurs"
+msgstr "   غيابات المدرسين حسب الساعات"
+
+msgid "Absence des eleves fonctionnaires par heurs"
+msgstr "غياب التلاميذ الموظفين  بالساعة"
+
+msgid "Délai dépassé"
+msgstr "تم تجاوز الموعد النهائي"
+
+msgid "justification d'absence"
+msgstr "تبرير الغياب "
+
+msgid "Validation"
+msgstr "تصديق "
+
+msgid "Confirmer la validation"
+msgstr "تأكيد المصادقة"
+
+msgid "Voulez-vous vraiment valider cette absence ?"
+msgstr "هل تريد حقًا المصادقة على هذا الغياب؟"
+
+msgid "Valable"
+msgstr "صالح"
+
+msgid "Afficher les bulletins"
+msgstr "عرض كشوف الدرجات"
+
+msgid "Imprimer tous les bulletins"
+msgstr "طباعة جميع الكشوف/النتائج"
+
+msgid "Validation des notes"
+msgstr " تصديق النتائج"
+
+msgid "Validé"
+msgstr "تصديق"
+
+msgid "Édition des notes par matière"
+msgstr "تعديل الدرجات حسب المادة"
+
+msgid "Notes enregistrées avec succès"
+msgstr "تم حفظ درجات الامتحان بنجاح "
+
+msgid "Notes mises à jour avec succès"
+msgstr "تمت الموافقة على النتائج بنجاح"
+
+msgid "Aucune note validée trouvée pour les critères sélectionnés"
+msgstr "لا توجد نتائج مُحَقق فيها للشروط المختارة"
+
+msgid "notes mises à jour et validées avec succès"
+msgstr "تم تحديث والتحقق من الدرجات بنجاح"
+
+msgid "Statistique Aujourd'hui"
+msgstr "إحصائيات اليوم"
+
+msgid "Statistique cette semaine"
+msgstr "إحصائيات هذا الأسبوع"
+
+msgid "Statistique ce mois"
+msgstr "إحصائيات هذا الشهر"
+
+msgid "Distribution this week"
+msgstr "توزيع هذا الأسبوع"
+
+msgid "Details this week"
+msgstr "تفاصيل هذا الأسبوع"
+
+msgid "Details today"
+msgstr "تفاصيل اليوم"
+
+msgid "Distribution today"
+msgstr "توزيع اليوم"
+
+msgid "Details this month"
+msgstr "تفاصيل هذا الشهر"
+
+msgid "Distribution this month"
+msgstr "توزيع هذا الشهر"
+
+msgid "Alerte ! %(count)s étudiants avec +%(hours)sh d'absences"
+msgstr "إنذار! %(count)s طالب لديه +%(hours)s ساعة من الغياب"
+
+msgid "fermer"
+msgstr "إغلاق"
+
+msgid "Official students concerned"
+msgstr " التلاميذ الموظفون المعنيون"
+
+msgid "Total absences"
+msgstr "عدد الساعات"
+
+msgid "Totale seances"
+msgstr "عدد الحصص "
+
+msgid "Résumé des absences par classe"
+msgstr "ملخص الغيابات حسب القسم "
+
+msgid "Gestion des présences"
+msgstr "إدارة الحضور"
+
+msgid "Valider"
+msgstr "تأكيد"
+
+msgid "Détails du cours"
+msgstr "تفاصيل الدرس"
+
+msgid "Raison absence..."
+msgstr "سبب الغياب..."
+
+msgid "Enregistrer les présences"
+msgstr "حفظ الحضور"
+
+msgid "Toutes les matières"
+msgstr "جميع المواد"
+
+msgid "Absences par matière"
+msgstr "الغيابات حسب المادة"
+
+msgid "Total"
+msgstr "المجموع"
+
+msgid "heures"
+msgstr "ساعات"
+
+msgid "Aucune absence trouvée pour les critères sélectionnés"
+msgstr "لا توجد غيابات للمعايير المحددة"
+
+msgid "Nom et Prénom"
+msgstr "الاسم واللقب"
+
+msgid "Présence"
+msgstr "الحضور"
+
+msgid "Rapport Général "
+msgstr "التقرير العام "
+
+msgid "Tous"
+msgstr "الكل"
+
+msgid "Rapport des absences (toutes les dates)"
+msgstr "تقرير الغيابات (كل التواريخ)"
+
+msgid "Modifier une présence"
+msgstr "تعديل حضور"
+
+msgid "Enregistrer les modifications"
+msgstr "حفظ التعديلات"
+
+msgid "Effectuées"
+msgstr "المنجزة"
+
+msgid "Annulées"
+msgstr "الملغاة"
+
+msgid "Reportées"
+msgstr "المؤجلة"
+
+msgid "Réalisé"
+msgstr "المنجز"
+
+msgid "Restant"
+msgstr "المتبقي"
+
+msgid "Date:"
+msgstr "التاريخ:"
+
+msgid "Durée"
+msgstr "المدة"
+
+msgid "Aucun pointage trouvé avec ces critères"
+msgstr "لا يوجد تسجيل حضور بهذه المعايير"
+
+msgid "Heure début"
+msgstr "وقت البداية"
+
+msgid "Heure fin"
+msgstr "وقت النهاية"
+
+msgid "etat"
+msgstr "الحالة"
+
+msgid "Aucun pointage enregistré."
+msgstr "لا يوجد تسجيل حضور."
+
+msgid "Action"
+msgstr "إجراء"
+
+msgid "Aucune absence enregistrée pour cette période"
+msgstr "لا توجد غيابات مسجلة لهذه الفترة"
+
+msgid "Late"
+msgstr "متأخر"
+
+msgid "On leave"
+msgstr "في عطلة"
+
+msgid "No data available"
+msgstr "لا توجد بيانات"
+
+msgid "Absence hors emploie"
+msgstr "غياب خارج الجدول"
+
+msgid "Année consultée"
+msgstr "السنة المعروضة"
+
+msgid "Étudiants avec ≥ 4 absences dans une matière"
+msgstr "تلاميذ لديهم 4 غيابات أو أكثر في مادة"
+
+msgid "absences"
+msgstr "غيابات"
+
+msgid "Voir tout"
+msgstr "عرض الكل"
+
+msgid "Langue"
+msgstr "اللغة"
+
+msgid "Ajouter un créneau"
+msgstr "إضافة حصة"
+
+msgid "Anne"
+msgstr "السنة"
+
+msgid "Titre"
+msgstr "العنوان"
+
+msgid "العنوان"
+msgstr "العنوان"
+
+msgid "Aucun logo"
+msgstr "لا يوجد شعار"
+
+msgid "Aucune entête trouvée."
+msgstr "لا توجد ترويسة."
+
+msgid "Afficher certificat"
+msgstr "عرض الشهادة"
+
+msgid "Choisir l'année"
+msgstr "اختر السنة"
+
+msgid "Choisir le trimestre"
+msgstr "اختر الفصل"
+
+msgid "Choisir le secteur"
+msgstr "اختر القسم"
+
+msgid "Liste des Employé par classe"
+msgstr "قائمة الموظفين حسب القسم"
+
+msgid "N°"
+msgstr "الرقم"
+
+msgid "Nom Complet"
+msgstr "الاسم الكامل"
+
+msgid "Date et Lieu de Naissance"
+msgstr "تاريخ ومكان الميلاد"
+
+msgid "N° National"
+msgstr "الرقم الوطني"
+
+msgid "Statistiques par sexe:"
+msgstr "إحصائيات حسب الجنس:"
+
+msgid "Nombre"
+msgstr "العدد"
+
+msgid "Non spécifié"
+msgstr "غير محدد"
+
+msgid "Aucun étudiant trouvé pour ce secteur, cette année et ce trimestre"
+msgstr "لا يوجد تلاميذ لهذا القسم وهذه السنة وهذا الفصل"
+
+msgid "Aucune absence non justifiée"
+msgstr "لا توجد غيابات غير مبررة"
+
+msgid "Absences de"
+msgstr "غيابات"
+
+msgid "Heures perdues"
+msgstr "الساعات الضائعة"
+
+msgid "Aucune absence enregistrée"
+msgstr "لا توجد غيابات مسجلة"
+
+msgid "Aucun étudiant dans ce secteur"
+msgstr "لا يوجد تلاميذ في هذا القسم"
+
+msgid "Student Attendance Report"
+msgstr "تقرير حضور التلاميذ"
+
+msgid "Absence Summary by Student"
+msgstr "ملخص الغياب حسب التلميذ"
+
+msgid "Aucune note trouvée."
+msgstr "لا توجد نقاط."
+
+msgid "une note"
+msgstr "نقطة"
+
+msgid "-- Sélectionner --"
+msgstr "-- اختر --"
+
+msgid "Heure"
+msgstr "الوقت"
+
+msgid "Afficher la liste"
+msgstr "عرض القائمة"
+
+msgid "Aucune évaluation trouvée."
+msgstr "لا توجد تقييمات."
+
+msgid "password"
+msgstr "كلمة المرور"
+
+msgid "imprimer"
+msgstr "طباعة"
+
+msgid "Absences des professeurs"
+msgstr "غيابات الأساتذة"
+
+msgid "Nombre d'heures minimum"
+msgstr "الحد الأدنى لعدد الساعات"
+
+msgid "1 séance = 2 heures"
+msgstr "الحصة = ساعتان"
+
+msgid "Aucun professeur n'atteint le seuil spécifié"
+msgstr "لا يوجد أستاذ بلغ العتبة المحددة"
+
+msgid "Rapport des absences non justifiées par secteur"
+msgstr "تقرير الغيابات غير المبررة حسب القسم"
+
+msgid "Rapport des absences non justifiées par étudiant"
+msgstr "تقرير الغيابات غير المبررة حسب التلميذ"
+
+msgid "Présences mises à jour avec succès!"
+msgstr "تم تحديث الحضور بنجاح!"
+
+msgid "Présences enregistrées avec succès!"
+msgstr "تم حفظ الحضور بنجاح!"
+
+msgid "Erreur lors de l'enregistrement: "
+msgstr "خطأ أثناء الحفظ: "
+
+msgid "L'absence a été validée avec succès."
+msgstr "تم تأكيد الغياب بنجاح."
+
+msgid "Une justification et une date sont requises pour valider l'absence"
+msgstr "التبرير والتاريخ مطلوبان لتأكيد الغياب"
+
+msgid "Statut de l'absence mis à jour avec succès!"
+msgstr "تم تحديث حالة الغياب بنجاح!"
+
+msgid "nom"
+msgstr "الاسم"
+
+msgid "Diplômes obtenus (séparés par des virgules)"
+msgstr "الشهادات المحصل عليها (مفصولة بفواصل)"
+
+msgid "REGISTRATION AND COMMITMENT FORM"
+msgstr "استمارة التسجيل والتعهد"
+
+msgid "Votre adresse email principale"
+msgstr "بريدك الإلكتروني الرئيسي"
+
+msgid "Cette adresse email est déjà utilisée."
+msgstr "هذا البريد الإلكتروني مستعمل بالفعل."
+
+msgid "Les deux mots de passe ne correspondent pas."
+msgstr "كلمتا المرور غير متطابقتين."
+
+msgid "Paramètres généraux"
+msgstr "الإعدادات العامة"
+
+msgid "Année courante"
+msgstr "السنة الحالية"
+
+msgid "Trimestre courant"
+msgstr "الفصل الحالي"
+
+msgid "Alertes d'absences activées"
+msgstr "تنبيهات الغياب مفعلة"
+
+msgid "Date de mise à jour"
+msgstr "تاريخ التحديث"
+
+msgid "Activer l'alerte d'absences"
+msgstr "تفعيل إنذار الغياب"
+
+msgid "Sélectionnez une année"
+msgstr "اختر سنة"
+
+msgid "Sélectionnez un trimestre"
+msgstr "اختر فصلا"
+
+msgid "Années"
+msgstr "السنوات"
+
+msgid "Pointages"
+msgstr "تسجيلات الحضور"
+
+msgid "Trimestres"
+msgstr "الفصول"
+
+msgid "Type d'évaluation"
+msgstr "نوع التقييم"
+
+msgid "Procès-verbal"
+msgstr "محضر"
+
+msgid "Procès-verbaux"
+msgstr "محاضر"
+
+msgid "Décrivez en détail l'incident..."
+msgstr "صف الحادثة بالتفصيل..."
+
+msgid "Document ajouté avec succès"
+msgstr "تمت إضافة الوثيقة بنجاح"
+
+msgid "Document modifié avec succès"
+msgstr "تم تعديل الوثيقة بنجاح"
+
+msgid "Modifier le document"
+msgstr "تعديل الوثيقة"
+
+msgid "Document supprimé avec succès"
+msgstr "تم حذف الوثيقة بنجاح"
+
+msgid "Pointage matière"
+msgstr "تسجيل مادة"
+
+msgid "Pointages matières"
+msgstr "تسجيلات المواد"
+
+msgid "L'heure de fin doit être postérieure à l'heure de début."
+msgstr "يجب أن يكون وقت النهاية بعد وقت البداية."
+
+msgid "Pointage matière créé avec succès"
+msgstr "تم إنشاء تسجيل المادة بنجاح"
+
+msgid "Pointage matière mis à jour avec succès"
+msgstr "تم تحديث تسجيل المادة بنجاح"
+
+msgid "Pointage matière supprimé avec succès"
+msgstr "تم حذف تسجيل المادة بنجاح"
+
+msgid "Les paramètres ont été mis à jour avec succès"
+msgstr "تم تحديث الإعدادات بنجاح"
+
+msgid "L'emploi du temps a été mis à jour avec succès."
+msgstr "تم تحديث الجدول الزمني بنجاح."
+
+msgid "Pointage mis à jour avec succès."
+msgstr "تم تحديث التسجيل بنجاح."
+
+msgid ""
+"Désactivée, ni la bannière d'alerte ni les notifications d'absences "
+"critiques ne s'affichent."
+msgstr "عند التعطيل لا يظهر إنذار الغياب ولا إشعارات الغيابات الحرجة."
+
+msgid "Ajouter / Modifier Utilisateur"
+msgstr "إضافة / تعديل مستخدم"
+
+msgid "Ajouter un emploi du temps"
+msgstr "إضافة جدول زمني"
+
+msgid "Ajouter un groupe"
+msgstr "إضافة مجموعة"
+
+msgid "Ajouter un rôle"
+msgstr "إضافة دور"
+
+msgid "Aucun rôle"
+msgstr "لا يوجد دور"
+
+msgid "Aucun rôle assigné"
+msgstr "لا يوجد دور مسند"
+
+msgid "Aucun utilisateur trouvé."
+msgstr "لا يوجد مستخدمون."
+
+msgid "Aucune permission"
+msgstr "لا توجد صلاحيات"
+
+msgid "Confirmation"
+msgstr "تأكيد"
+
+msgid "Confirmer"
+msgstr "تأكيد"
+
+msgid "Date et Horaire"
+msgstr "التاريخ والتوقيت"
+
+msgid "Formulaire de Pointage"
+msgstr "استمارة التسجيل"
+
+msgid "Formulaire de présence aux Contrôles"
+msgstr "استمارة الحضور في الاختبارات"
+
+msgid "Liste des groupes"
+msgstr "قائمة المجموعات"
+
+msgid "Modifier l'emploi du temps"
+msgstr "تعديل الجدول الزمني"
+
+msgid "Nom du groupe"
+msgstr "اسم المجموعة"
+
+msgid "Par secteur"
+msgstr "حسب القسم"
+
+msgid "Permissions"
+msgstr "الصلاحيات"
+
+msgid "Présence/Absence Professeurs"
+msgstr "حضور/غياب الأساتذة"
+
+msgid "Présence/Absence Étudiants"
+msgstr "حضور/غياب التلاميذ"
+
+msgid "Retirer"
+msgstr "سحب"
+
+msgid "Retour à la liste des utilisateurs"
+msgstr "العودة إلى قائمة المستخدمين"
+
+msgid "Rôles assignés"
+msgstr "الأدوار المسندة"
+
+msgid "Signature"
+msgstr "التوقيع"
+
+msgid "Signature du chef de département"
+msgstr "توقيع رئيس القسم"
+
+msgid "Signature du responsable"
+msgstr "توقيع المسؤول"
+
+msgid "Supprimer l'emploi du temps"
+msgstr "حذف الجدول الزمني"
+
+msgid "Supprimer l'étudiant"
+msgstr "حذف التلميذ"
+
+msgid "Supprimer la note"
+msgstr "حذف النقطة"
+
+msgid "Supprimer la présence"
+msgstr "حذف الحضور"
+
+msgid "Supprimer le professeur"
+msgstr "حذف الأستاذ"
+
+msgid "Supprimer le trimestre"
+msgstr "حذف الفصل"
+
+msgid "Supprimer l’évaluation"
+msgstr "حذف التقييم"
+
+msgid "Surveillants"
+msgstr "المراقبون"
+
+msgid "Tableau de Bord des Statistiques"
+msgstr "لوحة الإحصائيات"
+
+msgid "Taux"
+msgstr "النسبة"
+
+msgid "Titre du cours"
+msgstr "عنوان الدرس"
+
+msgid "Top 5 Matières Annulées"
+msgstr "أكثر 5 مواد إلغاء"
+
+msgid "Top 5 Professeurs Absents"
+msgstr "أكثر 5 أساتذة غيابا"
+
+msgid "Top 5 Étudiants Absents"
+msgstr "أكثر 5 تلاميذ غيابا"
+
+msgid "Tous les professeurs"
+msgstr "جميع الأساتذة"
+
+msgid "Voulez-vous vraiment supprimer cette note ?"
+msgstr "هل تريد فعلا حذف هذه النقطة؟"
+
+msgid "Voulez-vous vraiment supprimer cette séance ?"
+msgstr "هل تريد فعلا حذف هذه الحصة؟"
+
+msgid "Êtes-vous sûr de vouloir supprimer cet emploi du temps ?"
+msgstr "هل أنت متأكد من حذف هذا الجدول الزمني؟"
+
+msgid "Afficher/masquer le mot de passe"
+msgstr "إظهار/إخفاء كلمة المرور"
+
+msgid "En attente"
+msgstr "قيد الانتظار"
+
+msgid "h restantes"
+msgstr "ساعة متبقية"
+
+msgid "Validée"
+msgstr "مؤكدة"
+
+msgid "Valider maintenant"
+msgstr "تأكيد الآن"
+
+msgid ""
+"%(n)s note(s) enregistrée(s). Elles seront prises en compte au bulletin "
+"après validation."
+msgstr "تم حفظ %(n)s نقطة. ستؤخذ في الاعتبار في الكشف بعد المصادقة عليها."
+
+msgid "Absences des élèves"
+msgstr "غيابات التلاميذ"
+
+msgid "Afficher"
+msgstr "عرض"
+
+msgid "Aucun cours dans votre emploi du temps pour le trimestre en cours."
+msgstr "لا توجد دروس في جدولكم الزمني للفصل الحالي."
+
+msgid "Aucun élève dans ce secteur."
+msgstr "لا يوجد تلاميذ في هذا القسم."
+
+msgid ""
+"Aucune fiche professeur n'est liée à votre compte. Demandez à "
+"l'administration de lier votre compte à votre fiche professeur."
+msgstr ""
+"لا توجد بطاقة أستاذ مرتبطة بحسابكم. اطلبوا من الإدارة ربط حسابكم ببطاقة "
+"الأستاذ."
+
+msgid "Aucune évaluation pour vos matières."
+msgstr "لا توجد تقييمات لموادكم."
+
+msgid "Cette date ne correspond pas au jour de ce cours (%(jour)s)."
+msgstr "هذا التاريخ لا يوافق يوم هذا الدرس (%(jour)s)."
+
+msgid ""
+"Cochez « Absent » pour chaque élève absent. Une absence reste en attente 72 "
+"h : l'administration peut la justifier avant sa validation."
+msgstr ""
+"ضع علامة «غائب» أمام كل تلميذ غائب. يبقى الغياب قيد الانتظار 72 ساعة: يمكن "
+"للإدارة تبريره قبل تأكيده."
+
+msgid "Date invalide."
+msgstr "تاريخ غير صالح."
+
+msgid "Derniers cours enregistrés"
+msgstr "آخر الدروس المسجلة"
+
+msgid "En attente de validation"
+msgstr "قيد انتظار المصادقة"
+
+msgid "En retard"
+msgstr "متأخر"
+
+msgid "Espace professeur"
+msgstr "فضاء الأستاذ"
+
+msgid "Formulaire incomplet ou invalide."
+msgstr "استمارة ناقصة أو غير صالحة."
+
+msgid "Justification (facultative)"
+msgstr "التبرير (اختياري)"
+
+msgid "Justifiée"
+msgstr "مبررة"
+
+msgid "La date ne peut pas être dans le futur."
+msgstr "لا يمكن أن يكون التاريخ في المستقبل."
+
+msgid ""
+"Les notes que vous saisissez sont soumises à validation par l'administration"
+" avant d'apparaître au bulletin."
+msgstr "النقاط التي تدخلونها تخضع لمصادقة الإدارة قبل ظهورها في الكشف."
+
+msgid ""
+"Les présences de ce cours sont déjà enregistrées : vous pouvez les modifier."
+msgstr "حضور هذا الدرس مسجل بالفعل: يمكنكم تعديله."
+
+msgid "Ma présence"
+msgstr "حضوري"
+
+msgid "Ma présence et contenu enseigné"
+msgstr "حضوري والمحتوى المدرَّس"
+
+msgid "Mes cours"
+msgstr "دروسي"
+
+msgid "Note invalide (0 à 20) pour : %(liste)s"
+msgstr "نقطة غير صالحة (من 0 إلى 20) لـ: %(liste)s"
+
+msgid ""
+"Note sur 20. Laissez vide pour ne pas saisir de note. Les notes sont "
+"soumises à validation par l'administration."
+msgstr ""
+"النقطة من 20. اتركوا الخانة فارغة لعدم إدخال نقطة. النقاط تخضع لمصادقة "
+"الإدارة."
+
+msgid "Notes des devoirs et examens"
+msgstr "نقاط الفروض والامتحانات"
+
+msgid "Notes saisies"
+msgstr "النقاط المدخلة"
+
+msgid "Nouvelle évaluation"
+msgstr "تقييم جديد"
+
+msgid "Présences enregistrées : %(a)s absent(s) sur %(n)s élève(s)."
+msgstr "تم تسجيل الحضور: %(a)s غائب من أصل %(n)s تلميذ."
+
+msgid "Saisir / modifier les notes"
+msgstr "إدخال / تعديل النقاط"
+
+msgid "Veuillez indiquer le contenu enseigné."
+msgstr "يرجى كتابة المحتوى المدرَّس."
+
+msgid "Veuillez renseigner votre présence et l'état du cours."
+msgstr "يرجى تحديد حضوركم وحالة الدرس."
+
+msgid "Votre présence et le contenu enseigné sont enregistrés."
+msgstr "تم تسجيل حضوركم والمحتوى المدرَّس."
+
+msgid ""
+"Vous ne pouvez créer une évaluation que pour une matière que vous enseignez."
+msgstr "لا يمكنكم إنشاء تقييم إلا لمادة تدرّسونها."
+
+msgid "en attente de validation"
+msgstr "قيد انتظار المصادقة"
+
+msgid "Élève fonctionnaire"
+msgstr "التلميذ الموظف"
+
+msgid "État du cours"
+msgstr "حالة الدرس"
+
+msgid "Évaluation créée. Saisissez maintenant les notes."
+msgstr "تم إنشاء التقييم. أدخلوا النقاط الآن."
+
+msgid ""
+"Choisissez un cours pour enregistrer les absences des élèves, votre présence"
+" et le contenu enseigné."
+msgstr "اختاروا درسا لتسجيل غيابات التلاميذ وحضوركم والمحتوى المدرَّس."
+
+msgid "Compte utilisateur (rôle Professeur)"
+msgstr "حساب المستخدم (دور أستاذ)"

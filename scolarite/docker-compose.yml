@@ -1,0 +1,19 @@
+services:
+  django_app:
+    build: .
+    container_name: django_scolarite_app
+    restart: unless-stopped
+    command: python manage.py runserver 0.0.0.0:8998
+    volumes:
+      - .:/app-scolarite
+    ports:
+      - "8998:8998"
+    env_file:
+      - .env
+    networks:
+      - shared-net
+
+
+networks:
+  shared-net:
+    external: true

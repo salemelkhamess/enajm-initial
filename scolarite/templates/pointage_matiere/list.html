@@ -1,0 +1,132 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block content %}
+<div class="">
+    <div class="box">
+        <div class="box-header">
+            <h3>{% trans "Liste des pointages des matières" %}</h3>
+            <p class="text-right">
+                <a href="{% url 'pointage_matiere_create' %}" class="btn btn-primary float-right">
+                    {% trans "Ajouter pointage" %}
+                </a>
+            </p>
+        </div>
+
+        <div class="box-body table-responsive">
+            {% regroup pointages by date_cours as grouped_pointages %}
+
+            {% for group in grouped_pointages %}
+            <div class="card mb-4">
+                <div class="card-header bg-light">
+                    <h4>
+                        {{ group.grouper|date:"l d F Y" }}
+                        <small class="text-muted">({{ group.list|length }} pointage(s))</small>
+                    </h4>
+                </div>
+                <div class="card-body p-0">
+                    <table class="table table-bordered table-striped mb-0">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>{% trans 'Matière' %}</th>
+                                <th>{% trans "Professeur" %}</th>
+                                <th>{% trans "Secteur" %}</th>
+                                <th>{% trans "Heure début" %}</th>
+                                <th>{% trans "Heure fin" %}</th>
+                                <th>{% trans "etat" %}</th>
+
+                                <th>{% trans "Actions" %}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for pointage in group.list %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td>{{ pointage.matiere.nom }}</td>
+                                <td>{{ pointage.professeur.nom }} {{ pointage.professeur.prenom }}</td>
+                                <td>{{ pointage.secteur.nom }}</td>
+                                <td>{{ pointage.heure_debut|time:"H:i" }}</td>
+                                <td>{{ pointage.heure_fin|time:"H:i" }}</td>
+<td>
+    {% if pointage.etat == 'EF' %}
+        <span class="badge bg-success">{% trans "Effectué" %}</span>
+    {% elif pointage.etat == 'AN' %}
+        <span class="badge bg-danger">{% trans "Annulé" %}</span>
+    {% elif pointage.etat == 'RP' %}
+        <span class="badge bg-warning text-dark">{% trans "Reporté" %}</span>
+    {% else %}
+        <span class="badge bg-secondary">{{ pointage.get_etat_display }}</span>
+    {% endif %}
+</td>
+
+                                <td>
+                                    <a href="{% url 'pointage_matiere_update' pointage.id %}" class="btn btn-sm btn-info">
+                                        {% trans "Modifier" %}
+                                    </a>
+                                    <a href="{% url 'pointage_matiere_delete' pointage.id %}" class="btn btn-sm btn-danger">
+                                        {% trans "Supprimer" %}
+                                    </a>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="7" class="text-center">{% trans "Aucun pointage enregistré." %}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+$(document).ready(function() {
+    // Filtrer les trimestres en fonction de l'année sélectionnée
+    $('#id_annee').change(function() {
+        const anneeId = $(this).val();
+        if (anneeId) {
+            $.ajax({
+                url: '/api/get-trimestres/',
+                data: {
+                    'annee_id': anneeId
+                },
+                success: function(data) {
+                    $('#id_trimestre').empty();
+                    $.each(data, function(key, value) {
+                        $('#id_trimestre').append($('<option></option>').attr('value', value.id).text(value.nom_fr));
+                    });
+                }
+            });
+        } else {
+            $('#id_trimestre').empty();
+        }
+    });
+
+    // Filtrer les matières en fonction du secteur sélectionné
+    $('#id_secteur').change(function() {
+        const secteurId = $(this).val();
+        if (secteurId) {
+            $.ajax({
+                url: '/api/get-matieres/',
+                data: {
+                    'secteur_id': secteurId
+                },
+                success: function(data) {
+                    $('#id_matiere').empty();
+                    $.each(data, function(key, value) {
+                        $('#id_matiere').append($('<option></option>').attr('value', value.id).text(value.nom));
+                    });
+                }
+            });
+        } else {
+            $('#id_matiere').empty();
+        }
+    });
+});
+</script>
+{% endblock %}

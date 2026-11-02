@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block styles %}
+    <style>
+            #filterForm.rtl-lang .row > div.col-md-3 {
+  float: right;}
+    </style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-4">
+  <div class="box">
+  <div class="box-header">
+                  <h2>{% trans "Saisie des présences" %}</h2>
+
+  </div>
+      <div class="box-body">
+    <form method="post" id="filterForm" class="{% if LANGUAGE_CODE == 'ar' %}rtl-lang{% endif %}" >
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-md-3">
+                <div class="form-group">
+                    {{ form.secteur.label_tag }}
+                    {{ form.secteur }}
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    {{ form.matiere.label_tag }}
+                    {{ form.matiere }}
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    {{ form.date_cours.label_tag }}
+                    {{ form.date_cours }}
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    {{ form.jour.label_tag }}
+                    {{ form.jour }}
+                </div>
+            </div>
+        </div>
+   <!-- À la fin du formulaire -->
+<div class="mt-3">
+    <button type="submit" class="btn btn-primary">{% trans "Suivant" %}</button>
+    <a href="{% url 'enregistrement_presence' %}" class="btn btn-secondary">{% trans "Réinitialiser" %}</a>
+</div>
+
+<!-- Pour le débogage -->
+{% if debug %}
+<div class="mt-4">
+    <h4>Données de session:</h4>
+    <pre>{{ request.session.presence_data|pprint }}</pre>
+</div>
+{% endif %}
+    </form>
+      </div>
+  </div>
+</div>
+
+{% endblock %}
+{% block scripts %}
+
+<script>
+$('#id_secteur').change(function() {
+    var secteurId = $(this).val();
+    if (secteurId) {
+        $.ajax({
+            url: '/presence/etudiant/matieres',
+            data: {
+                'secteur_id': secteurId
+            },
+            dataType: 'json',
+            success: function(data) {
+                var options = '<option value="">---------</option>';
+                $.each(data, function(index, matiere) {
+                    options += '<option value="' + matiere.id + '">' + matiere.nom + '</option>';
+                });
+                $('#id_matiere').html(options).prop('disabled', false);
+            },
+            error: function(xhr, status, error) {
+                console.error(error);
+                $('#id_matiere').html('<option value="">---------</option>');
+            }
+        });
+    } else {
+        $('#id_matiere').html('<option value="">---------</option>').prop('disabled', true);
+    }
+});
+</script>
+{% endblock %}

@@ -1,0 +1,310 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+
+{% block content %}
+<div class="container-fluid">
+    <h1 class="mt-4">{% trans "Tableau de Bord des Statistiques" %}</h1>
+
+    <!-- Filtres -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <i class="fas fa-filter mr-1"></i>
+            Filtres
+        </div>
+        <div class="card-body">
+            <form method="get" class="form-inline">
+                <div class="form-group mr-3">
+                    <label for="start_date" class="mr-2">De</label>
+                    <input type="date" class="form-control" id="start_date" name="start_date" value="{{ start_date }}">
+                </div>
+                <div class="form-group mr-3">
+                    <label for="end_date" class="mr-2">À</label>
+                    <input type="date" class="form-control" id="end_date" name="end_date" value="{{ end_date }}">
+                </div>
+                <button type="submit" class="btn btn-primary">{% trans "Filtrer" %}</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Cartes de Résumé -->
+    <div class="row">
+        <!-- Étudiants -->
+        <div class="col-xl-4 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                Présence Étudiants</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                {{ taux_presence_etudiants }}%
+                            </div>
+                            <div class="mt-2 text-muted">
+                                {{ total_presences_etudiants }} séances | {{ total_absences_etudiants }} absences
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-user-graduate fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Professeurs -->
+        <div class="col-xl-4 col-md-6 mb-4">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                Présence Professeurs</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                {{ taux_presence_profs }}%
+                            </div>
+                            <div class="mt-2 text-muted">
+                                {{ total_seances_profs }} séances | {{ total_absences_profs }} absences
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-chalkboard-teacher fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Matières -->
+        <div class="col-xl-4 col-md-6 mb-4">
+            <div class="card border-left-info shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                Avancement Matières</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                {{ taux_avancement }}%
+                            </div>
+                            <div class="mt-2 text-muted">
+                                {{ matieres_effectuees }} effectuées | {{ matieres_annulees }} annulées | {{ matieres_reporte }} reportées
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-book fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Graphiques -->
+    <div class="row">
+        <!-- Graphique Présence/Absence Étudiants -->
+        <div class="col-xl-6 col-lg-6 mb-4">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">{% trans "Présence/Absence Étudiants" %}</h6>
+                </div>
+                <div class="card-body">
+                    <div class="chart-pie pt-4 pb-2">
+                        <canvas id="etudiantPieChart"></canvas>
+                    </div>
+                    <div class="mt-4 text-center small">
+                        <span class="mr-2">
+                            <i class="fas fa-circle text-success"></i> Présence
+                        </span>
+                        <span class="mr-2">
+                            <i class="fas fa-circle text-danger"></i> Absence
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Graphique Présence/Absence Professeurs -->
+        <div class="col-xl-6 col-lg-6 mb-4">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-success">{% trans "Présence/Absence Professeurs" %}</h6>
+                </div>
+                <div class="card-body">
+                    <div class="chart-pie pt-4 pb-2">
+                        <canvas id="profPieChart"></canvas>
+                    </div>
+                    <div class="mt-4 text-center small">
+                        <span class="mr-2">
+                            <i class="fas fa-circle text-success"></i> Présence
+                        </span>
+                        <span class="mr-2">
+                            <i class="fas fa-circle text-danger"></i> Absence
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tableaux des Tops -->
+    <div class="row">
+        <!-- Top Matières Annulées -->
+        <div class="col-lg-4 mb-4">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-warning">{% trans "Top 5 Matières Annulées" %}</h6>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered" width="100%" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th>{% trans "Matière" %}</th>
+                                    <th>{% trans "Nombre" %}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for matiere in top_matiere_absences %}
+                                <tr>
+                                    <td>{{ matiere.matiere__nom }}</td>
+                                    <td>{{ matiere.total }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Top Étudiants Absents -->
+        <div class="col-lg-4 mb-4">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-danger">{% trans "Top 5 Étudiants Absents" %}</h6>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered" width="100%" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th>{% trans "Étudiant" %}</th>
+                                    <th>{% trans "Absences" %}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for etudiant in top_etudiants_absents %}
+                                <tr>
+                                    <td>{{ etudiant.etudiant__prenom }} {{ etudiant.etudiant__nom }}</td>
+                                    <td>{{ etudiant.total }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Top Professeurs Absents -->
+        <div class="col-lg-4 mb-4">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-info">{% trans "Top 5 Professeurs Absents" %}</h6>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered" width="100%" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th>{% trans "Professeur" %}</th>
+                                    <th>{% trans "Absences" %}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for prof in top_profs_absents %}
+                                <tr>
+                                    <td>{{ prof.professeur__prenom }} {{ prof.professeur__nom }}</td>
+                                    <td>{{ prof.total }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+// Étudiant Pie Chart
+var ctx = document.getElementById("etudiantPieChart");
+var etudiantPieChart = new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+        labels: ["Présence", "Absence"],
+        datasets: [{
+            data: [{{ taux_presence_etudiants }}, {{ taux_absence_etudiants }}],
+            backgroundColor: ['#1cc88a', '#e74a3b'],
+            hoverBackgroundColor: ['#17a673', '#be2617'],
+            hoverBorderColor: "rgba(234, 236, 244, 1)",
+        }],
+    },
+    options: {
+        maintainAspectRatio: false,
+        tooltips: {
+            backgroundColor: "rgb(255,255,255)",
+            bodyFontColor: "#858796",
+            borderColor: '#dddfeb',
+            borderWidth: 1,
+            xPadding: 15,
+            yPadding: 15,
+            displayColors: false,
+            caretPadding: 10,
+        },
+        legend: {
+            display: false
+        },
+        cutoutPercentage: 80,
+    },
+});
+
+// Professeur Pie Chart
+var ctx2 = document.getElementById("profPieChart");
+var profPieChart = new Chart(ctx2, {
+    type: 'doughnut',
+    data: {
+        labels: ["Présence", "Absence"],
+        datasets: [{
+            data: [{{ taux_presence_profs }}, {{ taux_absence_profs }}],
+            backgroundColor: ['#1cc88a', '#e74a3b'],
+            hoverBackgroundColor: ['#17a673', '#be2617'],
+            hoverBorderColor: "rgba(234, 236, 244, 1)",
+        }],
+    },
+    options: {
+        maintainAspectRatio: false,
+        tooltips: {
+            backgroundColor: "rgb(255,255,255)",
+            bodyFontColor: "#858796",
+            borderColor: '#dddfeb',
+            borderWidth: 1,
+            xPadding: 15,
+            yPadding: 15,
+            displayColors: false,
+            caretPadding: 10,
+        },
+        legend: {
+            display: false
+        },
+        cutoutPercentage: 80,
+    },
+});
+</script>
+{% endblock %}

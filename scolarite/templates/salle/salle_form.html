@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block content %}
+<div class="box box-primary">
+    <div class="box-header">
+        <h3 class="box-title">
+            {% if form.instance.pk %}
+                {% trans "Modifier une salle" %}
+            {% else %}
+                {% trans "Ajouter une salle" %}
+            {% endif %}
+        </h3>
+    </div>
+    <div class="box-body">
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-success">
+                <i class="fa fa-save"></i> {% trans "Enregistrer" %}
+            </button>
+            <a href="{% url 'salle_list' %}" class="btn btn-secondary">
+                <i class="fa fa-arrow-left"></i> {% trans "Retour" %}
+            </a>
+        </form>
+    </div>
+</div>
+{% endblock %}

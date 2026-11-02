@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% load i18n i18n_jours %}
+{% block content %}
+<div class="box box-primary">
+    <div class="box-header with-border">
+        <h3 class="box-title">{% trans "Absences des élèves" %} — {{ c.matiere.nom }} ({{ c.secteur.nom }})</h3>
+    </div>
+    <div class="box-body">
+        <form method="get" class="form-inline" style="margin-bottom:15px;">
+            <label>{% trans "Date du cours" %} ({{ c.jour|jour_i18n }}) :&nbsp;</label>
+            <input type="date" name="date" value="{{ date|date:'Y-m-d' }}" max="{% now 'Y-m-d' %}" class="form-control" data-no-default>
+            <button class="btn btn-default">{% trans "Afficher" %}</button>
+            <a href="{% url 'espace_prof' %}" class="btn btn-link">{% trans "Retour" %}</a>
+        </form>
+        {% if erreur %}<div class="alert alert-danger">{{ erreur }}</div>{% else %}
+        {% if deja %}<div class="alert alert-info">{% trans "Les présences de ce cours sont déjà enregistrées : vous pouvez les modifier." %}</div>{% endif %}
+        <p class="text-muted">{% trans "Cochez « Absent » pour chaque élève absent. Une absence reste en attente 72 h : l'administration peut la justifier avant sa validation." %}</p>
+        <form method="post">
+            {% csrf_token %}
+            <input type="hidden" name="date" value="{{ date|date:'Y-m-d' }}">
+            <table class="table table-bordered table-hover">
+                <thead><tr>
+                    <th style="width:50px">#</th><th>{% trans "Élève fonctionnaire" %}</th><th style="width:110px">{% trans "Absent" %}</th>
+                    <th>{% trans "Justification (facultative)" %}</th><th>{% trans "État" %}</th>
+                </tr></thead>
+                <tbody>
+                {% for l in lignes %}
+                    <tr {% if l.absent %}class="danger"{% endif %}>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ l.etudiant.nom }} {{ l.etudiant.prenom }} <small class="text-muted">{{ l.etudiant.matricule }}</small></td>
+                        <td class="text-center"><input type="checkbox" name="absent_{{ l.etudiant.id }}" {% if l.absent %}checked{% endif %}></td>
+                        <td><input type="text" name="justification_{{ l.etudiant.id }}" value="{{ l.justification }}" class="form-control"></td>
+                        <td>
+                            {% if l.etat == 'en_attente' %}<span class="label label-warning">{% trans "En attente" %} — {{ l.heures }} {% trans "h restantes" %}</span>
+                            {% elif l.etat == 'validee' %}<span class="label label-danger">{% trans "Validée" %}</span>
+                            {% elif l.etat == 'justifiee' %}<span class="label label-success">{% trans "Justifiée" %}</span>{% endif %}
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="5">{% trans "Aucun élève dans ce secteur." %}</td></tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            <button type="submit" class="btn btn-success"><i class="fa fa-save"></i> {% trans "Enregistrer" %}</button>
+        </form>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

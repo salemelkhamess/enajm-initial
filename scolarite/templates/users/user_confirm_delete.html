@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block content %}
+<div class="box box-danger mt-3">
+  <h3>{% trans "Confirmer la suppression" %}</h3>
+  <p>Voulez-vous vraiment supprimer l'utilisateur "{{ user.username }}" ?</p>
+  <form method="POST">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">{% trans "Oui, supprimer" %}</button>
+    <a href="{% url 'user_list' %}" class="btn btn-secondary">{% trans "Annuler" %}</a>
+  </form>
+</div>
+{% endblock %}

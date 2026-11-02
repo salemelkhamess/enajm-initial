@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block content %}
+     <div class="box">
+    <div class="box-body"></div>
+<h3>{% trans "Supprimer le professeur" %}</h3>
+<p>Êtes-vous sûr de vouloir supprimer <strong>{{ object.nom }} {{ object.prenom }}</strong> ?</p>
+<form method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">{% trans "Confirmer" %}</button>
+    <a href="{% url 'professeur_list' %}" class="btn btn-secondary">{% trans "Annuler" %}</a>
+</form>
+     </div>
+{% endblock %}

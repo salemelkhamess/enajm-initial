@@ -1,0 +1,497 @@
+<!-- templates/etudiants/registration_form.html -->
+{% extends 'base.html' %}
+{% load i18n %}
+{% block styles%}
+<style>
+    .registration-container {
+        font-family: 'Times New Roman', serif;
+        font-size: 14px;
+        line-height: 1.4;
+        max-width: 210mm;
+        margin: 0 auto;
+        background: white;
+        direction: {% if LANGUAGE_CODE == 'ar' or LANGUAGE_CODE == 'ar-ma' %}rtl{% else %}ltr{% endif %};
+    }
+
+    .form-border {
+        border: 2px solid #000;
+    }
+
+    .header-section {
+        display: flex;
+        border-bottom: 2px solid #000;
+    }
+
+    .photo-section {
+        width: 120px;
+        height: 140px;
+        border-{% if LANGUAGE_CODE == 'ar' or LANGUAGE_CODE == 'ar-ma' %}left{% else %}right{% endif %}: 2px solid #000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        background-color: #f8f8f8;
+        order: {% if LANGUAGE_CODE == 'ar' or LANGUAGE_CODE == 'ar-ma' %}3{% else %}1{% endif %};
+    }
+
+    .header-content {
+        flex: 1;
+        text-align: center;
+        padding: 10px;
+        order: 2;
+    }
+
+    .header-content h3 {
+        margin: 5px 0;
+        font-size: 16px;
+        font-weight: bold;
+    }
+
+    .header-content p {
+        margin: 3px 0;
+        font-size: 12px;
+    }
+
+    .header-right {
+        width: 150px;
+        border-{% if LANGUAGE_CODE == 'ar' or LANGUAGE_CODE == 'ar-ma' %}right{% else %}left{% endif %}: 2px solid #000;
+        padding: 10px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        order: {% if LANGUAGE_CODE == 'ar' or LANGUAGE_CODE == 'ar-ma' %}1{% else %}3{% endif %};
+    }
+
+    .header-right-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 8px;
+        font-size: 12px;
+    }
+
+    .header-right-item span:first-child {
+        font-weight: bold;
+        white-space: nowrap;
+    }
+
+    .header-right-line {
+        border-bottom: 1px solid #000;
+        flex: 1;
+        margin-{% if LANGUAGE_CODE == 'ar' or LANGUAGE_CODE == 'ar-ma' %}right{% else %}left{% endif %}: 10px;
+        height: 1px;
+    }
+
+    .school-name {
+        text-align: center;
+        padding: 8px;
+        border-bottom: 2px solid #000;
+        font-weight: bold;
+        font-size: 14px;
+    }
+
+    .form-content {
+        padding: 20px;
+    }
+
+    .screen-form-line {
+        display: flex;
+        margin-bottom: 15px;
+        align-items: center;
+    }
+
+    .screen-form-line-double {
+        display: flex;
+        margin-bottom: 15px;
+    }
+
+    .screen-form-line-left,
+    .screen-form-line-right {
+        flex: 1;
+        display: flex;
+        align-items: center;
+    }
+
+    .screen-form-line-right {
+        margin-{% if LANGUAGE_CODE == 'ar' or LANGUAGE_CODE == 'ar-ma' %}left{% else %}right{% endif %}: 30px;
+    }
+
+    .screen-form-line span:first-child,
+    .screen-form-line-left span:first-child,
+    .screen-form-line-right span:first-child {
+        font-weight: bold;
+        margin-{% if LANGUAGE_CODE == 'ar' or LANGUAGE_CODE == 'ar-ma' %}left{% else %}right{% endif %}: 10px;
+        white-space: nowrap;
+    }
+
+    .form-data-line {
+        border-bottom: 1px solid #000;
+        flex: 1;
+        height: 20px;
+        margin-{% if LANGUAGE_CODE == 'ar' or LANGUAGE_CODE == 'ar-ma' %}right{% else %}left{% endif %}: 5px;
+        display: flex;
+        align-items: center;
+        padding: 0 5px;
+    }
+
+    .section-title {
+        font-weight: bold;
+        margin: 20px 0 10px 0;
+        text-align: center;
+        font-size: 14px;
+    }
+
+    .commitment-text {
+        text-align: justify;
+        line-height: 1.6;
+        margin-bottom: 15px;
+    }
+
+    .commitment-list {
+        {% if LANGUAGE_CODE == 'ar' or LANGUAGE_CODE == 'ar-ma' %}
+        padding-right: 20px;
+        {% else %}
+        padding-left: 20px;
+        {% endif %}
+        margin-bottom: 15px;
+    }
+
+    .commitment-list li {
+        margin-bottom: 10px;
+        text-align: justify;
+    }
+
+    @media print {
+        .registration-container {
+            margin: 0;
+            padding: 0;
+        }
+        .form-border {
+            border: 2px solid #000;
+            box-shadow: none;
+        }
+        .no-print {
+            display: none;
+        }
+    }
+</style>
+{% endblock %}
+{% block content %}
+
+<p class="text-right">
+    <a onclick="printDiv('ptintme')" class="btn btn-primary" style="width: 200px">
+        <i class="fa fa-print"></i> {% trans "Print" %}
+    </a>
+</p>
+<div class="registration-container" id="ptintme">
+    <div class="form-border">
+        <!-- Header Section -->
+        <div class="header-section">
+            <div class="photo-section">
+                {% if LANGUAGE_CODE == 'ar' or LANGUAGE_CODE == 'ar-ma' %}
+                الصورة
+                {% else %}
+                Photo
+                {% endif %}
+            </div>
+
+            <div class="header-content">
+                {% if LANGUAGE_CODE == 'ar' or LANGUAGE_CODE == 'ar-ma' %}
+                <h3>الجمهورية الإسلامية الموريتانية</h3>
+                <p>شرف - إخاء - عدل</p>
+                <h3>الوزارة الأولى</h3>
+                <p>المدرسة الوطنية للإدارة والصحافة والقضاء</p>
+                {% else %}
+                <h3>REPUBLIQUE ISLAMIQUE DE MAURITANIE</h3>
+                <p><strong>Honneur - Fraternité - Justice</strong></p>
+                <h3>Premier Ministère</h3>
+                <p>Ecole Nationale d'Administration, de Journalisme et de Magistrature</p>
+                {% endif %}
+            </div>
+
+            <div class="header-right">
+                <div class="header-right-item">
+                    {% if LANGUAGE_CODE == 'ar' or LANGUAGE_CODE == 'ar-ma' %}
+                    <span>رقم القيد:</span>
+                    {% else %}
+                    <span>N°:</span>
+                    {% endif %}
+                    <div class="header-right-line">{{ etudiant.matricule }}</div>
+                </div>
+                <div class="header-right-item">
+                    {% if LANGUAGE_CODE == 'ar' or LANGUAGE_CODE == 'ar-ma' %}
+                    <span>شعبة:</span>
+                    {% else %}
+                    <span>Filière:</span>
+                    {% endif %}
+                    <div class="header-right-line">{{ etudiant.secteur.formation.nom }}</div>
+                </div>
+                <div class="header-right-item">
+                    {% if LANGUAGE_CODE == 'ar' or LANGUAGE_CODE == 'ar-ma' %}
+                    <span>قسم:</span>
+                    {% else %}
+                    <span>Section:</span>
+                    {% endif %}
+                    <div class="header-right-line">{{ etudiant.secteur.nom }}</div>
+                </div>
+                <div class="header-right-item">
+                    {% if LANGUAGE_CODE == 'ar' or LANGUAGE_CODE == 'ar-ma' %}
+                    <span>سنة:</span>
+                    {% else %}
+                    <span>Année:</span>
+                    {% endif %}
+                    <div class="header-right-line"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- School Name / Form Title -->
+        <div class="school-name">
+            {% if LANGUAGE_CODE == 'ar' or LANGUAGE_CODE == 'ar-ma' %}
+          شكلية المدرسة
+            {% else %}
+            Fiche Scolaire
+            {% endif %}
+        </div>
+
+        <!-- Form Content -->
+        <div class="form-content">
+            <!-- Name -->
+            <div class="screen-form-line">
+                {% if LANGUAGE_CODE == 'ar' or LANGUAGE_CODE == 'ar-ma' %}
+                <span>الاسم الكامل:</span>
+                {% else %}
+                <span>Nom et prénom:</span>
+                {% endif %}
+                <div class="form-data-line">{{ etudiant.nom }} {{ etudiant.prenom }}</div>
+            </div>
+
+            <!-- Birth info -->
+            <div class="screen-form-line-double">
+                <div class="screen-form-line-right">
+                    {% if LANGUAGE_CODE == 'ar' or LANGUAGE_CODE == 'ar-ma' %}
+                    <span>تاريخ الولادة:</span>
+                    {% else %}
+                    <span>Date de naissance:</span>
+                    {% endif %}
+                    <div class="form-data-line">{{ etudiant.date_naissance|date:"d/m/Y" }}</div>
+                </div>
+                <div class="screen-form-line-left">
+                    {% if LANGUAGE_CODE == 'ar' or LANGUAGE_CODE == 'ar-ma' %}
+                    <span>مكان الولادة:</span>
+                    {% else %}
+                    <span>Lieu de naissance:</span>
+                    {% endif %}
+                    <div class="form-data-line">{{ etudiant.lieu_naissance }}</div>
+                </div>
+            </div>
+
+            <!-- ID and Civil Status -->
+            <div class="screen-form-line-double">
+                <div class="screen-form-line-right">
+                    {% if LANGUAGE_CODE == 'ar' or LANGUAGE_CODE == 'ar-ma' %}
+                    <span>رقم الهوية الوطنية:</span>
+                    {% else %}
+                    <span>NNI:</span>
+                    {% endif %}
+                    <div class="form-data-line">{{ etudiant.nni }}</div>
+                </div>
+                <div class="screen-form-line-left">
+                    {% if LANGUAGE_CODE == 'ar' or LANGUAGE_CODE == 'ar-ma' %}
+                    <span>الحالة المدنية:</span>
+                    {% else %}
+                    <span>Situation de famille:</span>
+                    {% endif %}
+                    <div class="form-data-line">{{ etudiant.get_situation_amoureuse_display }}</div>
+                </div>
+            </div>
+
+            <!-- Children -->
+            <div class="screen-form-line">
+                {% if LANGUAGE_CODE == 'ar' or LANGUAGE_CODE == 'ar-ma' %}
+                <span>عدد الأطفال:</span>
+                {% else %}
+                <span>Nombre d'enfant(s):</span>
+                {% endif %}
+                <div class="form-data-line">{{ etudiant.nombre_enfants }}</div>
+            </div>
+
+            <!-- Qualifications -->
+            <div class="screen-form-line">
+                {% if LANGUAGE_CODE == 'ar' or LANGUAGE_CODE == 'ar-ma' %}
+                <span>المؤهلات الحاصل عليها:</span>
+                {% else %}
+                <span>Diplômes obtenus:</span>
+                {% endif %}
+                <div class="form-data-line">
+                  {% if LANGUAGE_CODE == 'ar' or LANGUAGE_CODE == 'ar-ma' %}
+        <span>الشهادات:</span>
+        <span>
+            {% for diplome in etudiant.diplomes %}
+                {% if diplome == 'B' %}
+                    الشهادة الإعدادية
+                {% elif diplome == 'BAC' %}
+                    البكالوريا
+                {% elif diplome == 'L' %}
+                    الإجازة
+                {% elif diplome == 'M' %}
+                    الماجستير
+                {% elif diplome == 'D' %}
+                    الدكتوراه
+                {% else %}
+                    {{ diplome }}
+                {% endif %}
+                {% if not forloop.last %}، {% endif %}
+            {% endfor %}
+        </span>
+    {% else %}
+        <span>Diplômes:</span>
+        <span>
+            {% for diplome in etudiant.diplomes %}
+                {% if diplome == 'B' %}
+                    Brevet
+                {% elif diplome == 'BAC' %}
+                    Baccalauréat
+                {% elif diplome == 'L' %}
+                    Licence
+                {% elif diplome == 'M' %}
+                    Maîtrise
+                {% elif diplome == 'D' %}
+                    Doctorat
+                {% else %}
+                    {{ diplome }}
+                {% endif %}
+                {% if not forloop.last %}, {% endif %}
+            {% endfor %}
+        </span>
+    {% endif %}
+                </div>
+            </div>
+
+            <!-- Contact Info -->
+            <div class="screen-form-line-double">
+                <div class="screen-form-line-right">
+                    {% if LANGUAGE_CODE == 'ar' or LANGUAGE_CODE == 'ar-ma' %}
+                    <span>رقم الهاتف:</span>
+                    {% else %}
+                    <span>Numéro(s) de téléphone:</span>
+                    {% endif %}
+                    <div class="form-data-line">{{ etudiant.telephone }}</div>
+                </div>
+                <div class="screen-form-line-left">
+                    {% if LANGUAGE_CODE == 'ar' or LANGUAGE_CODE == 'ar-ma' %}
+                    <span>البريد الإلكتروني:</span>
+                    {% else %}
+                    <span>E-mail:</span>
+                    {% endif %}
+                    <div class="form-data-line">{{ etudiant.email }}</div>
+                </div>
+            </div>
+
+            <!-- Commitment Section -->
+            <div class="commitment-text">
+                {% if LANGUAGE_CODE == 'ar' or LANGUAGE_CODE == 'ar-ma' %}
+                بصفتي مقبولاً في المدرسة الوطنية للإدارة والصحافة والقضاء، أتعهد بخدمة الدولة الموريتانية لمدة (10) سنوات بعد تخرجي، وذلك وفقاً لأحكام النصوص المعمول بها.
+                {% else %}
+                {% blocktrans %}
+                Admis(e) à l'entrée de l'Ecole Nationale d'Administration, de Journalisme et de Magistrature,
+                déclare contracter de servir l'Etat mauritanien pendant (10) ans, après ma formation et ce,
+                conformément aux dispositions des textes en vigueur.
+                {% endblocktrans %}
+                {% endif %}
+            </div>
+
+            <div class="commitment-text">
+                {% if LANGUAGE_CODE == 'ar' or LANGUAGE_CODE == 'ar-ma' %}
+                كما أتعهد طوال فترة دراستي، بصفتي طالباً-موظفاً في المدرسة الوطنية للإدارة والصحافة والقضاء:
+                {% else %}
+                {% blocktrans %}
+                Je m'engage durant toute ma scolarité, en qualité d'élève-fonctionnaire à l'Ecole Nationale
+                d'Administration, de Journalisme et de Magistrature :
+                {% endblocktrans %}
+                {% endif %}
+            </div>
+
+            <ul class="commitment-list">
+                <li>
+                    {% if LANGUAGE_CODE == 'ar' or LANGUAGE_CODE == 'ar-ma' %}
+                    احترام النظام الداخلي. في حالة عدم احترام هذا التعهد، أتنازل عن صفتي كطالب-موظف؛
+                    {% else %}
+                    {% blocktrans %}
+                    Respecter le règlement intérieur. Au cas où je ne respecte pas cet engagement,
+                    je renonce à ma qualité d'élève-fonctionnaire ;
+                    {% endblocktrans %}
+                    {% endif %}
+                </li>
+                <li>
+                    {% if LANGUAGE_CODE == 'ar' or LANGUAGE_CODE == 'ar-ma' %}
+                    أتعهد بمتابعة التدريب العسكري والتدريب الإداري.
+                    {% else %}
+                    {% blocktrans %}
+                    Je m'engage à suivre la formation militaire et le stage administratif.
+                    {% endblocktrans %}
+                    {% endif %}
+                </li>
+                <li>
+                    {% if LANGUAGE_CODE == 'ar' or LANGUAGE_CODE == 'ar-ma' %}
+                    رد تكاليف التكوين للدولة، في حالة تركي الطوعي للمدرسة أو إقصائي لأسباب أخرى غير عدم كفاية النتائج أو عدم اللياقة البدنية، وكذلك في حالة تخلي عن وظائف الموظف قبل انتهاء فترة التعاقد المحددة في التزامي.
+                    {% else %}
+                    {% blocktrans %}
+                    Restituer à l'Etat les frais de formation, dans le cas où je quitterai volontairement l'Ecole
+                    ou j'en sera exclu pour des raisons autres que l'insuffisance des résultats ou l'inaptitude physique,
+                    comme dans le cas où je renoncerai aux fonctions de fonctionnaire avant l'expiration de la durée
+                    contractuelle de mon engagement.
+                    {% endblocktrans %}
+                    {% endif %}
+                </li>
+            </ul>
+
+            <!-- Signature Section -->
+            <div class="screen-form-line-double" style="margin-top: 30px;">
+                <div class="screen-form-line-right">
+                    {% if LANGUAGE_CODE == 'ar' or LANGUAGE_CODE == 'ar-ma' %}
+                    <span>محرر في:</span>
+                    {% else %}
+                    <span>Fait à:</span>
+                    {% endif %}
+                    <div class="form-data-line"></div>
+                </div>
+                <div class="screen-form-line-left">
+                    {% if LANGUAGE_CODE == 'ar' or LANGUAGE_CODE == 'ar-ma' %}
+                    <span>في:</span>
+                    {% else %}
+                    <span>Le:</span>
+                    {% endif %}
+                    <div class="form-data-line"></div>
+                </div>
+            </div>
+
+            <div class="screen-form-line" style="margin-top: 20px;">
+                {% if LANGUAGE_CODE == 'ar' or LANGUAGE_CODE == 'ar-ma' %}
+                <span>توقيع المعني:</span>
+                {% else %}
+                <span>Signature de l'intéressé(e):</span>
+                {% endif %}
+                <div class="form-data-line"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+function printDiv(divName) {
+    var printContents = document.getElementById(divName).innerHTML;
+    var originalContents = document.body.innerHTML;
+    document.body.innerHTML = printContents;
+    window.print();
+    document.body.innerHTML = originalContents;
+}
+
+
+</script>
+{% endblock %}
+

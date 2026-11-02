@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block styles %}
+<style>
+    .rapport-table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+    .rapport-table th, .rapport-table td { border: 1px solid #ddd; padding: 6px 8px; vertical-align: top; }
+    .rapport-table th { background: #f2f2f2; text-align: center; }
+    .rapport-table td.num { text-align: center; white-space: nowrap; }
+    .rapport-table tr.groupe td { background: #e7f3fe; font-weight: bold; }
+    .rapport-table tr.total td { background: #f9f9f9; font-weight: bold; }
+    .rapport-sub { color: #666; font-size: 12px; }
+    @media print { .no-print { display: none !important; } .rapport-table { font-size: 11pt; } }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="box box-primary no-print">
+    <div class="box-header with-border"><h3 class="box-title">{{ titre }}</h3></div>
+    <div class="box-body">
+        <form method="get">
+            <div class="form-grid-3">
+                <div class="form-group">
+                    <label>{{ L.date_debut }}</label>
+                    <input type="date" name="date_debut" class="form-control" value="{{ date_debut_str }}" data-no-default>
+                </div>
+                <div class="form-group">
+                    <label>{{ L.date_fin }}</label>
+                    <input type="date" name="date_fin" class="form-control" value="{{ date_fin_str }}" data-no-default>
+                </div>
+                <div class="form-group">
+                    <label>{{ L.trimestre }}</label>
+                    <select name="trimestre" class="form-control">
+                        <option value="">{{ L.tous }}</option>
+                        {% for t in trimestres %}<option value="{{ t.id }}" {% if f.trimestre_id == t.id %}selected{% endif %}>{{ t.nom }}</option>{% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>{{ L.secteur }}</label>
+                    <select name="secteur" class="form-control">
+                        <option value="">{{ L.tous }}</option>
+                        {% for s in secteurs %}<option value="{{ s.id }}" {% if f.secteur_id == s.id %}selected{% endif %}>{{ s.nom }}</option>{% endfor %}
+                    </select>
+                </div>
+                {% block filtres_extra %}{% endblock %}
+            </div>
+            <button type="submit" class="btn btn-primary"><i class="fa fa-filter"></i> {{ L.filtrer }}</button>
+            <a onclick="printRapport()" class="btn btn-default"><i class="fa fa-print"></i> {{ L.imprimer }}</a>
+        </form>
+    </div>
+</div>
+
+<div id="printme">
+    <div class="box">
+        <div class="box-body">
+            {% include "entete/show.html" with entete=entete %}
+            <h3 align="center">{{ titre }}</h3>
+            <h5 align="center">{{ annee }}{% if plage %} &nbsp;|&nbsp; {{ L.periode }} : {{ plage }}{% endif %}</h5>
+            {% block tableau %}{% endblock %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function printRapport() {
+    var contenu = document.getElementById('printme').innerHTML;
+    var original = document.body.innerHTML;
+    document.body.innerHTML = contenu;
+    window.print();
+    document.body.innerHTML = original;
+    window.location.reload();
+}
+</script>
+{% endblock %}

@@ -1,0 +1,734 @@
+<!-- templates/stats/professeur_stats.html -->
+{% extends 'base.html' %}
+{% load i18n %}
+
+
+{% block content %}
+<div class="container-fluid">
+
+        <div class="col-md-12">
+          <!-- Custom Tabs (Pulled to the right) -->
+          <div class="nav-tabs-custom">
+            <ul class="nav nav-tabs pull-right">
+              <li class="active"><a href="#tab_1-1" data-toggle="tab">{% trans "Statistique Aujourd'hui" %}</a></li>
+              <li><a href="#tab_2-2" data-toggle="tab">{% trans "Statistique cette semaine" %}</a></li>
+              <li><a href="#tab_3-2" data-toggle="tab">{% trans "Statistique ce mois" %}</a></li>
+
+            </ul>
+            <div class="tab-content">
+              <div class="tab-pane active" id="tab_1-1">
+
+                        <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i class="fa fa-chart-bar"></i>
+                        {% trans "Statistiques des Absences Professeurs" %}
+                    </h3>
+                </div>
+                 <div class="alert alert-info">
+                            <h1 align="center">{% trans "Statistique Aujourd'hui" %}</h1>
+
+            </div>
+                <div class="card-body">
+
+                    <!-- Indicateur de chargement -->
+                    <div id="loading" class="text-center" style="display: none;">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="sr-only">{% trans "Chargement..." %}</span>
+                        </div>
+                        <p class="mt-2">{% trans "Chargement des données..." %}</p>
+                    </div>
+
+                    <!-- Statistiques principales -->
+                    <div class="row mb-4">
+                        <div class="col-lg-4 col-6">
+                            <div class="small-box bg-success">
+                                <div class="inner">
+                                    <h3 id="presentCount">{{ total_present }}</h3>
+                                    <p>{% trans "Présences" %}</p>
+                                </div>
+                                <div class="icon">
+                                    <i class="ion ion-person-add"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4 col-6">
+                            <div class="small-box bg-danger">
+                                <div class="inner">
+                                    <h3 id="absentCount">{{ total_absent }}</h3>
+                                    <p>{% trans "Absences" %}</p>
+                                </div>
+                                <div class="icon">
+                                    <i class="ion ion-person-stalker"></i>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+                        <div class="col-lg-4 col-6">
+                            <div class="small-box bg-info">
+                                <div class="inner">
+                                    <h3 id="absentPercentage">{{ absent_percentage }}%</h3>
+                                    <p>{% trans "Taux d'absence" %}</p>
+                                </div>
+                                <div class="icon">
+                                    <i class="ion ion-stats-bars"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Information sur la période -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <div class="alert alert-info" id="periodInfo">
+                                <i class="fa fa-info-circle"></i>
+                                <span id="periodText">
+                                    {% trans "Période analysée" %}: {{ start_date|date:"d/m/Y" }} - {{ end_date|date:"d/m/Y" }}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Graphiques -->
+                <div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title">
+                    <i class="fa fa-bar-chart"></i>
+                    {% trans "Statistique Aujourd'hui" %}
+                </h4>
+            </div>
+            <div class="card-body">
+                <canvas id="dailyChart" height="300"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title">
+                    <i class="fa fa-pie-chart"></i>
+
+                </h4>
+            </div>
+            <div class="card-body">
+                <canvas id="dailyPieChart" height="300"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+                    <!-- Tableau des professeurs les plus absents -->
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h4 class="card-title">
+                                        <i class="fa fa-list"></i>
+                                        {% trans "Professeurs avec le plus d'absences" %}
+                                    </h4>
+                                </div>
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-striped" id="profTable">
+                                            <thead>
+                                                <tr>
+                                                    <th>{% trans "Rang" %}</th>
+                                                    <th>{% trans "Professeur" %}</th>
+                                                    <th>{% trans "Nombre d'absences" %}</th>
+                                                    <th>{% trans "Action" %}</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="profTableBody">
+                                                {% for prof in prof_stats %}
+                                                <tr>
+                                                    <td>{{ forloop.counter }}</td>
+                                                    <td>{{ prof.professeur__prenom }} {{ prof.professeur__nom }}</td>
+                                                    <td>
+                                                        <span class="badge badge-danger">{{ prof.absences }}</span>
+                                                    </td>
+                                                    <td>
+                                                        <button class="btn btn-sm btn-info">
+                                                            <i class="fa fa-eye"></i>
+                                                            {% trans "Détails" %}
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                                {% empty %}
+                                                <tr>
+                                                    <td colspan="4" class="text-center text-muted">
+                                                        {% trans "Aucune absence enregistrée pour cette période" %}
+                                                    </td>
+                                                </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+              </div>
+
+
+                 <div class="tab-pane active" id="tab_2-2">
+
+                        <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i class="fa fa-chart-bar"></i>
+                        {% trans "Statistiques des Absences Professeurs" %}
+                    </h3>
+                </div>
+                 <div class="alert alert-info">
+                            <h1 align="center">{% trans "Statistique cette semaine" %}</h1>
+
+            </div>
+                <div class="card-body">
+
+                    <!-- Indicateur de chargement -->
+                    <div id="loading" class="text-center" style="display: none;">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="sr-only">{% trans "Chargement..." %}</span>
+                        </div>
+                        <p class="mt-2">{% trans "Chargement des données..." %}</p>
+                    </div>
+
+                    <!-- Statistiques principales -->
+                    <div class="row mb-4">
+                        <div class="col-lg-4 col-6">
+                            <div class="small-box bg-success">
+                                <div class="inner">
+                                    <h3 id="presentCount">{{ total_presentps }}</h3>
+                                    <p>{% trans "Présences" %}</p>
+                                </div>
+                                <div class="icon">
+                                    <i class="ion ion-person-add"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4 col-6">
+                            <div class="small-box bg-danger">
+                                <div class="inner">
+                                    <h3 id="absentCount">{{ total_absentps }}</h3>
+                                    <p>{% trans "Absences" %}</p>
+                                </div>
+                                <div class="icon">
+                                    <i class="ion ion-person-stalker"></i>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="col-lg-4 col-6">
+                            <div class="small-box bg-info">
+                                <div class="inner">
+                                    <h3 id="absentPercentage">{{ absent_percentageps }}%</h3>
+                                    <p>{% trans "Taux d'absence" %}</p>
+                                </div>
+                                <div class="icon">
+                                    <i class="ion ion-stats-bars"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Information sur la période -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <div class="alert alert-info" id="periodInfo">
+                                <i class="fa fa-info-circle"></i>
+                                <span id="periodText">
+                                    {% trans "Période analysée" %}: {{ start_date|date:"d/m/Y" }} - {{ end_date|date:"d/m/Y" }}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Graphiques -->
+             <div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title">
+                    <i class="fa fa-bar-chart"></i>
+                    {% trans "Statistique cette semaine" %}
+                </h4>
+            </div>
+            <div class="card-body">
+                <canvas id="weeklyChart" height="300"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title">
+                    <i class="fa fa-pie-chart"></i>
+                    {% trans "Details this week" %}
+                </h4>
+            </div>
+            <div class="card-body">
+                <canvas id="weeklyPieChart" height="300"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+                    <!-- Tableau des professeurs les plus absents -->
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h4 class="card-title">
+                                        <i class="fa fa-list"></i>
+                                        {% trans "Professeurs avec le plus d'absences" %}
+                                    </h4>
+                                </div>
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-striped" id="profTable">
+                                            <thead>
+                                                <tr>
+                                                    <th>{% trans "Rang" %}</th>
+                                                    <th>{% trans "Professeur" %}</th>
+                                                    <th>{% trans "Nombre d'absences" %}</th>
+                                                    <th>{% trans "Action" %}</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="profTableBody">
+                                                {% for prof in prof_stats %}
+                                                <tr>
+                                                    <td>{{ forloop.counter }}</td>
+                                                    <td>{{ prof.professeur__prenom }} {{ prof.professeur__nom }}</td>
+                                                    <td>
+                                                        <span class="badge badge-danger">{{ prof.absences }}</span>
+                                                    </td>
+                                                    <td>
+                                                        <button class="btn btn-sm btn-info">
+                                                            <i class="fa fa-eye"></i>
+                                                            {% trans "Détails" %}
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                                {% empty %}
+                                                <tr>
+                                                    <td colspan="4" class="text-center text-muted">
+                                                        {% trans "Aucune absence enregistrée pour cette période" %}
+                                                    </td>
+                                                </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+              </div>
+
+                   <div class="tab-pane active" id="tab_3-2">
+
+                        <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i class="fa fa-chart-bar"></i>
+                        {% trans "Statistiques des Absences Professeurs" %}
+                    </h3>
+                </div>
+
+                  <div class="alert alert-info">
+                            <h1 align="center">{% trans "Statistique ce mois" %}</h1>
+
+            </div>
+                <div class="card-body">
+
+                    <!-- Indicateur de chargement -->
+                    <div id="loading" class="text-center" style="display: none;">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="sr-only">{% trans "Chargement..." %}</span>
+                        </div>
+                        <p class="mt-2">{% trans "Chargement des données..." %}</p>
+                    </div>
+
+                    <!-- Statistiques principales -->
+                    <div class="row mb-4">
+                        <div class="col-lg-4 col-6">
+                            <div class="small-box bg-success">
+                                <div class="inner">
+                                    <h3 id="presentCount">{{ total_presentpm }}</h3>
+                                    <p>{% trans "Présences" %}</p>
+                                </div>
+                                <div class="icon">
+                                    <i class="ion ion-person-add"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4 col-6">
+                            <div class="small-box bg-danger">
+                                <div class="inner">
+                                    <h3 id="absentCount">{{ total_absentpm }}</h3>
+                                    <p>{% trans "Absences" %}</p>
+                                </div>
+                                <div class="icon">
+                                    <i class="ion ion-person-stalker"></i>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="col-lg-4 col-6">
+                            <div class="small-box bg-info">
+                                <div class="inner">
+                                    <h3 id="absentPercentage">{{ absent_percentagepm }}%</h3>
+                                    <p>{% trans "Taux d'absence" %}</p>
+                                </div>
+                                <div class="icon">
+                                    <i class="ion ion-stats-bars"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Information sur la période -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <div class="alert alert-info" id="periodInfo">
+                                <i class="fa fa-info-circle"></i>
+                                <span id="periodText">
+                                    {% trans "Période analysée" %}: {{ start_date|date:"d/m/Y" }} - {{ end_date|date:"d/m/Y" }}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Graphiques -->
+             <div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title">
+                    <i class="fa fa-bar-chart"></i>
+                    {% trans "Statistique ce mois" %}
+                </h4>
+            </div>
+            <div class="card-body">
+                <canvas id="monthlyChart" height="300"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title">
+                    <i class="fa fa-pie-chart"></i>
+
+                </h4>
+            </div>
+            <div class="card-body">
+                <canvas id="monthlyPieChart" height="300"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+                    <!-- Tableau des professeurs les plus absents -->
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h4 class="card-title">
+                                        <i class="fa fa-list"></i>
+                                        {% trans "Professeurs avec le plus d'absences" %}
+                                    </h4>
+                                </div>
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-striped" id="profTable">
+                                            <thead>
+                                                <tr>
+                                                    <th>{% trans "Rang" %}</th>
+                                                    <th>{% trans "Professeur" %}</th>
+                                                    <th>{% trans "Nombre d'absences" %}</th>
+                                                    <th>{% trans "Action" %}</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="profTableBody">
+                                                {% for prof in prof_stats %}
+                                                <tr>
+                                                    <td>{{ forloop.counter }}</td>
+                                                    <td>{{ prof.professeur__prenom }} {{ prof.professeur__nom }}</td>
+                                                    <td>
+                                                        <span class="badge badge-danger">{{ prof.absences }}</span>
+                                                    </td>
+                                                    <td>
+                                                        <button class="btn btn-sm btn-info">
+                                                            <i class="fa fa-eye"></i>
+                                                            {% trans "Détails" %}
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                                {% empty %}
+                                                <tr>
+                                                    <td colspan="4" class="text-center text-muted">
+                                                        {% trans "Aucune absence enregistrée pour cette période" %}
+                                                    </td>
+                                                </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+
+
+
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+    // Initialisation des graphiques
+document.addEventListener('DOMContentLoaded', function() {
+    // Graphique pour aujourd'hui
+    initDailyChart();
+    initDailyPieChart();
+
+    // Graphique pour la semaine
+    initWeeklyChart();
+    initWeeklyPieChart();
+
+    // Graphique pour le mois
+    initMonthlyChart();
+    initMonthlyPieChart();
+});
+
+// Fonctions pour les graphiques du jour
+function initDailyChart() {
+    const ctx = document.getElementById('dailyChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['Aujourd\'hui'],
+            datasets: [
+                {
+                    label: '{% trans "Présences" %}',
+                    data: [{{ total_present }}],
+                    backgroundColor: 'rgba(40, 167, 69, 0.8)',
+                    borderColor: 'rgba(40, 167, 69, 1)',
+                    borderWidth: 1
+                },
+                {
+                    label: '{% trans "Absences" %}',
+                    data: [{{ total_absent }}],
+                    backgroundColor: 'rgba(220, 53, 69, 0.8)',
+                    borderColor: 'rgba(220, 53, 69, 1)',
+                    borderWidth: 1
+                }
+            ]
+        },
+        options: chartOptions('Jour')
+    });
+}
+
+function initDailyPieChart() {
+    const ctx = document.getElementById('dailyPieChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: ['{% trans "Présences" %}', '{% trans "Absences" %}', '{% trans "Retards" %}', '{% trans "Congés" %}'],
+            datasets: [{
+                data: [{{ total_present }}, {{ total_absent }}, {{ total_retard }}, {{ total_conge }}],
+                backgroundColor: [
+                    'rgba(40, 167, 69, 0.8)',
+                    'rgba(220, 53, 69, 0.8)',
+                    'rgba(255, 193, 7, 0.8)',
+                    'rgba(23, 162, 184, 0.8)'
+                ]
+            }]
+        },
+        options: pieChartOptions()
+    });
+}
+
+// Fonctions pour les graphiques de la semaine
+function initWeeklyChart() {
+    const ctx = document.getElementById('weeklyChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: {{ weekly_labels|safe }},
+            datasets: [
+                {
+                    label: '{% trans "Présences" %}',
+                    data: {{ weekly_present|safe }},
+                    backgroundColor: 'rgba(40, 167, 69, 0.8)',
+                    borderColor: 'rgba(40, 167, 69, 1)',
+                    borderWidth: 1
+                },
+                {
+                    label: '{% trans "Absences" %}',
+                    data: {{ weekly_absent|safe }},
+                    backgroundColor: 'rgba(220, 53, 69, 0.8)',
+                    borderColor: 'rgba(220, 53, 69, 1)',
+                    borderWidth: 1
+                }
+            ]
+        },
+        options: chartOptions('Semaine')
+    });
+}
+
+function initWeeklyPieChart() {
+    const ctx = document.getElementById('weeklyPieChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: ['{% trans "Présences" %}', '{% trans "Absences" %}', '{% trans "Retards" %}', '{% trans "Congés" %}'],
+            datasets: [{
+                data: [{{ total_presentps }}, {{ total_absentps }}, {{ total_retardps }}, {{ total_congeps }}],
+                backgroundColor: [
+                    'rgba(40, 167, 69, 0.8)',
+                    'rgba(220, 53, 69, 0.8)',
+                    'rgba(255, 193, 7, 0.8)',
+                    'rgba(23, 162, 184, 0.8)'
+                ]
+            }]
+        },
+        options: pieChartOptions()
+    });
+}
+
+// Fonctions pour les graphiques du mois
+function initMonthlyChart() {
+    const ctx = document.getElementById('monthlyChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: {{ monthly_labels|safe }},
+            datasets: [
+                {
+                    label: '{% trans "Présences" %}',
+                    data: {{ monthly_present|safe }},
+                    backgroundColor: 'rgba(40, 167, 69, 0.7)',
+                    borderColor: 'rgba(40, 167, 69, 1)',
+                    borderWidth: 1
+                },
+                {
+                    label: '{% trans "Absences" %}',
+                    data: {{ monthly_absent|safe }},
+                    backgroundColor: 'rgba(220, 53, 69, 0.7)',
+                    borderColor: 'rgba(220, 53, 69, 1)',
+                    borderWidth: 1
+                }
+            ]
+        },
+        options: chartOptions('Mois')
+    });
+}
+function initMonthlyPieChart() {
+    const ctx = document.getElementById('monthlyPieChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: ['{% trans "Présences" %}', '{% trans "Absences" %}', '{% trans "Retards" %}', '{% trans "Congés" %}'],
+            datasets: [{
+                data: [{{ total_presentpm }}, {{ total_absentpm }}, {{ total_retardpm }}, {{ total_congepm }}],
+                backgroundColor: [
+                    'rgba(40, 167, 69, 0.8)',
+                    'rgba(220, 53, 69, 0.8)',
+                    'rgba(255, 193, 7, 0.8)',
+                    'rgba(23, 162, 184, 0.8)'
+                ]
+            }]
+        },
+        options: pieChartOptions()
+    });
+}
+
+// Options communes pour les graphiques
+function chartOptions(title) {
+    return {
+        responsive: true,
+        plugins: {
+            title: {
+                display: true,
+                text: title,
+                font: {
+                    size: 16
+                }
+            },
+            legend: {
+                position: 'top'
+            }
+        },
+        scales: {
+            y: {
+                beginAtZero: true,
+                ticks: {
+                    stepSize: 1
+                }
+            }
+        }
+    };
+}
+
+function pieChartOptions() {
+    return {
+        responsive: true,
+        plugins: {
+            legend: {
+                position: 'bottom'
+            },
+            tooltip: {
+                callbacks: {
+                    label: function(context) {
+                        const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                        const percentage = ((context.raw / total) * 100).toFixed(1);
+                        return `${context.label}: ${context.raw} (${percentage}%)`;
+                    }
+                }
+            }
+        }
+    };
+}
+    </script>
+{% endblock %}

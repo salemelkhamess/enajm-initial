@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block content %}
+<div class="box">
+    <div class="box-header">
+        <h3>{% trans "Liste des professeurs" %}</h3>
+        <p class="text-right">
+            <a href="{% url 'professeur_create' %}" class="btn btn-success mb-3">
+                <i class="fa fa-plus"></i> {% trans "Ajouter un professeur" %}
+            </a>
+        </p>
+    </div>
+    <div class="box-body">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>{% trans "Nom" %}</th>
+                    <th>{% trans "Prénom" %}</th>
+                    <th>{% trans "Email" %}</th>
+                    <th>{% trans "Téléphone" %}</th>
+                    <th>{% trans "NNI" %}</th>
+                    <th>{% trans "Actions" %}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for professeur in professeurs %}
+                <tr>
+                    <td>{{ professeur.nom }}</td>
+                    <td>{{ professeur.prenom }}</td>
+                    <td>{{ professeur.email }}</td>
+                    <td>{{ professeur.telephone }}</td>
+                    <td>{{ professeur.specialite }}</td>
+                    <td>
+                               <a href="{% url 'professeur_certificat' professeur.pk %}" class="btn btn-success btn-sm" title="{% trans "Afficher certificat" %}" target="_blank"><i class="fa fa-file-text-o"></i></a>
+                        <a href="{% url 'professeur_update' professeur.pk %}" class="btn btn-info btn-sm" title="{% trans "Modifier" %}" ><i class="fa fa-edit"></i></a>
+                        <a href="{% url 'professeur_delete' professeur.pk %}" class="btn btn-danger btn-sm" title="{% trans "Supprimer" %}"><i class="fa fa-trash-o"></i></a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6">{% trans "Aucun professeur trouvé." %}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,2182 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-05-10 22:36+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: templates/partials/sidebar.html:12
+msgid "Online"
+msgstr "Online"
+
+#: templates/partials/sidebar.html:18
+msgid "Search..."
+msgstr "Search..."
+
+#: templates/partials/sidebar.html:26
+msgid "ENAJM"
+msgstr "ENAJM"
+
+#: templates/partials/sidebar.html:29 templates/partials/sidebar.html:32
+msgid "Accueil"
+msgstr "Accueil"
+
+#: templates/partials/sidebar.html:39
+msgid "Secteurs"
+msgstr "Departement"
+
+#: templates/partials/sidebar.html:43
+msgid "Liste des secteurs"
+msgstr "Liste des Departements"
+
+#: templates/partials/sidebar.html:44
+msgid "Liste des classes"
+msgstr "Liste des classes"
+
+#: templates/partials/sidebar.html:45
+msgid "Matiére"
+msgstr "Matière"
+
+#: templates/partials/sidebar.html:52
+msgid "Année"
+msgstr "Année"
+
+#: templates/partials/sidebar.html:56
+msgid "Création"
+msgstr "Création"
+
+#: templates/partials/sidebar.html:57
+msgid "Trimestre"
+msgstr "Trimestre"
+
+#: templates/partials/sidebar.html:64
+msgid "Salles"
+msgstr "Salles"
+
+#: templates/partials/sidebar.html:68 templates/partials/sidebar.html:79
+#: templates/partials/sidebar.html:94 templates/partials/sidebar.html:108
+msgid "Liste"
+msgstr "Liste"
+
+#: templates/partials/sidebar.html:75
+msgid "Etudiant"
+msgstr "Elève fonctionnaire"
+
+#: templates/partials/sidebar.html:80
+msgid "Absence"
+msgstr "Absence"
+
+#: templates/partials/sidebar.html:81 templates/partials/sidebar.html:126
+msgid "Rapport"
+msgstr "Rapport"
+
+#: templates/partials/sidebar.html:82
+#, fuzzy
+#| msgid "Liste"
+msgid "List des pv"
+msgstr "Liste"
+
+#: templates/partials/sidebar.html:90
+msgid "Proffesseurs"
+msgstr "Professeurs"
+
+#: templates/partials/sidebar.html:95
+msgid "Pointage"
+msgstr "Pointage"
+
+#: templates/partials/sidebar.html:96
+msgid "Rapport Absence"
+msgstr "Rapport Absence des proffesseurs"
+
+#: templates/partials/sidebar.html:97
+msgid "et"
+msgstr "Emploi du temps"
+
+#: templates/partials/sidebar.html:98
+#, fuzzy
+#| msgid "Création"
+msgid "Permutation"
+msgstr "Création"
+
+#: templates/partials/sidebar.html:104
+msgid "Evaluations"
+msgstr "Evaluations"
+
+#: templates/partials/sidebar.html:109
+msgid "Note"
+msgstr "Note"
+
+#: templates/partials/sidebar.html:110
+msgid "Bulletin"
+msgstr "Bulletin"
+
+#: templates/partials/sidebar.html:116
+msgid "Conférences"
+msgstr "Conférences"
+
+#: templates/partials/sidebar.html:120
+msgid "Céation"
+msgstr "Création"
+
+#: templates/partials/sidebar.html:130
+msgid "Absence par matier"
+msgstr "Absence par matière"
+
+#: templates/partials/sidebar.html:136
+msgid "Paramétres"
+msgstr "Paramètres"
+
+#: templates/partials/sidebar.html:140
+msgid "Entéte"
+msgstr "En-tête"
+
+#: templates/partials/sidebar.html:141
+msgid "Groupe"
+msgstr "Groupe"
+
+#: templates/partials/sidebar.html:142
+msgid "Utilisateurs"
+msgstr "Utilisateurs"
+
+msgid "Bienvenue à ENAJM"
+msgstr "Bienvenue à ENAJM"
+
+msgid "Veuillez vous connecter"
+msgstr "Veuillez vous connecter"
+
+# anné
+msgid "Liste des Années"
+msgstr "Liste des Années"
+
+msgid "Ajouter une année"
+msgstr "Ajouter une année"
+
+msgid "Classe"
+msgstr "Classe"
+
+msgid "Secteur"
+msgstr "Classe"
+
+msgid "Numéro Année"
+msgstr "Numéro Année"
+
+msgid "Actions"
+msgstr "Actions"
+
+msgid "Modifier"
+msgstr "Modifier"
+
+msgid "Supprimer"
+msgstr "Supprimer"
+
+msgid "Aucune année enregistrée."
+msgstr "Aucune année enregistrée."
+
+msgid "Modifier une Année"
+msgstr "Modifier une Année"
+
+msgid "Créer une Année"
+msgstr "Créer une Année"
+
+msgid "Enregistrer"
+msgstr "Enregistrer"
+
+msgid "Annuler"
+msgstr "Annuler"
+
+msgid "formation"
+msgstr "formation"
+
+msgid "numero_annee"
+msgstr "numéro année"
+
+msgid "Le numéro de l'année doit être supérieur à 0."
+msgstr "Le numéro de l'année doit être supérieur à 0."
+
+msgid "Informations du cours"
+msgstr "  Informations du cours"
+
+# emploie
+msgid "Emploi du temps"
+msgstr "Emploi du temps"
+
+msgid "Ajouter une séance"
+msgstr "Ajouter une séance"
+
+msgid "séances"
+msgstr "séances"
+
+msgid "Matière"
+msgstr "Matière"
+
+msgid "Professeur"
+msgstr "Professeur"
+
+msgid "Salle"
+msgstr "Salle"
+
+msgid "Jour"
+msgstr "Jour"
+
+msgid "Heures"
+msgstr "Heures"
+
+msgid "Aucun emploi du temps pour ce secteur"
+msgstr "Aucun emploi du temps pour ce secteur"
+
+msgid "Aucun secteur avec emploi du temps trouvé."
+msgstr "Aucun secteur avec emploi du temps trouvé."
+
+# emploie creation
+# Titres et libellés
+msgid "Création d'emploi du temps par classe"
+msgstr "Création d'emploi du temps par classe"
+
+msgid "Afficher la grille"
+msgstr "Afficher la grille"
+
+msgid "Emploi du temps pour"
+msgstr "Emploi du temps pour"
+
+msgid "Ajouter un créneau"
+msgstr "Ajouter un créneau"
+
+# En-têtes de tableau
+msgid "Créneau"
+msgstr "Créneau"
+
+# Options de sélection
+msgid "-- Matière --"
+msgstr "-- Matière --"
+
+msgid "-- Professeur --"
+msgstr "-- Professeur --"
+
+msgid "-- Salle --"
+msgstr "-- Salle --"
+
+# Messages de notification
+msgid "Succès!"
+msgstr "Succès!"
+
+msgid "Emploi du temps enregistré avec succès!"
+msgstr "Emploi du temps enregistré avec succès!"
+
+msgid "Erreur!"
+msgstr "Erreur!"
+
+msgid "Une erreur est survenue"
+msgstr "Une erreur est survenue"
+
+msgid "OK"
+msgstr "OK"
+
+# Autres textes
+msgid "Notification"
+msgstr "Notification"
+
+msgid "Département"
+msgstr "Département"
+
+msgid "Lundi"
+msgstr "Lundi"
+
+msgid "Mardi"
+msgstr "Mardi"
+
+msgid "Mercredi"
+msgstr "Mercredi"
+
+msgid "Jeudi"
+msgstr "Jeudi"
+
+msgid "Vendredi"
+msgstr "Vendredi"
+
+msgid "Samedi"
+msgstr "Samedi"
+
+msgid "Annee"
+msgstr "Année"
+
+msgid "ch"
+msgstr "Modification d'emploi du temps pour "
+
+msgid "Liste des départements"
+msgstr "Liste des départements"
+
+msgid "Ajouter un département"
+msgstr "Ajouter un département"
+
+msgid "Nom"
+msgstr "Nom"
+
+msgid "Aucun département trouvé."
+msgstr "Aucun département trouvé."
+
+msgid "Créer un departement"
+msgstr "Créer un departement"
+
+msgid "Modifier un departement"
+msgstr "Modifier un departement"
+
+msgid "Confirmer la suppression du département"
+msgstr "Confirmer la suppression du département"
+
+msgid "evs"
+msgstr "Êtes-vous sûr de vouloir supprimer le département "
+
+msgid "AJ"
+msgstr "Ajouter "
+
+msgid "un classe"
+msgstr "un classe "
+
+msgid "Nom du classe"
+msgstr "Nom du classe "
+
+msgid "Departement associée"
+msgstr " Departement associée "
+
+msgid "Confirmer la suppression"
+msgstr "Confirmer la suppression"
+
+msgid "Liste des Matières"
+msgstr "Liste des Matières"
+
+msgid "Ajouter une matière"
+msgstr "Ajouter une matière"
+
+msgid "Coefficient"
+msgstr "Coefficient"
+
+msgid "Aucune matière trouvée."
+msgstr "Aucune matière trouvée."
+
+msgid "Modifier la matière"
+msgstr "Modifier la matière"
+
+msgid "Mettre à jour"
+msgstr "Mettre à jour"
+
+msgid "Supprimer la matière"
+msgstr "Supprimer la matière"
+
+msgid "Êtes-vous sûr de vouloir supprimer"
+msgstr "Êtes-vous sûr de vouloir supprimer"
+
+msgid "Liste des trimestres"
+msgstr "Liste des trimestres"
+
+msgid "Ajouter un trimestre"
+msgstr "Ajouter un trimestre"
+
+msgid "Liste des branches"
+msgstr "  Liste des classes "
+
+msgid "Nom Ar"
+msgstr "Nom Ar"
+
+msgid "Fin"
+msgstr "Fin"
+
+msgid "Aucun trimestre trouvé."
+msgstr "Aucun trimestre trouvé."
+
+msgid "Nom (Français)"
+msgstr "Nom (Français)"
+
+msgid "Nom (Arabe)"
+msgstr "Nom (Arabe)"
+
+msgid "Numéro"
+msgstr "Numéro"
+
+msgid "Début"
+msgstr "Début"
+
+msgid "Créer"
+msgstr "Créer"
+
+msgid "un trimestre"
+msgstr "un trimestre"
+
+msgid "Liste des Salles"
+msgstr "Liste des Salles"
+
+msgid "Ajouter une salle"
+msgstr "Ajouter une salle"
+
+msgid "Capacité"
+msgstr "Capacité"
+
+msgid "Description"
+msgstr "Description"
+
+msgid "Aucune salle trouvée."
+msgstr "Aucune salle trouvée."
+
+msgid "Modifier une salle"
+msgstr "Modifier une salle"
+
+msgid "Retour"
+msgstr "Retour"
+
+msgid "Confirmation de suppression"
+msgstr "Confirmation de suppression"
+
+msgid "Voulez-vous vraiment supprimer la salle"
+msgstr "Voulez-vous vraiment supprimer la salle"
+
+msgid "Liste des étudiants"
+msgstr "Liste des élèves fonctionnaire"
+
+msgid "Ajouter un étudiant"
+msgstr "Ajouter un élève fonctionnaire"
+
+msgid "Photo"
+msgstr "Photo"
+
+msgid "Photo de"
+msgstr "Photo de"
+
+msgid "Prénom"
+msgstr "Prénom"
+
+msgid "Matricule"
+msgstr "Matricule"
+
+msgid "Departement"
+msgstr "Département"
+
+msgid "Pas de photo"
+msgstr "Pas de photo"
+
+msgid "Aucun étudiant trouvé."
+msgstr "Aucun élève fonctionnaire trouvé."
+
+msgid "Homme"
+msgstr "Homme"
+
+msgid "Femme"
+msgstr "Femme"
+
+msgid "Étudiant"
+msgstr "Elève fonctionnaire"
+
+msgid "Étudiants"
+msgstr "Elève fonctionnaire"
+
+msgid "NNI"
+msgstr "NNI"
+
+msgid "Date de naissance"
+msgstr "Date de naissance"
+
+msgid "Lieu de naissance"
+msgstr "Lieu de naissance"
+
+msgid "Sexe"
+msgstr "Sexe"
+
+msgid "Téléphone"
+msgstr "Téléphone"
+
+msgid "Email"
+msgstr "Email"
+
+msgid "Formation"
+msgstr "Formation"
+
+msgid "Liste des absences des étudiants"
+msgstr "Liste des absences des élèves fonctionnaire"
+
+msgid "Ajouter absence"
+msgstr "Ajouter absence"
+
+msgid "Oui,Non"
+msgstr "Oui,Non"
+
+msgid "Justification"
+msgstr "Justification"
+
+msgid "Date justification"
+msgstr "Date justification"
+
+msgid "Présent"
+msgstr "Présent"
+
+msgid "Aucune présence enregistrée."
+msgstr "Aucune présence enregistrée."
+
+msgid "Du:"
+msgstr "Du:"
+
+msgid "Au:"
+msgstr "Au:"
+
+msgid "Filtrer"
+msgstr "Filtrer"
+
+msgid "Imprimer"
+msgstr "Imprimer"
+
+msgid "Rapport des absences des matières"
+msgstr "Rapport des absences des matières"
+
+msgid "Liste des présences"
+msgstr "Liste des présences"
+
+msgid "Nombre d'absences"
+msgstr "Nombre d'absences"
+
+msgid "Aucune absence enregistrée."
+msgstr "Aucune absence enregistrée."
+
+msgid "Liste des PV"
+msgstr "Liste des PV"
+
+msgid "Ajouter un PV"
+msgstr "Ajouter un PV"
+
+msgid "Type"
+msgstr "Type"
+
+msgid "Date"
+msgstr "Date"
+
+msgid "Aucun PV enregistré."
+msgstr "Aucun PV enregistré."
+
+msgid "Type de PV"
+msgstr "Type de PV"
+
+msgid "Étudiant concerné"
+msgstr "Elève fonctionnaire concerné"
+
+msgid "Contenu"
+msgstr "Contenu"
+
+msgid "Date du PV"
+msgstr "Date du PV"
+
+msgid "Voulez-vous vraiment supprimer le PV de"
+msgstr "Voulez-vous vraiment supprimer le PV de"
+
+msgid "Oui, supprimer"
+msgstr "Oui, supprimer"
+
+msgid "Recherche entre deux dates"
+msgstr "Recherche entre deux dates"
+
+msgid "Date début"
+msgstr "Date début"
+
+msgid "Date fin"
+msgstr "Date fin"
+
+msgid "Rechercher"
+msgstr "Rechercher"
+
+msgid "Rapport des PV"
+msgstr "Rapport des PV"
+
+msgid "Aucun PV trouvé pour cette période."
+msgstr "Aucun PV trouvé pour cette période."
+
+msgid "Liste des professeurs"
+msgstr "Liste des professeurs"
+
+msgid "Ajouter un professeur"
+msgstr "Ajouter un professeur"
+
+msgid "Modifier un professeur"
+msgstr " Modifier un professeur"
+
+msgid "Spécialité"
+msgstr "Spécialité"
+
+msgid "Aucun professeur trouvé."
+msgstr "Aucun professeur trouvé."
+
+msgid "Liste des présences des professeurs"
+msgstr "  Liste des présences des professeurs"
+
+msgid "Ajouter une présence"
+msgstr " Ajouter une présence"
+
+msgid "Aucune présence trouvée."
+msgstr " Aucune présence trouvée."
+
+msgid "Liste des Pointages"
+msgstr "Liste des Pointages"
+
+msgid "Ajouter un pointage"
+msgstr "Ajouter un pointage"
+
+msgid "Séance"
+msgstr "Séance"
+
+msgid "État"
+msgstr "État"
+
+msgid "Détails"
+msgstr "Détails"
+
+msgid "Détails du pointage"
+msgstr "Détails du pointage"
+
+msgid "Date:"
+msgstr "Date :"
+
+msgid "Séance:"
+msgstr "Séance :"
+
+msgid "Salle:"
+msgstr "Salle :"
+
+msgid "État:"
+msgstr "État :"
+
+msgid "Heure arrivée:"
+msgstr "Heure arrivée :"
+
+msgid "Non renseignée"
+msgstr "Non renseignée"
+
+msgid "Heure départ:"
+msgstr "Heure départ :"
+
+msgid "Remarques:"
+msgstr "Remarques :"
+
+msgid "Aucune remarque"
+msgstr "Aucune remarque"
+
+msgid "Fermer"
+msgstr "Fermer"
+
+msgid "Aucun pointage trouvé"
+msgstr "Aucun pointage trouvé"
+
+msgid "Êtes-vous sûr ?"
+msgstr "Êtes-vous sûr ?"
+
+msgid "Cette action est irréversible !"
+msgstr "Cette action est irréversible !"
+
+msgid "Oui, supprimer !"
+msgstr "Oui, supprimer !"
+
+msgid "Première"
+msgstr "Première"
+
+msgid "Précédent"
+msgstr "Précédent"
+
+msgid "Suivant"
+msgstr "Suivant"
+
+msgid "Dernière"
+msgstr "Dernière"
+
+msgid "Liste des évaluations"
+msgstr "Liste des évaluations"
+
+msgid "Ajouter une évaluation"
+msgstr "Ajouter une évaluation"
+
+msgid "Ajouter"
+msgstr "Ajouter"
+
+msgid "une évaluation"
+msgstr "une évaluation"
+
+msgid "Aucune évaluation trouvée."
+msgstr "Aucune évaluation trouvée."
+
+msgid "Type évaluation"
+msgstr "Type d évaluation"
+
+msgid "Liste des entêtes"
+msgstr "Liste des entêtes"
+
+msgid "الاسم (العربية)"
+msgstr "Nom (Arabe)"
+
+msgid "Description (Français)"
+msgstr "Description (Français)"
+
+msgid "الوصف (العربية)"
+msgstr "Description (Arabe)"
+
+msgid "Titre (Français)"
+msgstr "Titre (Français)"
+
+msgid "العنوان (العربية)"
+msgstr "Titre (Arabe)"
+
+msgid "Sous-Titre (Français)"
+msgstr "Sous-Titre (Français)"
+
+msgid "العنوان الفرعي (العربية)"
+msgstr "Sous-titre (Arabe)"
+
+msgid "Logo"
+msgstr "Logo"
+
+msgid "Modifier une entête"
+msgstr "Modifier une entête"
+
+msgid "Ajouter une entête"
+msgstr "Ajouter une entête"
+
+msgid "Liste des notes"
+msgstr "Liste des notes"
+
+msgid "Ajouter/Modifier une note"
+msgstr "Ajouter/Modifier une note"
+
+msgid "Ajouter/Modifier une note spéciale"
+msgstr "Ajouter/Modifier une note spéciale"
+
+msgid "Évaluation"
+msgstr "Évaluation"
+
+msgid "Note /20"
+msgstr "Note /20"
+
+msgid "Devoir"
+msgstr "Devoir"
+
+msgid "Examen"
+msgstr "Examen"
+
+msgid "Note du Directeur"
+msgstr "Note du Directeur"
+
+msgid "Note d'étude académique"
+msgstr "Note d'étude académique"
+
+msgid "Note de Formation"
+msgstr "Note de Formation"
+
+msgid "Saisir les notes pour une évaluation"
+msgstr "Saisir les notes pour une évaluation"
+
+msgid "-- Choisir la Formation --"
+msgstr "-- choisir le departement  --"
+
+msgid "-- Choisir le Secteur --"
+msgstr "-- Choisir la classe   --"
+
+msgid "-- Choisir le Trimestre --"
+msgstr "-- Choisir le Trimestre   --"
+
+msgid "-- Type d'évaluation --"
+msgstr "-- Evaluation Type --"
+
+msgid "Évaluation :"
+msgstr "Evaluation:"
+
+msgid "Note / 20"
+msgstr "Note / 20"
+
+msgid "Enregistrer les notes"
+msgstr "Enregistrer les notes "
+
+msgid "Gestion des notes spéciales"
+msgstr "  Gestion des notes spéciales"
+
+msgid "-- Formation --"
+msgstr "-- Departement --"
+
+msgid "-- Secteur --"
+msgstr "-- Classe --"
+
+msgid "-- Trimestre --"
+msgstr "--   Trimestre --"
+
+msgid "Note Directeur"
+msgstr " Note Directeur"
+
+msgid "Note Étude"
+msgstr " Note Étude"
+
+msgid "Note Formation"
+msgstr " Note Formation"
+
+msgid "Aucun étudiant trouvé pour ce secteur."
+msgstr "Aucun élève fonctionnaire trouvé pour ce classe."
+
+msgid "Start Date"
+msgstr "Date début"
+
+msgid "End Date"
+msgstr "Date fin"
+
+msgid "Search"
+msgstr "Rechercher"
+
+msgid "Print"
+msgstr "Imprimer"
+
+msgid "Teacher Attendance Report"
+msgstr "Rapport des présences des professeurs"
+
+msgid "Teacher Attendance Daily"
+msgstr "Journée de présence des professeurs"
+
+msgid "Time"
+msgstr "Horaire"
+
+msgid "Specialty"
+msgstr "Spécialité"
+
+msgid "Subject"
+msgstr "Matière"
+
+msgid "Teacher"
+msgstr "Professeur"
+
+msgid "Status"
+msgstr "Situation"
+
+msgid "Present"
+msgstr "Présent"
+
+msgid "Absent"
+msgstr "Absent"
+
+msgid "Absence Summary by Teacher"
+msgstr "Résumé des absences par professeur"
+
+msgid "Number of Absences"
+msgstr "Nombre de jours d'absence"
+
+msgid "Imprimer le formulaire"
+msgstr "Imprimer le formulaire"
+
+msgid "Enregistrement des séance"
+msgstr "Enregistrement des séance"
+
+msgid "Creation du pointage"
+msgstr "Creation du pointage"
+
+msgid "Number of Absencese"
+msgstr "Nombres des séances"
+
+msgid "Heures absentes"
+msgstr "  Nombres des heurs"
+
+msgid "pvl"
+msgstr "Liste"
+
+#: templates/partials/sidebar.html:83
+msgid "Rapport des pvs"
+msgstr "Rapport des pvs"
+
+msgid "Dashboard"
+msgstr "Tableau de bord"
+
+msgid "Control panel"
+msgstr "Panneau de contrôle"
+
+msgid "Home"
+msgstr "Accueil"
+
+msgid "Professeurs"
+msgstr "Professeurs"
+
+msgid "Pointages aujourd'hui"
+msgstr "Pointages aujourd'hui"
+
+msgid "Cours aujourd'hui"
+msgstr "Cours aujourd'hui"
+
+msgid "PVs"
+msgstr "PVs"
+
+msgid "Abs. profs (semaine)"
+msgstr "Abs. profs (semaine)"
+
+msgid "Abs. étudiants (semaine)"
+msgstr "Abs. élève fonctionnaire (semaine)"
+
+msgid "Absences Professeurs"
+msgstr "Absences Professeurs"
+
+msgid "Absences Étudiants"
+msgstr "Absences élève fonctionnaire"
+
+msgid "Plus d'info"
+msgstr "Plus d'info"
+
+msgid "RapportA"
+msgstr "   Rapport des absences des élèves fonctionnaire"
+
+msgid "Pointage matiere"
+msgstr "Pointage matiere"
+
+msgid "Ajouter pointage matière"
+msgstr "  Ajouter pointage matière "
+
+msgid "Modifier pointage matière"
+msgstr "Modifier pointage matière "
+
+msgid "Liste des pointages des matières"
+msgstr "Liste des pointages des matières "
+
+msgid "Ajouter pointage"
+msgstr "Ajouter pointage "
+
+msgid "Date du cours"
+msgstr "Date du cours"
+
+msgid "Heure de début"
+msgstr "Heure de début"
+
+msgid "Heure de fin"
+msgstr "Heure de fin"
+
+msgid "Contenu enseigné"
+msgstr "Titres du cours"
+
+msgid "Remarques"
+msgstr "Remarques"
+
+msgid "Décrivez le contenu enseigné..."
+msgstr "Décrivez le contenu enseigné..."
+
+msgid "Ajoutez des remarques éventuelles..."
+msgstr "Ajoutez des remarques éventuelles..."
+
+msgid "Effectué"
+msgstr "Effectué"
+
+msgid "Annulé"
+msgstr "Annulé"
+
+msgid "Reporté"
+msgstr "Reporté"
+
+msgid "Supprimer pointage matière"
+msgstr "Supprimer pointage matière"
+
+msgid "Êtes-vous sûr de vouloir supprimer ce pointage ?"
+msgstr "Êtes-vous sûr de vouloir supprimer ce pointage ?"
+
+msgid "Matière:"
+msgstr "Matière :"
+
+msgid "Professeur:"
+msgstr "Professeur :"
+
+msgid "Heures:"
+msgstr "Heures :"
+
+msgid "Profile"
+msgstr "Profil"
+
+msgid "Sign out"
+msgstr "Se déconnecter"
+
+msgid "formulaire de présence aux contrôles"
+msgstr "formulaire de présence aux contrôles"
+
+msgid "Rapport des pointages de matière"
+msgstr "Rapport des pointages de matière"
+
+msgid "Tous les trimestres"
+msgstr "Tous les trimestres"
+
+msgid "Réinitialiser"
+msgstr "Réinitialiser"
+
+msgid "Toutes les années"
+msgstr "Toutes les années"
+
+msgid "Tous les secteurs"
+msgstr "Tous les classes"
+
+msgid "Tous les états"
+msgstr "Tous les états"
+
+msgid "lengthMenu"
+msgstr "Afficher _MENU_ entrées"
+
+msgid "zeroRecords"
+msgstr "Aucun résultat trouvé"
+
+msgid "info"
+msgstr "Affichage de _START_ à _END_ sur _TOTAL_ entrées"
+
+msgid "infoEmpty"
+msgstr "Aucune donnée disponible"
+
+msgid "infoFiltered"
+msgstr "(filtré à partir de _MAX_ entrées totales)"
+
+msgid "search"
+msgstr "Rechercher :"
+
+msgid "first"
+msgstr "Premier"
+
+msgid "last"
+msgstr "Dernier"
+
+msgid "next"
+msgstr "Suivant"
+
+msgid "previous"
+msgstr "Précédent"
+
+msgid "loadingRecords"
+msgstr "Chargement..."
+
+msgid "processing"
+msgstr "Traitement..."
+
+msgid "emptyTable"
+msgstr "Aucune donnée disponible dans le tableau"
+
+msgid "Saisie des présences"
+msgstr "Saisie des présences"
+
+msgid "Afficher les étudiants"
+msgstr "Afficher les élèves fonctionnaire"
+
+msgid "imprimer attestation d inscription"
+msgstr "imprimer attestation d inscription"
+
+msgid "imprimer acarte employé"
+msgstr "imprimer carte de l'élève fonctionnaire"
+
+msgid "Emploie des temps par classe"
+msgstr "Emploie des temps par classe"
+
+msgid "Célibataire"
+msgstr "Célibataire"
+
+msgid "Marié(e)"
+msgstr "Marié(e)"
+
+msgid "Divorcé(e)"
+msgstr "Divorcé(e)"
+
+msgid "Situation amoureuse"
+msgstr "Situation sociale"
+
+msgid "Brevet"
+msgstr "Brevet"
+
+msgid "Baccalauréat"
+msgstr "Baccalauréat"
+
+msgid "Licence"
+msgstr "Licence"
+
+msgid "Maîtrise"
+msgstr "Maîtrise"
+
+msgid "Doctorat"
+msgstr "Doctorat"
+
+msgid "Diplômes"
+msgstr "Diplômes"
+
+msgid "Nombre d'enfants"
+msgstr "Nombre d'enfants"
+
+msgid "Imprimer l'attestation"
+msgstr "Imprimer l'attestation"
+
+msgid "fiche scolaire"
+msgstr "Fiche Scolaire"
+
+msgid "Liste par classe"
+msgstr "Liste par classe"
+
+msgid "Teaching Progress Dashboard"
+msgstr "Tableau de bord d'avancement de l'enseignement"
+
+msgid "Period from"
+msgstr "Période du"
+
+msgid "to"
+msgstr "au"
+
+msgid "Total Sessions"
+msgstr "Total Matiéres"
+
+msgid "Completed Sessions"
+msgstr "Matiére Effectuées"
+
+msgid "Postponed Sessions"
+msgstr "Matiére Reportées"
+
+msgid "Canceled Sessions"
+msgstr "Matiére Annulées"
+
+msgid "Weekly Progress"
+msgstr "Avancement par semaine"
+
+msgid "Global Completion Rate"
+msgstr "Taux de réalisation global"
+
+msgid "Completion Rate"
+msgstr " Taux de réalisation "
+
+msgid "Statistics by Subject"
+msgstr "Statistiques par matière"
+
+msgid "Completed"
+msgstr "Effectuées"
+
+msgid "Canceled"
+msgstr "Annulées"
+
+msgid "Postponed"
+msgstr "Reportées"
+
+msgid "Statistics by Teacher"
+msgstr "Statistiques par professeur"
+
+msgid "Week"
+msgstr "Semaine"
+
+msgid "Statistiques des Absences Professeurs"
+msgstr "Statistiques des Absences Professeurs"
+
+msgid "Période d'analyse"
+msgstr "Période d'analyse"
+
+msgid "Date de début"
+msgstr "Date de début"
+
+msgid "Date de fin"
+msgstr "Date de fin"
+
+msgid "Chargement des données..."
+msgstr "Chargement des données..."
+
+msgid "Retards"
+msgstr "Retards"
+
+msgid "Taux d'absence"
+msgstr "Taux d'absence"
+
+msgid "Période analysée"
+msgstr "Période analysée"
+
+msgid "Évolution quotidienne"
+msgstr "Évolution quotidienne"
+
+msgid "Répartition globale"
+msgstr "Répartition globale"
+
+msgid "Professeurs avec le plus d'absences"
+msgstr "Professeurs avec le plus d'absences"
+
+msgid "Rang"
+msgstr "Rang"
+
+msgid "Veuillez sélectionner les deux dates"
+msgstr "Veuillez sélectionner les deux dates"
+
+msgid "La date de début doit être antérieure à la date de fin"
+msgstr "La date de début doit être antérieure à la date de fin"
+
+msgid "jours"
+msgstr "jours"
+
+msgid "Congés"
+msgstr "Congés"
+
+msgid "Toutes"
+msgstr "Toutes"
+
+msgid "Justifiées"
+msgstr "Justifiées"
+
+msgid "Répartition par classe"
+msgstr "Répartition par classe"
+
+msgid "Étudiants les plus absents"
+msgstr "Étudiants les plus absents"
+
+msgid "Taux de presence"
+msgstr "Taux de présence"
+
+msgid "Erreur lors du chargement des données"
+msgstr "Erreur lors du chargement des données"
+
+msgid "Statistiques détaillées des professeurs"
+msgstr "Statistiques détaillées des professeurs"
+
+msgid "Statistiques détaillées des etudiants"
+msgstr "Statistiques détaillées des élèves fonctionnaire"
+
+msgid "Statistiques détaillées des cours"
+msgstr "Statistiques détaillées des cours"
+
+msgid "paramètres général"
+msgstr "paramètres général"
+
+msgid "Triche"
+msgstr "Triche"
+
+msgid "Retard"
+msgstr "Retard"
+
+msgid "attestation d inscription"
+msgstr "Attestation d inscription"
+
+msgid "Rôles"
+msgstr "Rôles"
+
+msgid "Liste de Utilisateurs"
+msgstr "Liste de Utilisateurs"
+
+msgid "Créer un utilisateur"
+msgstr "Créer un utilisateur"
+
+msgid "Adresse"
+msgstr "Adresse"
+
+msgid "Adresse email"
+msgstr "Adresse email"
+
+msgid "Mot de passe"
+msgstr "Mot de passe"
+
+msgid "Nouveau mot de passe"
+msgstr "Nouveau mot de passe"
+
+msgid "Curriculum Vitae"
+msgstr "Curriculum Vitae"
+
+msgid "Lettre de Motivation"
+msgstr "Lettre de Motivation"
+
+msgid "Diplôme National"
+msgstr "Dossier d'inscription "
+
+msgid "Attestation"
+msgstr "Dossier médical"
+
+msgid "Relevé de Notes"
+msgstr "Dossier pédagogique (procès-verbaux + décisions) "
+
+msgid "Autre"
+msgstr "Autre"
+
+msgid "Document d'étudiant"
+msgstr "Document d'étudiant"
+
+msgid "Documents des étudiants"
+msgstr "Documents des étudiants"
+
+msgid "Type de document"
+msgstr "Type de document"
+
+msgid "Fichier PDF"
+msgstr "Fichier PDF"
+
+msgid "Date d'upload"
+msgstr "Date d'upload"
+
+msgid "Documents de"
+msgstr "Documents de"
+
+msgid "Ajouter un document"
+msgstr "Ajouter un document"
+
+msgid "Fichier"
+msgstr "Fichier"
+
+msgid "Aucun document trouvé"
+msgstr "Aucun document trouvé"
+
+msgid "Voir le document"
+msgstr " Voir le document"
+
+msgid "Êtes-vous sûr de vouloir supprimer ce document ?"
+msgstr "Êtes-vous sûr de vouloir supprimer ce document ?"
+
+msgid "Gérer les documents"
+msgstr "Gérer les documents"
+
+msgid "Voir Carte"
+msgstr " Voir Carte"
+
+msgid "Liste des Rôles"
+msgstr "Liste des Rôles"
+
+msgid "roles"
+msgstr "roles"
+
+msgid "This password is too common."
+msgstr "Ce mot de passe est trop courant."
+
+msgid "This password is entirely numeric."
+msgstr "Ce mot de passe est entièrement numérique."
+
+msgid "Old password"
+msgstr "Ancien mot de passe"
+
+msgid "New password"
+msgstr "Nouveau mot de passe"
+
+msgid "New password confirmation"
+msgstr "Confirmation du nouveau mot de passe"
+
+msgid "The two passwords don't match."
+msgstr "Les deux mots de passe ne correspondent pas."
+
+msgid "Your information has been updated!"
+msgstr "Vos informations ont été mises à jour!"
+
+msgid "Your password has been changed!"
+msgstr "Votre mot de passe a été changé!"
+
+msgid "Mon Profil"
+msgstr "Mon Profil"
+
+msgid "Informations personnelles"
+msgstr "Informations personnelles"
+
+msgid "Ancien mot de passe"
+msgstr "Ancien mot de passe"
+
+msgid "Confirmation du nouveau mot de passe"
+msgstr "Confirmation du nouveau mot de passe"
+
+msgid "Changement de mot de passe"
+msgstr "Changement de mot de passe"
+
+msgid "Changer le mot de passe"
+msgstr "Changer le mot de passe"
+
+msgid "Administrateur"
+msgstr "Administrateur"
+
+msgid "Super Administrateur"
+msgstr "Super Administrateur"
+
+msgid "Médecin"
+msgstr "Médecin"
+
+msgid "Manager"
+msgstr "Évaluation des notes"
+
+msgid "Pointeur"
+msgstr "Gestion scolaire"
+
+msgid "Pointer"
+msgstr "Pointer"
+
+msgid "Absences non justifiées"
+msgstr "Absences non justifiées"
+
+msgid "Modifier le statut de labsence"
+msgstr "Modifier le statut de l'absence"
+
+msgid "Justifié"
+msgstr "Justifié"
+
+msgid "Non justifié"
+msgstr "Non justifié"
+
+msgid "Motif de l'absence"
+msgstr "Motif de l'absence"
+
+msgid "Absence des professeur par heurs"
+msgstr "Absence des professeur par heurs"
+
+msgid "Absence des eleves fonctionnaires par heurs"
+msgstr "Absence des élèves fonctionnaires par heurs"
+
+msgid "Délai dépassé"
+msgstr "Délai dépassé "
+
+msgid "justification d'absence"
+msgstr "justification d'absence "
+
+msgid "Validation"
+msgstr "Validation "
+
+msgid "Confirmer la validation"
+msgstr "Confirmer la validation"
+
+msgid "Voulez-vous vraiment valider cette absence ?"
+msgstr "Voulez-vous vraiment valider cette absence ?"
+
+msgid "Valable"
+msgstr "Valable"
+
+msgid "Afficher les bulletins"
+msgstr "Afficher les bulletins"
+
+msgid "Imprimer tous les bulletins"
+msgstr "Imprimer tous les bulletins"
+
+msgid "Validation des notes"
+msgstr "Validation des notes"
+
+msgid "Validé"
+msgstr "Validé"
+
+msgid "Édition des notes par matière"
+msgstr "Édition des notes par matière"
+
+msgid "Notes enregistrées avec succès"
+msgstr "Notes enregistrées avec succès"
+
+msgid "Notes mises à jour avec succès"
+msgstr "Notes enregistrées avec succès"
+
+msgid "Aucune note validée trouvée pour les critères sélectionnés"
+msgstr "Aucune note validée trouvée pour les critères sélectionnés"
+
+msgid "notes mises à jour et validées avec succès"
+msgstr "notes mises à jour et validées avec succès"
+
+msgid "Statistique Aujourd'hui"
+msgstr "Statistique aujourd'hui"
+
+msgid "Statistique cette semaine"
+msgstr "Statistique cette semaine"
+
+msgid "Statistique ce mois"
+msgstr "Statistique ce mois"
+
+msgid "Distribution this week"
+msgstr "Répartition cette semaine"
+
+msgid "Details this week"
+msgstr "Détails cette semaine"
+
+msgid "Details today"
+msgstr "Détails aujourd'hui"
+
+msgid "Distribution today"
+msgstr "Répartition aujourd'hui"
+
+msgid "Details this month"
+msgstr "Détails ce mois"
+
+msgid "Distribution this month"
+msgstr "Répartition ce mois"
+
+msgid "Alerte ! %(count)s étudiants avec +%(hours)sh d'absences"
+msgstr "Alerte ! %(count)s étudiants avec +%(hours)sh d'absences"
+
+msgid "fermer"
+msgstr "Fermer"
+
+msgid "Official students concerned"
+msgstr "Élèves fonctionnaires concernés"
+
+msgid "Total absences"
+msgstr "Total absences"
+
+msgid "Totale seances"
+msgstr "Totale seances"
+
+msgid "Résumé des absences par classe"
+msgstr "Résumé des absences par classe"
+
+msgid "Emploitemps"
+msgstr "Emploitemps"
+
+msgid "Se connecter"
+msgstr "Se connecter"
+
+msgid "imprimer carte employé"
+msgstr "imprimer carte employé"
+
+msgid "Chargement..."
+msgstr "Chargement..."
+
+msgid "Présences"
+msgstr "Présences"
+
+msgid "Absences"
+msgstr "Absences"
+
+msgid "Statistiques Étudiants"
+msgstr "Statistiques Étudiants"
+
+msgid "Statistiques des Présences Étudiants"
+msgstr "Statistiques des Présences Étudiants"
+
+msgid "Taux de présence par classe"
+msgstr "Taux de présence par classe"
+
+msgid "Gestion des présences"
+msgstr "Gestion des présences"
+
+msgid "Valider"
+msgstr "Valider"
+
+msgid "Détails du cours"
+msgstr "Détails du cours"
+
+msgid "Raison absence..."
+msgstr "Raison absence..."
+
+msgid "Enregistrer les présences"
+msgstr "Enregistrer les présences"
+
+msgid "Toutes les matières"
+msgstr "Toutes les matières"
+
+msgid "Absences par matière"
+msgstr "Absences par matière"
+
+msgid "Total"
+msgstr "Total"
+
+msgid "heures"
+msgstr "heures"
+
+msgid "Aucune absence trouvée pour les critères sélectionnés"
+msgstr "Aucune absence trouvée pour les critères sélectionnés"
+
+msgid "Nom et Prénom"
+msgstr "Nom et Prénom"
+
+msgid "Présence"
+msgstr "Présence"
+
+msgid "Rapport Général "
+msgstr "Rapport Général "
+
+msgid "Tous"
+msgstr "Tous"
+
+msgid "Rapport des absences (toutes les dates)"
+msgstr "Rapport des absences (toutes les dates)"
+
+msgid "Modifier une présence"
+msgstr "Modifier une présence"
+
+msgid "Enregistrer les modifications"
+msgstr "Enregistrer les modifications"
+
+msgid "Effectuées"
+msgstr "Effectuées"
+
+msgid "Annulées"
+msgstr "Annulées"
+
+msgid "Reportées"
+msgstr "Reportées"
+
+msgid "Réalisé"
+msgstr "Réalisé"
+
+msgid "Restant"
+msgstr "Restant"
+
+msgid "Durée"
+msgstr "Durée"
+
+msgid "Aucun pointage trouvé avec ces critères"
+msgstr "Aucun pointage trouvé avec ces critères"
+
+msgid "Heure début"
+msgstr "Heure début"
+
+msgid "Heure fin"
+msgstr "Heure fin"
+
+msgid "etat"
+msgstr "État"
+
+msgid "Aucun pointage enregistré."
+msgstr "Aucun pointage enregistré."
+
+msgid "Action"
+msgstr "Action"
+
+msgid "Aucune absence enregistrée pour cette période"
+msgstr "Aucune absence enregistrée pour cette période"
+
+msgid "Late"
+msgstr "En retard"
+
+msgid "On leave"
+msgstr "En congé"
+
+msgid "No data available"
+msgstr "Aucune donnée disponible"
+
+msgid "Absence hors emploie"
+msgstr "Absence hors emploie"
+
+msgid "Année consultée"
+msgstr "Année consultée"
+
+msgid "Étudiants avec ≥ 4 absences dans une matière"
+msgstr "Étudiants avec ≥ 4 absences dans une matière"
+
+msgid "absences"
+msgstr "absences"
+
+msgid "Voir tout"
+msgstr "Voir tout"
+
+msgid "Langue"
+msgstr "Langue"
+
+msgid "Anne"
+msgstr "Année"
+
+msgid "Titre"
+msgstr "Titre"
+
+msgid "العنوان"
+msgstr "العنوان"
+
+msgid "Aucun logo"
+msgstr "Aucun logo"
+
+msgid "Aucune entête trouvée."
+msgstr "Aucune entête trouvée."
+
+msgid "Afficher certificat"
+msgstr "Afficher certificat"
+
+msgid "Choisir l'année"
+msgstr "Choisir l'année"
+
+msgid "Choisir le trimestre"
+msgstr "Choisir le trimestre"
+
+msgid "Choisir le secteur"
+msgstr "Choisir le secteur"
+
+msgid "Liste des Employé par classe"
+msgstr "Liste des Employé par classe"
+
+msgid "N°"
+msgstr "N°"
+
+msgid "Nom Complet"
+msgstr "Nom Complet"
+
+msgid "Date et Lieu de Naissance"
+msgstr "Date et Lieu de Naissance"
+
+msgid "N° National"
+msgstr "N° National"
+
+msgid "Statistiques par sexe:"
+msgstr "Statistiques par sexe:"
+
+msgid "Nombre"
+msgstr "Nombre"
+
+msgid "Non spécifié"
+msgstr "Non spécifié"
+
+msgid "Aucun étudiant trouvé pour ce secteur, cette année et ce trimestre"
+msgstr "Aucun étudiant trouvé pour ce secteur, cette année et ce trimestre"
+
+msgid "Aucune absence non justifiée"
+msgstr "Aucune absence non justifiée"
+
+msgid "Absences de"
+msgstr "Absences de"
+
+msgid "Heures perdues"
+msgstr "Heures perdues"
+
+msgid "Aucune absence enregistrée"
+msgstr "Aucune absence enregistrée"
+
+msgid "Aucun étudiant dans ce secteur"
+msgstr "Aucun étudiant dans ce secteur"
+
+msgid "Student Attendance Report"
+msgstr "Rapport de présence des élèves fonctionnaires"
+
+msgid "Absence Summary by Student"
+msgstr "Récapitulatif des absences par élève"
+
+msgid "Aucune note trouvée."
+msgstr "Aucune note trouvée."
+
+msgid "une note"
+msgstr "une note"
+
+msgid "-- Sélectionner --"
+msgstr "-- Sélectionner --"
+
+msgid "Heure"
+msgstr "Heure"
+
+msgid "Afficher la liste"
+msgstr "Afficher la liste"
+
+msgid "password"
+msgstr "Mot de passe"
+
+msgid "imprimer"
+msgstr "Imprimer"
+
+msgid "Absences des professeurs"
+msgstr "Absences des professeurs"
+
+msgid "Nombre d'heures minimum"
+msgstr "Nombre d'heures minimum"
+
+msgid "1 séance = 2 heures"
+msgstr "1 séance = 2 heures"
+
+msgid "Aucun professeur n'atteint le seuil spécifié"
+msgstr "Aucun professeur n'atteint le seuil spécifié"
+
+msgid "Rapport des absences non justifiées par secteur"
+msgstr "Rapport des absences non justifiées par secteur"
+
+msgid "Rapport des absences non justifiées par étudiant"
+msgstr "Rapport des absences non justifiées par étudiant"
+
+msgid "Présences mises à jour avec succès!"
+msgstr "Présences mises à jour avec succès!"
+
+msgid "Présences enregistrées avec succès!"
+msgstr "Présences enregistrées avec succès!"
+
+msgid "Erreur lors de l'enregistrement: "
+msgstr "Erreur lors de l'enregistrement: "
+
+msgid "L'absence a été validée avec succès."
+msgstr "L'absence a été validée avec succès."
+
+msgid "Une justification et une date sont requises pour valider l'absence"
+msgstr "Une justification et une date sont requises pour valider l'absence"
+
+msgid "Statut de l'absence mis à jour avec succès!"
+msgstr "Statut de l'absence mis à jour avec succès!"
+
+msgid "nom"
+msgstr "Nom"
+
+msgid "Diplômes obtenus (séparés par des virgules)"
+msgstr "Diplômes obtenus (séparés par des virgules)"
+
+msgid "REGISTRATION AND COMMITMENT FORM"
+msgstr "FORMULAIRE D'INSCRIPTION ET D'ENGAGEMENT"
+
+msgid "Votre adresse email principale"
+msgstr "Votre adresse email principale"
+
+msgid "Cette adresse email est déjà utilisée."
+msgstr "Cette adresse email est déjà utilisée."
+
+msgid "Les deux mots de passe ne correspondent pas."
+msgstr "Les deux mots de passe ne correspondent pas."
+
+msgid "Paramètres généraux"
+msgstr "Paramètres généraux"
+
+msgid "Année courante"
+msgstr "Année courante"
+
+msgid "Trimestre courant"
+msgstr "Trimestre courant"
+
+msgid "Alertes d'absences activées"
+msgstr "Alertes d'absences activées"
+
+msgid "Date de mise à jour"
+msgstr "Date de mise à jour"
+
+msgid "Activer l'alerte d'absences"
+msgstr "Activer l'alerte d'absences"
+
+msgid "Sélectionnez une année"
+msgstr "Sélectionnez une année"
+
+msgid "Sélectionnez un trimestre"
+msgstr "Sélectionnez un trimestre"
+
+msgid "Années"
+msgstr "Années"
+
+msgid "Pointages"
+msgstr "Pointages"
+
+msgid "Trimestres"
+msgstr "Trimestres"
+
+msgid "Type d'évaluation"
+msgstr "Type d'évaluation"
+
+msgid "Procès-verbal"
+msgstr "Procès-verbal"
+
+msgid "Procès-verbaux"
+msgstr "Procès-verbaux"
+
+msgid "Décrivez en détail l'incident..."
+msgstr "Décrivez en détail l'incident..."
+
+msgid "Document ajouté avec succès"
+msgstr "Document ajouté avec succès"
+
+msgid "Document modifié avec succès"
+msgstr "Document modifié avec succès"
+
+msgid "Modifier le document"
+msgstr "Modifier le document"
+
+msgid "Document supprimé avec succès"
+msgstr "Document supprimé avec succès"
+
+msgid "Pointage matière"
+msgstr "Pointage matière"
+
+msgid "Pointages matières"
+msgstr "Pointages matières"
+
+msgid "L'heure de fin doit être postérieure à l'heure de début."
+msgstr "L'heure de fin doit être postérieure à l'heure de début."
+
+msgid "Pointage matière créé avec succès"
+msgstr "Pointage matière créé avec succès"
+
+msgid "Pointage matière mis à jour avec succès"
+msgstr "Pointage matière mis à jour avec succès"
+
+msgid "Pointage matière supprimé avec succès"
+msgstr "Pointage matière supprimé avec succès"
+
+msgid "Les paramètres ont été mis à jour avec succès"
+msgstr "Les paramètres ont été mis à jour avec succès"
+
+msgid "L'emploi du temps a été mis à jour avec succès."
+msgstr "L'emploi du temps a été mis à jour avec succès."
+
+msgid "Pointage mis à jour avec succès."
+msgstr "Pointage mis à jour avec succès."
+
+msgid ""
+"Désactivée, ni la bannière d'alerte ni les notifications d'absences "
+"critiques ne s'affichent."
+msgstr ""
+"Désactivée, ni la bannière d'alerte ni les notifications d'absences "
+"critiques ne s'affichent."
+
+msgid "Ajouter / Modifier Utilisateur"
+msgstr "Ajouter / Modifier Utilisateur"
+
+msgid "Ajouter un emploi du temps"
+msgstr "Ajouter un emploi du temps"
+
+msgid "Ajouter un groupe"
+msgstr "Ajouter un groupe"
+
+msgid "Ajouter un rôle"
+msgstr "Ajouter un rôle"
+
+msgid "Aucun rôle"
+msgstr "Aucun rôle"
+
+msgid "Aucun rôle assigné"
+msgstr "Aucun rôle assigné"
+
+msgid "Aucun utilisateur trouvé."
+msgstr "Aucun utilisateur trouvé."
+
+msgid "Aucune permission"
+msgstr "Aucune permission"
+
+msgid "Confirmation"
+msgstr "Confirmation"
+
+msgid "Confirmer"
+msgstr "Confirmer"
+
+msgid "Date et Horaire"
+msgstr "Date et Horaire"
+
+msgid "Formulaire de Pointage"
+msgstr "Formulaire de Pointage"
+
+msgid "Formulaire de présence aux Contrôles"
+msgstr "Formulaire de présence aux Contrôles"
+
+msgid "Liste des groupes"
+msgstr "Liste des groupes"
+
+msgid "Modifier l'emploi du temps"
+msgstr "Modifier l'emploi du temps"
+
+msgid "Nom du groupe"
+msgstr "Nom du groupe"
+
+msgid "Par secteur"
+msgstr "Par secteur"
+
+msgid "Permissions"
+msgstr "Permissions"
+
+msgid "Présence/Absence Professeurs"
+msgstr "Présence/Absence Professeurs"
+
+msgid "Présence/Absence Étudiants"
+msgstr "Présence/Absence Étudiants"
+
+msgid "Retirer"
+msgstr "Retirer"
+
+msgid "Retour à la liste des utilisateurs"
+msgstr "Retour à la liste des utilisateurs"
+
+msgid "Rôles assignés"
+msgstr "Rôles assignés"
+
+msgid "Signature"
+msgstr "Signature"
+
+msgid "Signature du chef de département"
+msgstr "Signature du chef de département"
+
+msgid "Signature du responsable"
+msgstr "Signature du responsable"
+
+msgid "Supprimer l'emploi du temps"
+msgstr "Supprimer l'emploi du temps"
+
+msgid "Supprimer l'étudiant"
+msgstr "Supprimer l'étudiant"
+
+msgid "Supprimer la note"
+msgstr "Supprimer la note"
+
+msgid "Supprimer la présence"
+msgstr "Supprimer la présence"
+
+msgid "Supprimer le professeur"
+msgstr "Supprimer le professeur"
+
+msgid "Supprimer le trimestre"
+msgstr "Supprimer le trimestre"
+
+msgid "Supprimer l’évaluation"
+msgstr "Supprimer l’évaluation"
+
+msgid "Surveillants"
+msgstr "Surveillants"
+
+msgid "Tableau de Bord des Statistiques"
+msgstr "Tableau de Bord des Statistiques"
+
+msgid "Taux"
+msgstr "Taux"
+
+msgid "Titre du cours"
+msgstr "Titre du cours"
+
+msgid "Top 5 Matières Annulées"
+msgstr "Top 5 Matières Annulées"
+
+msgid "Top 5 Professeurs Absents"
+msgstr "Top 5 Professeurs Absents"
+
+msgid "Top 5 Étudiants Absents"
+msgstr "Top 5 Étudiants Absents"
+
+msgid "Tous les professeurs"
+msgstr "Tous les professeurs"
+
+msgid "Voulez-vous vraiment supprimer cette note ?"
+msgstr "Voulez-vous vraiment supprimer cette note ?"
+
+msgid "Voulez-vous vraiment supprimer cette séance ?"
+msgstr "Voulez-vous vraiment supprimer cette séance ?"
+
+msgid "Êtes-vous sûr de vouloir supprimer cet emploi du temps ?"
+msgstr "Êtes-vous sûr de vouloir supprimer cet emploi du temps ?"
+
+msgid "Afficher/masquer le mot de passe"
+msgstr "Afficher/masquer le mot de passe"
+
+msgid "En attente"
+msgstr "En attente"
+
+msgid "h restantes"
+msgstr "h restantes"
+
+msgid "Validée"
+msgstr "Validée"
+
+msgid "Valider maintenant"
+msgstr "Valider maintenant"
+
+msgid ""
+"%(n)s note(s) enregistrée(s). Elles seront prises en compte au bulletin "
+"après validation."
+msgstr ""
+"%(n)s note(s) enregistrée(s). Elles seront prises en compte au bulletin "
+"après validation."
+
+msgid "Absences des élèves"
+msgstr "Absences des élèves"
+
+msgid "Afficher"
+msgstr "Afficher"
+
+msgid "Aucun cours dans votre emploi du temps pour le trimestre en cours."
+msgstr "Aucun cours dans votre emploi du temps pour le trimestre en cours."
+
+msgid "Aucun élève dans ce secteur."
+msgstr "Aucun élève dans ce secteur."
+
+msgid ""
+"Aucune fiche professeur n'est liée à votre compte. Demandez à "
+"l'administration de lier votre compte à votre fiche professeur."
+msgstr ""
+"Aucune fiche professeur n'est liée à votre compte. Demandez à "
+"l'administration de lier votre compte à votre fiche professeur."
+
+msgid "Aucune évaluation pour vos matières."
+msgstr "Aucune évaluation pour vos matières."
+
+msgid "Cette date ne correspond pas au jour de ce cours (%(jour)s)."
+msgstr "Cette date ne correspond pas au jour de ce cours (%(jour)s)."
+
+msgid ""
+"Cochez « Absent » pour chaque élève absent. Une absence reste en attente 72 "
+"h : l'administration peut la justifier avant sa validation."
+msgstr ""
+"Cochez « Absent » pour chaque élève absent. Une absence reste en attente 72 "
+"h : l'administration peut la justifier avant sa validation."
+
+msgid "Date invalide."
+msgstr "Date invalide."
+
+msgid "Derniers cours enregistrés"
+msgstr "Derniers cours enregistrés"
+
+msgid "En attente de validation"
+msgstr "En attente de validation"
+
+msgid "En retard"
+msgstr "En retard"
+
+msgid "Espace professeur"
+msgstr "Espace professeur"
+
+msgid "Formulaire incomplet ou invalide."
+msgstr "Formulaire incomplet ou invalide."
+
+msgid "Justification (facultative)"
+msgstr "Justification (facultative)"
+
+msgid "Justifiée"
+msgstr "Justifiée"
+
+msgid "La date ne peut pas être dans le futur."
+msgstr "La date ne peut pas être dans le futur."
+
+msgid ""
+"Les notes que vous saisissez sont soumises à validation par l'administration"
+" avant d'apparaître au bulletin."
+msgstr ""
+"Les notes que vous saisissez sont soumises à validation par l'administration"
+" avant d'apparaître au bulletin."
+
+msgid ""
+"Les présences de ce cours sont déjà enregistrées : vous pouvez les modifier."
+msgstr ""
+"Les présences de ce cours sont déjà enregistrées : vous pouvez les modifier."
+
+msgid "Ma présence"
+msgstr "Ma présence"
+
+msgid "Ma présence et contenu enseigné"
+msgstr "Ma présence et contenu enseigné"
+
+msgid "Mes cours"
+msgstr "Mes cours"
+
+msgid "Note invalide (0 à 20) pour : %(liste)s"
+msgstr "Note invalide (0 à 20) pour : %(liste)s"
+
+msgid ""
+"Note sur 20. Laissez vide pour ne pas saisir de note. Les notes sont "
+"soumises à validation par l'administration."
+msgstr ""
+"Note sur 20. Laissez vide pour ne pas saisir de note. Les notes sont "
+"soumises à validation par l'administration."
+
+msgid "Notes des devoirs et examens"
+msgstr "Notes des devoirs et examens"
+
+msgid "Notes saisies"
+msgstr "Notes saisies"
+
+msgid "Nouvelle évaluation"
+msgstr "Nouvelle évaluation"
+
+msgid "Présences enregistrées : %(a)s absent(s) sur %(n)s élève(s)."
+msgstr "Présences enregistrées : %(a)s absent(s) sur %(n)s élève(s)."
+
+msgid "Saisir / modifier les notes"
+msgstr "Saisir / modifier les notes"
+
+msgid "Veuillez indiquer le contenu enseigné."
+msgstr "Veuillez indiquer le contenu enseigné."
+
+msgid "Veuillez renseigner votre présence et l'état du cours."
+msgstr "Veuillez renseigner votre présence et l'état du cours."
+
+msgid "Votre présence et le contenu enseigné sont enregistrés."
+msgstr "Votre présence et le contenu enseigné sont enregistrés."
+
+msgid ""
+"Vous ne pouvez créer une évaluation que pour une matière que vous enseignez."
+msgstr ""
+"Vous ne pouvez créer une évaluation que pour une matière que vous enseignez."
+
+msgid "en attente de validation"
+msgstr "en attente de validation"
+
+msgid "Élève fonctionnaire"
+msgstr "Élève fonctionnaire"
+
+msgid "État du cours"
+msgstr "État du cours"
+
+msgid "Évaluation créée. Saisissez maintenant les notes."
+msgstr "Évaluation créée. Saisissez maintenant les notes."
+
+msgid ""
+"Choisissez un cours pour enregistrer les absences des élèves, votre présence"
+" et le contenu enseigné."
+msgstr ""
+"Choisissez un cours pour enregistrer les absences des élèves, votre présence"
+" et le contenu enseigné."
+
+msgid "Compte utilisateur (rôle Professeur)"
+msgstr "Compte utilisateur (rôle Professeur)"

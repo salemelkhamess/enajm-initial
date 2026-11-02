@@ -1,0 +1,551 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block styles %}
+
+<style>
+ /* Style pour les cards */
+.card {
+    border-radius: 10px;
+    border: 1px solid #e0e0e0;
+}
+
+.card-body {
+    padding: 1.25rem;
+}
+
+/* Style du tableau */
+.table {
+    margin-bottom: 0;
+}
+
+.table td {
+    vertical-align: middle !important;
+    padding: 12px 8px;
+}
+
+/* Colonnes du tableau */
+.table td:first-child {
+    text-align: left; /* Labels français */
+    width: 20%;
+    font-weight: 500;
+}
+
+.table td:nth-child(2) {
+    text-align: center; /* Contenu */
+    width: 60%;
+}
+
+.table td:last-child {
+    text-align: right; /* Labels arabes */
+    direction: rtl;
+    width: 20%;
+    font-weight: 500;
+}
+
+/* Style des inputs */
+
+
+
+/* Style pour le badge d'heure */
+.badge-primary {
+    background-color: #4e73df;
+    font-size: 0.9rem;
+    padding: 8px 15px !important;
+}
+
+/* Espacement entre les cards */
+.mb-4 {
+    margin-bottom: 1.5rem !important;
+}
+
+.rtl {
+    direction: rtl;
+    text-align: right;
+}
+
+.ltr {
+    direction: ltr;
+    text-align: left;
+}
+    #filterForm.rtl-lang .row > div.col-lg-4 {
+  float: right;
+}
+
+
+</style>
+{% endblock %}
+{% block content %}
+<div class="box box-primary">
+<p class="text-right mt3 mb-4">
+    <button type="button" id="printm" class="btn btn-info" style="display: none" onclick="printForm()">
+        <i class="fa fa-print"></i> {% trans "Imprimer le formulaire" %}
+    </button>
+</p>
+
+<div class="box-header with-border">
+    {% if is_update %}
+        <h3 class="box-title">{% trans "Enregistrement des séance" %}</h3>
+    {% else %}
+        <h3 class="box-title">{% trans "Creation du pointage" %}</h3>
+    {% endif %}
+</div>
+
+
+
+
+    {% if form.non_field_errors %}
+        <div class="alert alert-danger">
+            {% for error in form.non_field_errors %}
+                <p>{{ error }}</p>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <form method="post"  id="filterForm"   class="{% if LANGUAGE_CODE == 'ar' %}rtl-lang{% endif %}">
+        <div class="box-body">
+            {% csrf_token %}
+
+            {% if is_update %}
+                <input type="hidden" name="is_update" value="true">
+            {% endif %}
+
+        <div class="row">
+            <div class="col-lg-4">
+                <div class="form-group">
+                    <label for="{{ form.secteur.id_for_label }}" class="control-label">
+                        {% trans "Classe" %}
+                    </label>
+                    <div>
+                        {{ form.secteur }}
+                        {% if form.secteur.errors %}
+                            <span class="help-block text-danger">
+                                {% for error in form.secteur.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="form-group">
+                    <label for="{{ form.jour.id_for_label }}" class="control-label">
+                        {% trans "Jour" %}
+                    </label>
+                    <div>
+                        {{ form.jour }}
+                        {% if form.jour.errors %}
+                            <span class="help-block text-danger">
+                                {% for error in form.jour.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+<div class="col-lg-4">
+    <div class="form-group">
+        <label for="{{ form.date.id_for_label }}" class="control-label">
+            {% trans "Date" %}
+        </label>
+        <div>
+            <input type="date"
+                   id="{{ form.date.id_for_label }}"
+                   name="{{ form.date.html_name }}"
+                   value="{{ form.initial.date|default:form.date.value|date:'Y-m-d' }}"
+                   class="form-control">
+            {% if form.date.errors %}
+                <span class="help-block text-danger">
+                    {% for error in form.date.errors %}
+                        {{ error }}
+                    {% endfor %}
+                </span>
+            {% endif %}
+        </div>
+    </div>
+</div>
+        </div>
+
+        </div>
+
+
+            <div id="seances-container">
+                {% if seances_data %}
+
+           {% for seance in seances_data %}
+<div class="card mb-4 shadow-sm">
+    <div class="card-body">
+        <!-- En-tête Séance -->
+<div class="d-flex justify-content-between align-items-center mb-3 no-right-padding">
+    <span class="font-weight-bold">Séance {{ forloop.counter }}</span>
+{#    <span class="font-weight-bold ml-auto" dir="rtl">الحصة {{ forloop.counter }}</span>#}
+</div>
+
+        <!-- Créneau horaire -->
+        <div class="text-center font-weight-bold mb-3">
+            <span class="badge badge-primary p-2">{{ seance.heure_debut }} - {{ seance.heure_fin }}</span>
+        </div>
+
+        <table class="table table-bordered mb-0" style="width:100%">
+            <!-- Matière -->
+            <tr>
+                <td class="text-left align-middle">{% trans "Matière" %}</td>
+                <td class="text-center align-middle">{{ seance.matiere }}</td>
+                <td class="text-right align-middle" dir="rtl">المادة</td>
+            </tr>
+
+            <!-- Professeur -->
+            <tr>
+                <td class="text-left align-middle">{% trans "Professeur" %}</td>
+                <td class="text-center align-middle">{{ seance.professeur }}</td>
+                <td class="text-right align-middle" dir="rtl">الأستاذ</td>
+            </tr>
+
+            <!-- Titre du cours -->
+
+
+            <!-- État -->
+            <tr>
+                <td class="text-left align-middle">{% trans "État" %}</td>
+                <td class="text-center align-middle">
+                    <select name="etat_{{ seance.id }}" class="form-control text-center mx-auto" style="width:90%">
+                        <option value="present">Présent / حاضر</option>
+                        <option value="absent">Absent / غائب</option>
+                        <option value="retard">En retard / متأخر</option>
+                        <option value="conge">Congé / إجازة</option>
+                    </select>
+                </td>
+                <td class="text-right align-middle" dir="rtl">الحالة</td>
+            </tr>
+
+            <!-- Remarques -->
+            <tr>
+                <td class="text-left align-middle">{% trans "Titre du cours" %}</td>
+                <td class="text-center align-middle">
+                    <input type="text" name="remarques_{{ seance.id }}" class="form-control text-center mx-auto" style="width:90%" value="{{ seance.remarques }}">
+                </td>
+                <td class="text-right align-middle" dir="rtl">عنوان الدرس</td>
+            </tr>
+
+            <!-- Signature -->
+            <tr>
+                <td class="text-left align-middle">{% trans "Signature" %}</td>
+                <td class="text-center align-middle">
+                    <div style="height: 40px; margin: 0 auto; width: 150px; border-top: 1px solid #000;"></div>
+                </td>
+                <td class="text-right align-middle" dir="rtl">التوقيع</td>
+            </tr>
+        </table>
+
+        <input type="hidden" name="seance_id_{{ seance.id }}" value="{{ seance.id }}">
+    </div>
+</div>
+{% endfor %}
+                {% elif not is_update %}
+
+                {% endif %}
+            </div>
+        </div>
+        <form class="box-footer">
+            <button type="submit" class="btn btn-primary pull-right">
+                <i class="fa fa-save"></i> {% if is_update %}Mettre à jour{% else %}{% trans "Enregistrer" %}{% endif %}
+            </button>
+            <a href="{% url 'pointage_list' %}" class="btn btn-default">
+                <i class="fa fa-arrow-left"></i> {% trans "Annuler" %}
+            </a>
+        </form>
+        </div>
+
+
+{% endblock %}
+
+{% block scripts %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/locales/bootstrap-datepicker.fr.min.js"></script>
+
+<script>
+    // Fonction pour charger les séances via AJAX
+
+function loadSeances() {
+    var secteurId = $('#id_secteur').val();
+    var jour = $('#id_jour').val();
+
+    if (secteurId && jour) {
+        $.ajax({
+            url: "{% url 'ajax_load_seances' %}",
+            data: {
+                'secteur': secteurId,
+                'jour': jour
+            },
+            beforeSend: function() {
+                $('#seances-container').html('<div class="text-center"><i class="fa fa-spinner fa-spin fa-2x"></i> Chargement...</div>');
+            },
+            success: function(data) {
+                var container = $('#seances-container');
+                container.empty();
+
+                if (data.length > 0) {
+                        $('#printm').show(); // Affiche le bouton
+
+                    $.each(data, function(index, seance) {
+                        // Création de la card
+                        var seanceCard = $('<div class="card mb-4 shadow-sm">');
+                        var cardBody = $('<div class="card-body">');
+
+                        // En-tête Séance
+                        var seanceHeader = $('<div class="d-flex justify-content-between mb-3">')
+                            .append('<span class="text-left font-weight-bold">Séance ' + (index + 1) + '</span>')
+                            .append('<span class="text-right font-weight-bold" dir="rtl">الحصة ' + (index + 1) + '</span>');
+
+                        // Ligne Créneau
+                        var creneauLine = $('<div class="text-center font-weight-bold mb-3">')
+                            .append('<span class="badge badge-primary p-2">' + seance.heure_debut + ' - ' + seance.heure_fin + '</span>');
+
+                        // Tableau des informations
+                        var infoTable = $('<table class="table table-bordered mb-0" style="width:100%">');
+
+                        // Ligne Matière
+                        var matiereRow = $('<tr>')
+                            .append('<td class="text-left align-middle">Matière</td>')
+                            .append('<td class="text-center align-middle">' + seance.matiere + '</td>')
+                            .append('<td class="text-right align-middle" dir="rtl">المادة</td>');
+
+                        // Ligne Professeur
+                        var profRow = $('<tr>')
+                            .append('<td class="text-left align-middle">Professeur</td>')
+                            .append('<td class="text-center align-middle">' + seance.professeur + '</td>')
+                            .append('<td class="text-right align-middle" dir="rtl">الأستاذ</td>');
+
+                        // Options pour l'état
+                        var etatOptions = [
+                            {value: 'present', fr: 'Présent', ar: 'حاضر'},
+                            {value: 'absent', fr: 'Absent', ar: 'غائب'},
+                            {value: 'retard', fr: 'En retard', ar: 'متأخر'},
+                            {value: 'conge', fr: 'Congé', ar: 'إجازة'}
+                        ];
+
+                        // Ligne État
+                        var etatSelect = $('<select name="etat_' + seance.id + '" class="form-control text-center mx-auto" style="width:90%">');
+                        $.each(etatOptions, function(i, opt) {
+                            etatSelect.append($('<option>').attr('value', opt.value).text(opt.fr + ' / ' + opt.ar));
+                        });
+
+                        {% if is_update %}
+                            if (seance.etat) {
+                                etatSelect.val(seance.etat);
+                            }
+                        {% endif %}
+
+                        var etatRow = $('<tr>')
+                            .append('<td class="text-left align-middle">État</td>')
+                            .append($('<td class="text-center align-middle">').append(etatSelect))
+                            .append('<td class="text-right align-middle" dir="rtl">الحالة</td>');
+
+                        // Ligne Remarques
+                        var remarquesInput = $('<input type="text" name="remarques_' + seance.id + '" class="form-control text-center mx-auto" style="width:90%" value="' + (seance.remarques || '') + '">');
+
+                        var remarquesRow = $('<tr>')
+                            .append('<td class="text-left align-middle">Titre du cours</td>')
+                            .append($('<td class="text-center align-middle">').append(remarquesInput))
+                            .append('<td class="text-right align-middle" dir="rtl">عنوان الدرس</td>');
+
+                        // Ligne Signature
+                        var signatureRow = $('<tr>')
+                            .append('<td class="text-left align-middle">Signature</td>')
+                            .append('<td class="text-center align-middle"></td>')
+                            .append('<td class="text-right align-middle" dir="rtl">التوقيع</td>');
+
+                        // Construction du tableau
+                        infoTable.append(matiereRow)
+                                 .append(profRow)
+                                 .append(etatRow)
+                                 .append(remarquesRow)
+                                 .append(signatureRow);
+
+                        // Champ caché pour l'ID
+                        var hiddenInput = $('<input type="hidden" name="seance_id_' + seance.id + '" value="' + seance.id + '">');
+
+                        // Assemblage final
+                        cardBody.append(seanceHeader)
+                                .append(creneauLine)
+                                .append(infoTable)
+                                .append(hiddenInput);
+
+                        seanceCard.append(cardBody);
+                        container.append(seanceCard);
+                    });
+                } else {
+                    container.append('<div class="alert alert-warning">Aucune séance trouvée pour ce secteur et ce jour.</div>');
+                }
+            },
+            error: function() {
+                $('#seances-container').html('<div class="alert alert-danger">Erreur lors du chargement des séances</div>');
+            }
+        });
+    }
+}
+
+
+    // Charger les séances quand les champs secteur ou jour changent
+    $('#id_secteur, #id_jour').change(loadSeances);
+
+    // Si c'est une création et que les champs sont remplis, charger les séances automatiquement
+    {% if not is_update %}
+        if ($('#id_secteur').val() && $('#id_jour').val() && $('#seances-container').is(':empty')) {
+            loadSeances();
+        }
+    {% endif %}
+
+    // Initialiser le datepicker si le champ date en a besoin
+    $('#id_date').datepicker({
+        format: 'yyyy-mm-dd',
+        autoclose: true,
+        todayHighlight: true
+    });
+
+
+     $('.datepicker').datepicker({
+        format: 'yyyy-mm-dd',
+        language: 'fr',
+        autoclose: true,
+        todayHighlight: true,
+        weekStart: 1
+    });
+
+function printForm() {
+    // Créer une fenêtre/frame pour l'impression
+    var printWindow = window.open('', '', 'width=800,height=600');
+
+    // Récupérer le contenu à imprimer
+    var content = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>{% trans "Formulaire de Pointage" %}</title>
+            <style>
+                body { font-family: Arial, sans-serif; }
+                .seance-card {
+                    border: 1px solid #ddd;
+                    margin-bottom: 20px;
+                    padding: 15px;
+                    page-break-inside: avoid;
+                }
+                .seance-header {
+                    display: flex;
+                    justify-content: space-between;
+                    margin-bottom: 10px;
+                    font-weight: bold;
+                }
+                .creneau {
+                    text-align: center;
+                    font-weight: bold;
+                    margin: 10px 0;
+                }
+                table {
+                    width: 100%;
+                    border-collapse: collapse;
+                    margin-bottom: 10px;
+                }
+                th, td {
+                    border: 1px solid #000;
+                    padding: 8px;
+                    text-align: center;
+                }
+                .label-fr { text-align: left; }
+                .label-ar { text-align: right; direction: rtl; }
+                .signature-line {
+                    height: 40px;
+                    border-top: 1px solid #000;
+                    margin-top: 20px;
+                }
+                @page { size: A4; margin: 10mm; }
+                @media print {
+                    body { padding: 20px; }
+                    .no-print { display: none; }
+                }
+            </style>
+        </head>
+        <body>
+            <h2 style="text-align: center;">{% trans "Formulaire de Pointage" %}</h2>
+            <div style="margin-bottom: 20px;">
+                <p><strong>Secteur:</strong> ${$('#id_secteur option:selected').text()}</p>
+                <p><strong>Jour:</strong> ${$('#id_jour option:selected').text()}</p>
+                <p><strong>Date:</strong> ${$('#id_date').val()}</p>
+            </div>
+    `;
+
+    // Ajouter chaque séance au contenu imprimable
+    $('.card').each(function(index) {
+        var card = $(this);
+        content += `
+            <div class="seance-card">
+                <div class="seance-header">
+                    <span>Séance ${index + 1}</span>
+                    <span dir="rtl">الحصة ${index + 1}</span>
+                </div>
+                <div class="creneau">
+                    ${card.find('.badge').text()}
+                </div>
+                <table>
+                    <tr>
+                        <td class="label-fr">{% trans "Matière" %}</td>
+                        <td>${card.find('table tr:eq(0) td:eq(1)').text()}</td>
+                        <td class="label-ar">المادة</td>
+                    </tr>
+                    <tr>
+                        <td class="label-fr">{% trans "Professeur" %}</td>
+                        <td>${card.find('table tr:eq(1) td:eq(1)').text()}</td>
+                        <td class="label-ar">الأستاذ</td>
+                    </tr>
+                    <tr>
+                        <td class="label-fr">{% trans "État" %}</td>
+                        <td></td>
+                        <td class="label-ar">الحالة</td>
+                    </tr>
+                    <tr>
+                        <td class="label-fr">{% trans "Titre du cours" %}</td>
+                        <td></td>
+                        <td class="label-ar">عنوان الدرس</td>
+                    </tr>
+                    <tr>
+                        <td class="label-fr">{% trans "Signature" %}</td>
+                        <td><div class="signature-line"></div></td>
+                        <td class="label-ar">التوقيع</td>
+                    </tr>
+                </table>
+            </div>
+        `;
+    });
+
+    content += `
+        </body>
+        </html>
+    `;
+
+    // Écrire le contenu et lancer l'impression
+    printWindow.document.open();
+    printWindow.document.write(content);
+    printWindow.document.close();
+
+    // Attendre que le contenu soit chargé avant d'imprimer
+    printWindow.onload = function() {
+        setTimeout(function() {
+            printWindow.print();
+            printWindow.close();
+        }, 200);
+    };
+}
+document.addEventListener('DOMContentLoaded', function() {
+    var dateField = document.getElementById('{{ form.date.id_for_label }}');
+    if (dateField && !dateField.value) {
+        var today = new Date();
+        var dd = String(today.getDate()).padStart(2, '0');
+        var mm = String(today.getMonth() + 1).padStart(2, '0');
+        var yyyy = today.getFullYear();
+        dateField.value = yyyy + '-' + mm + '-' + dd;
+    }
+});
+</script>
+{% endblock %}

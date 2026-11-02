@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% load i18n i18n_jours %}
+{% block content %}
+<div class="box box-primary">
+    <div class="box-header with-border">
+        <h3 class="box-title">{% trans "Espace professeur" %} — {{ professeur }}</h3>
+    </div>
+    <div class="box-body">
+        <p>{% blocktrans %}Choisissez un cours pour enregistrer les absences des élèves, votre présence et le contenu enseigné.{% endblocktrans %}</p>
+        <a href="{% url 'espace_prof_notes' %}" class="btn btn-success"><i class="fa fa-edit"></i> {% trans "Notes des devoirs et examens" %}</a>
+    </div>
+</div>
+
+{% for jour, liste in par_jour %}
+<div class="box">
+    <div class="box-header with-border"><h3 class="box-title">{{ jour|jour_i18n }}</h3></div>
+    <div class="box-body table-responsive">
+        <table class="table table-bordered">
+            <thead><tr>
+                <th>{% trans "Heure" %}</th><th>{% trans "Matière" %}</th><th>{% trans "Secteur" %}</th><th>{% trans "Salle" %}</th><th>{% trans "Actions" %}</th>
+            </tr></thead>
+            <tbody>
+            {% for c in liste %}
+                <tr>
+                    <td>{{ c.heure_debut|time:"H:i" }} - {{ c.heure_fin|time:"H:i" }}</td>
+                    <td>{{ c.matiere.nom }}</td><td>{{ c.secteur.nom }}</td><td>{{ c.salle }}</td>
+                    <td>
+                        <a href="{% url 'espace_prof_absences' c.id %}" class="btn btn-sm btn-primary">{% trans "Absences des élèves" %}</a>
+                        <a href="{% url 'espace_prof_seance' c.id %}" class="btn btn-sm btn-info">{% trans "Ma présence et contenu enseigné" %}</a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% empty %}
+<div class="alert alert-warning">{% trans "Aucun cours dans votre emploi du temps pour le trimestre en cours." %}</div>
+{% endfor %}
+{% endblock %}

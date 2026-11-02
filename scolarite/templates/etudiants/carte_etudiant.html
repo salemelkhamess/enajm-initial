@@ -1,0 +1,420 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block styles %}
+ <style>
+
+        .container {
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 50px;
+        }
+
+        .student-card {
+            width: 340px;
+            height: 220px;
+            border-radius: 12px;
+            position: relative;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            overflow: hidden;
+            background: linear-gradient(135deg, #87ceeb 0%, #b0e0e6 100%);
+            border: 1px solid #ddd;
+        }
+
+        .card-back {
+            background: white;
+        }
+
+        /* Bordure colorée exacte - droite */
+        .color-strip {
+            position: absolute;
+            right: 0;
+            top: 0;
+            width: 12px;
+            height: 100%;
+        }
+
+        .color-green {
+            position: absolute;
+            right: 0;
+            top: 0;
+            width: 12px;
+            height: 33.33%;
+            background: #4caf50;
+        }
+
+        .color-red {
+            position: absolute;
+            right: 0;
+            top: 33.33%;
+            width: 12px;
+            height: 33.33%;
+            background: #f44336;
+        }
+
+        .color-yellow {
+            position: absolute;
+            right: 0;
+            top: 66.66%;
+            width: 12px;
+            height: 33.34%;
+            background: #ffeb3b;
+        }
+
+        /* En-tête avec logo */
+        .card-header {
+            padding: 8px 15px 8px 8px;
+            background: rgba(255,255,255,0.95);
+            position: relative;
+            text-align: center;
+        }
+
+        .mauritania-logo {
+            position: absolute;
+            top: 8px;
+            left: 15px;
+            width: 45px;
+            height: 45px;
+            background: radial-gradient(circle, #4caf50 30%, #ffeb3b 50%, #f44336 70%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #333;
+        }
+
+        .mauritania-logo::after {
+            content: "🇲🇷";
+            font-size: 20px;
+        }
+
+        .ministry-info {
+            margin-left: 55px;
+            font-size: 11px;
+            line-height: 1.2;
+            color: #333;
+        }
+
+        .ministry-ar {
+            font-weight: bold;
+            margin-bottom: 2px;
+            direction: rtl;
+        }
+
+        .ministry-fr {
+            font-size: 9px;
+            color: #666;
+        }
+
+        /* Titre de la carte */
+        .card-title {
+            text-align: center;
+            padding: 6px;
+            font-size: 14px;
+            font-weight: bold;
+            color: #333;
+            direction: rtl;
+            background: rgba(255,255,255,0.8);
+        }
+
+        /* Corps de la carte */
+        .card-content {
+            display: flex;
+            padding: 12px;
+            gap: 12px;
+            height: calc(100% - 110px);
+        }
+
+        .student-photo {
+            width: 75px;
+            height: 90px;
+            border: 2px solid #333;
+            border-radius: 4px;
+            overflow: hidden;
+            flex-shrink: 0;
+            background: #f8f8f8;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .student-photo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .student-photo.placeholder {
+            font-size: 10px;
+            color: #666;
+            text-align: center;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 120"><rect width="100" height="120" fill="%23f0f0f0"/><circle cx="50" cy="35" r="15" fill="%23ddd"/><path d="M20 85 Q20 70 35 70 L65 70 Q80 70 80 85 L80 120 L20 120 Z" fill="%23ddd"/></svg>') center/cover;
+        }
+
+        .student-info {
+            flex: 1;
+            font-size: 10px;
+        }
+
+        .info-line {
+            display: flex;
+            margin-bottom: 8px;
+            align-items: center;
+            direction: rtl;
+        }
+
+        .info-label {
+            font-weight: bold;
+            min-width: 80px;
+            color: #333;
+            font-size: 10px;
+        }
+
+        .info-value {
+            flex: 1;
+            padding: 4px 8px;
+            background: white;
+            border: 1px solid #ccc;
+            border-radius: 2px;
+            margin-left: 8px;
+            text-align: center;
+            font-size: 9px;
+        }
+
+        /* Pied de page */
+        .card-footer {
+            position: absolute;
+            bottom: 8px;
+            left: 12px;
+            right: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .academic-period {
+            background: #333;
+            color: white;
+            padding: 3px 10px;
+            border-radius: 10px;
+            font-size: 10px;
+            font-weight: bold;
+        }
+
+        .student-number {
+            background: #333;
+            color: white;
+            padding: 3px 10px;
+            border-radius: 10px;
+            font-size: 10px;
+            font-weight: bold;
+        }
+
+        .director-seal {
+            position: absolute;
+            bottom: 15px;
+            left: 15px;
+            width: 60px;
+            height: 60px;
+            border: 2px solid #1976d2;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(25, 118, 210, 0.1);
+            font-size: 8px;
+            text-align: center;
+            color: #1976d2;
+        }
+
+        /* Verso spécifique */
+        .back-header {
+            background: white;
+            padding: 10px;
+            text-align: center;
+            border-bottom: 2px solid #4caf50;
+        }
+
+        .back-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .back-subtitle {
+            font-size: 12px;
+            color: #666;
+            direction: rtl;
+        }
+
+        .back-content {
+            padding: 15px;
+            font-size: 10px;
+            line-height: 1.4;
+            text-align: justify;
+        }
+
+        .important-notice {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            border-radius: 4px;
+            padding: 8px;
+            margin-bottom: 10px;
+            font-size: 9px;
+            text-align: left;
+        }
+
+        .print-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #1976d2;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+
+        .print-btn:hover {
+            background: #1565c0;
+        }
+
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            .print-btn {
+                display: none;
+            }
+            .container {
+                gap: 50px;
+            }
+            .student-card {
+                page-break-inside: avoid;
+            }
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+<p class="text-right" style="margin-top: 20px">
+    <a onclick="printDiv('printme')" class="btn btn-primary" style="width: 200px">
+        <i class="fa fa-print"></i>
+        {% if LANGUAGE_CODE == 'ar' or LANGUAGE_CODE == 'ar-ma' %}
+            طباعة
+        {% else %}
+            {% trans "Imprimer" %}
+        {% endif %}
+    </a>
+</p>
+    <div class="container" id="printme">
+        <!-- Carte Recto -->
+        <div class="student-card">
+            <!-- Bandes colorées -->
+            <div class="color-green"></div>
+            <div class="color-red"></div>
+            <div class="color-yellow"></div>
+
+            <div class="card-header">
+                <div class="mauritania-logo"></div>
+                <div class="ministry-info">
+                    <div class="ministry-ar">الجمهورية الإسلامية الموريتانية</div>
+                    <div class="ministry-fr">شرف - إخاء - عدل</div>
+                    <div class="ministry-fr">المدرسة الوطنية للإدارة والصحافة والقضاء</div>
+                </div>
+            </div>
+
+            <div class="card-title">بطاقة تلميذ موظف</div>
+
+            <div class="card-content">
+                <div class="student-photo placeholder"></div>
+
+                <div class="student-info">
+                    <div class="info-line">
+                        <span class="info-label">الاسم واللقب :</span>
+                        <span class="info-value">   {{ etudiant.nom }}</span>
+                    </div>
+                    <div class="info-line">
+                        <span class="info-label">الرقم الوطني :</span>
+                        <span class="info-value">{{ etudiant.nni }}</span>
+                    </div>
+                    <div class="info-line">
+                        <span class="info-label">القسم :</span>
+                        <span class="info-value"> {{ etudiant.secteur }}</span>
+                    </div>
+                    <div class="info-line">
+                        <span class="info-label">الرقم :</span>
+                        <span class="info-value"> {{ etudiant.matricule }}</span>
+                    </div>
+
+                           <div class="info-line">
+                        <span class="info-label">الكبويين :</span>
+                        <span class="info-value"> {{ etudiant.annee }} </span>
+                    </div>
+
+
+                </div>
+            </div>
+
+            <div class="card-footer">
+                <div class="academic-period">{{ etudiant.annee }}</div>
+            </div>
+
+
+        </div>
+
+        <!-- Carte Verso -->
+        <div class="student-card card-back">
+            <!-- Bandes colorées -->
+            <div class="color-green"></div>
+            <div class="color-red"></div>
+            <div class="color-yellow"></div>
+
+            <div class="back-header">
+                <div class="back-title">CARTE D'ÉLÈVE FONCTIONNAIRE</div>
+                <div class="back-subtitle">المدرسة الوطنية للإدارة والصحافة والقضاء</div>
+                <div style="font-size: 10px; color: #666; margin-top: 5px;">
+                    École Nationale d'Administration de<br>
+                    Journalisme et de Magistrature
+                </div>
+            </div>
+
+            <div class="back-content" style="text-align: center">
+                <div class="important-notice" style="text-align: center">
+                    <strong style="text-align: center">تنبيه هام  </strong>
+                </div>
+
+                <p style="margin-bottom: 10px; text-align: center">
+                   يرجى من الجهات المعنية تسهيل مهام حامل هذه البطاقة كلما تعلق الأمر بأنشطة التكوين أو البحث، ويُحظر عليه استخدامها خارج المؤسسة في غير المهام المذكورة.
+                </p>
+
+                <div style="background: #f8f9fa; padding: 8px; border-radius: 4px; margin: 10px 0;">
+
+                </div>
+
+                <div style="text-align: center; font-size: 9px; margin-top: 15px; color: #666;">
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+
+{% block scripts %}
+<script>
+function printDiv(divName) {
+    var printContents = document.getElementById(divName).innerHTML;
+    var originalContents = document.body.innerHTML;
+    document.body.innerHTML = printContents;
+    window.print();
+    document.body.innerHTML = originalContents;
+}
+</script>
+{% endblock %}

@@ -1,0 +1,45 @@
+# --- Secrets / configuration locale ---
+.env
+.env.*
+!.env.example
+enajm_pass
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+*.pyo
+*.egg-info/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# --- Environnements virtuels ---
+venv/
+.venv/
+env/
+
+# --- Django ---
+*.log
+db.sqlite3
+*.sqlite3
+staticfiles/
+local_settings.py
+
+# --- Fichiers envoyés par les utilisateurs (photos, documents) ---
+media/photos/
+media/documents/
+media/logos/
+
+# --- Sauvegardes et dumps ---
+*.sql
+*.sql.gz
+*.tar.gz
+*.bak
+backups/
+
+# --- IDE / système ---
+.idea/
+.vscode/
+*.swp
+.DS_Store
+Thumbs.db

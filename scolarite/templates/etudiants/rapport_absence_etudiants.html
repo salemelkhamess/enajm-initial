@@ -1,0 +1,160 @@
+{% extends 'base.html' %}
+{% load i18n_jours %}
+{% load i18n %}
+{% block styles %}
+<style>
+#filterForm.rtl-lang .row > div.col-md-4 {
+  float: right;
+}
+
+table thead th {
+  /* Vos styles ici */
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="box">
+    <div class="box-body">
+        <form method="get" id="filterForm" class="{% if langue == 'ar' %}rtl-lang{% endif %}">
+           <div class="row">
+                <div class="col-md-4">
+                    <label>{% trans "Start Date" %}</label>
+                    <input type="date" name="date_debut" class="form-control" value="{{ date_debut_str }}">
+                </div>
+                <div class="col-md-4">
+                    <label>{% trans "End Date" %}</label>
+                    <input type="date" name="date_fin" class="form-control" value="{{ date_fin_str }}">
+                </div>
+                <div class="col-md-4 align-self-end" style="margin-top: 24px">
+                    <button type="submit" class="btn btn-primary mt-2">{% trans "Search" %}</button>
+                </div>
+           </div>
+        </form>
+    </div>
+</div>
+
+<br>
+
+
+{% if date_debut and date_fin %}
+    <p class="text-right">
+    <a onclick="printDiv('printme')" class="btn btn-primary" style="width: 200px">
+        <i class="fa fa-print"></i> {% trans "Print" %}
+    </a>
+</p>
+<div class="box" id="printme">
+    {% include "entete/show.html" with entete=entete %}
+
+    <div class="box-header">
+<h3 align="center">
+    {% if langue == 'ar' %}
+        تقرير حضور الطلاب الموظفون
+    {% elif langue == 'fr' %}
+        Rapport de présence des éléves fonctionnaire
+    {% else %}
+        {% trans "Student Attendance Report" %}
+    {% endif %}
+</h3>    </div>
+
+    <div class="box-body">
+        <h3 align="center">
+{% if langue == 'ar' %}
+    الحضور اليومي  للتلاميذ الموظفين
+{% elif langue == 'fr' %}
+    Présence quotidienne des élèves fonctionnaires
+{% else %}
+    Student Attendance Daily
+{% endif %}            {% if date_debut %}
+                - {{ date_debut|date:"d/m/Y" }}
+                {% if date_fin %}
+                    {% blocktrans %} - {% endblocktrans %} {{ date_fin|date:"d/m/Y" }}
+                {% endif %}
+            {% endif %}
+        </h3>
+
+        <table border="1" width="100%" style="text-align: center; direction: rtl;">
+            <thead>
+                <tr style="background-color: #2e383c; color: white; text-align: left">
+                    <th>{% trans "Jour" %}</th>
+                    <th>{% trans "Specialty" %}</th>
+                    <th>{% trans "Subject" %}</th>
+                    <th>{% trans "Etudiant" %}</th>
+                    <th>{% trans "Status" %}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% regroup presences by etudiant.secteur.nom as specialites %}
+                {% for specialite in specialites %}
+                    {% for presence in specialite.list %}
+                        {% if forloop.first %}
+                            <tr>
+                                <td>{{ presence.jour|jour_i18n }} {{ presence.date_cours|time:"H:i" }}</td>
+                                <td rowspan="{{ specialite.list|length }}">{{ specialite.grouper }}</td>
+                                <td>{{ presence.matiere.nom }}</td>
+                                <td>{{ presence.etudiant.nom }} {{ presence.etudiant.prenom }}</td>
+                                <td>
+                                    <span>{% if presence.present %}{% trans "Present" %}{% else %}{% trans "Absent" %}{% endif %}</span>
+                                </td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td>{{ presence.jour|jour_i18n }} {{ presence.date_cours|time:"H:i" }}</td>
+                                <td>{{ presence.matiere.nom }}</td>
+                                <td>{{ presence.etudiant.nom }} {{ presence.etudiant.prenom }}</td>
+                                <td>
+                                    <span>{% if presence.present %}{% trans "Present" %}{% else %}{% trans "Absent" %}{% endif %}</span>
+                                </td>
+                            </tr>
+                        {% endif %}
+                    {% endfor %}
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <!-- Résumé des absences -->
+        <div class="mt-4" style="direction: rtl;">
+<h4>
+    {% if langue == 'ar' %}
+        ملخص الغيابات حسب الطالب:
+    {% elif langue == 'fr' %}
+        Résumé des absences par étudiant:
+    {% else %}
+        {% trans "Absence Summary by Student" %}:
+    {% endif %}
+</h4>            <table border="1" width="100%" style="text-align: center;">
+                <thead>
+                    <tr style="background-color: #f2f2f2;">
+                        <th>{% trans "Etudiant" %}</th>
+                        <th>{% trans "Matricule" %}</th>
+                        <th>{% trans "Number of Absences" %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for absence in absences_par_etudiant %}
+                    <tr>
+                        <td>{{ absence.etudiant__nom }} {{ absence.etudiant__prenom }}</td>
+                        <td>{{ absence.etudiant__matricule }}</td>
+                        <td>{{ absence.total_absences }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+function printDiv(divName) {
+    var printContents = document.getElementById(divName).innerHTML;
+    var originalContents = document.body.innerHTML;
+    document.body.innerHTML = printContents;
+    window.print();
+    document.body.innerHTML = originalContents;
+}
+</script>
+{% endblock %}

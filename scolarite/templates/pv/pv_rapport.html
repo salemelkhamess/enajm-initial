@@ -1,0 +1,150 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block styles %}
+<style>
+    @media print {
+        a[href]:after {
+            content: none !important;
+        }
+        @page {
+            margin-top: 0;
+            margin-bottom: 0;
+        }
+        body {
+            padding-top: 72px;
+            padding-bottom: 72px;
+        }
+    }
+    #filterForm.rtl-lang .row > div.col-md-2 {
+  float: right;
+}
+
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="box">
+    <div class="box-header">
+        <h3>{% trans "Recherche entre deux dates" %}</h3>
+    </div>
+
+    <div class="box-body">
+        <form method="get"  class="{% if langue == 'ar' %}rtl-lang{% endif %}">
+            <div class="col-md-4">
+                <label>{% trans "Date début" %}</label>
+                <input type="date" name="date_debut" class="form-control" value="{{ date_debut }}">
+            </div>
+            <div class="col-md-4">
+                <label>{% trans "Date fin" %}</label>
+                <input type="date" name="date_fin" class="form-control" value="{{ date_fin }}">
+            </div>
+            <div class="col-md-4 align-self-end" style="margin-top: 24px">
+                <button type="submit" class="btn btn-primary mt-2">{% trans "Rechercher" %}</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<p class="text-right">
+    <a onclick="printDiv('printme')" class="btn btn-primary" style="width: 200px"><i class="fa fa-print"></i> {% trans "Imprimer" %}</a>
+</p>
+
+    <form method="get"  id="filterForm"   class="{% if langue == 'ar' %}rtl-lang{% endif %}">
+  <div class="row">
+        <div class="col-md-2">
+        <label>{% trans "Année" %}</label>
+        <select name="annee" class="form-control">
+            <option value="">{% trans "Toutes les années" %}</option>
+            {% for annee in annees %}
+            <option value="{{ annee.id }}" {% if annee.id|stringformat:"s" == annee_id %}selected{% endif %}>{{ annee }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="col-md-2">
+        <label>{% trans "Trimestre" %}</label>
+        <select name="trimestre" class="form-control">
+            <option value="">{% trans "Tous les trimestres" %}</option>
+            {% for trimestre in trimestres %}
+            <option value="{{ trimestre.id }}" {% if trimestre.id|stringformat:"s" == trimestre_id %}selected{% endif %}>{{ trimestre.nom_fr }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="col-md-2">
+        <label>{% trans "Secteur" %}</label>
+        <select name="secteur" class="form-control">
+            <option value="">{% trans "Tous les secteurs" %}</option>
+            {% for secteur in secteurs %}
+            <option value="{{ secteur.id }}" {% if secteur.id|stringformat:"s" == secteur_id %}selected{% endif %}>{{ secteur.nom }}</option>
+            {% endfor %}
+        </select>
+    </div>
+  </div>
+</form>
+
+{% if secteur_id %}
+<div class="box" id="printme">
+
+  {% include "entete/show.html" with entete=entete  %}
+
+    <div class="box-header">
+        <h3 class="card-title">{% trans "Rapport des PV" %}</h3>
+    </div>
+    <div class="box-body">
+        <table border="1px solid black" style="width: 100%">
+            <thead>
+                <tr>
+                    <th>{% trans "Étudiant" %}</th>
+                    <th>{% trans "Matricule" %}</th>
+                    <th>{% trans "Type" %}</th>
+                    <th>{% trans "Date" %}</th>
+                    <th>{% trans "Contenu" %}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for pv in pvs %}
+                <tr>
+                    <td>{{ pv.etudiant.nom }} {{ pv.etudiant.prenom }}</td>
+                    <td>{{ pv.etudiant.matricule }}</td>
+                    <td>{{ pv.get_type_display }}</td>
+                    <td>{{ pv.date_creation|date:"d/m/Y" }}</td>
+                    <td>{{ pv.contenu }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5">{% trans "Aucun PV trouvé pour cette période." %}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+    {% endif %}
+{% endblock %}
+
+{% block scripts %}
+<script>
+    function printDiv(divName){
+        var printContents = document.getElementById(divName).innerHTML;
+        var originalContents = document.body.innerHTML;
+        document.body.innerHTML = printContents;
+        window.print();
+        document.body.innerHTML = originalContents;
+    }
+
+      // On attend que le DOM soit chargé
+    document.addEventListener('DOMContentLoaded', function() {
+        // Récupère le formulaire
+        const form = document.getElementById('filterForm');
+
+        // Pour chaque select dans le formulaire
+        form.querySelectorAll('select').forEach(function(select) {
+            select.addEventListener('change', function() {
+                // Soumet le formulaire dès qu'une sélection change
+                form.submit();
+            });
+        });
+    });
+
+
+</script>
+{% endblock %}

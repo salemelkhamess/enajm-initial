@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block content %}
+
+<div class="box">
+    <div class="box-header box-info">
+<h3>{% trans "Gestion des notes spéciales" %}</h3>
+    </div>
+
+    <div class="box-body">
+        <!-- Formulaire de filtrage -->
+        <form method="get" class="form-inline mb-4">
+            <!-- Sélection de la formation -->
+            <div class="form-group mr-3">
+                <select name="formation" class="form-control select" onchange="this.form.submit()">
+                    <option value="">{% trans "-- Formation --" %}</option>
+                    {% for form in formations %}
+                    <option value="{{ form.id }}" {% if selected_formation == form.id|stringformat:"s" %}selected{% endif %}>
+                        {{ form.nom }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- Sélection du secteur -->
+            {% if secteurs %}
+            <div class="form-group mr-3">
+                <select name="secteur" class="form-control select" onchange="this.form.submit()">
+                    <option value="">{% trans "-- Secteur --" %}</option>
+                    {% for secteur in secteurs %}
+                    <option value="{{ secteur.id }}" {% if selected_secteur == secteur.id|stringformat:"s" %}selected{% endif %}>
+                        {{ secteur.nom }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            {% endif %}
+
+            <!-- Sélection du trimestre -->
+            {% if selected_secteur %}
+            <div class="form-group">
+                <select name="trimestre" class="form-control select" onchange="this.form.submit()">
+                    <option value="">{% trans "-- Trimestre --" %}</option>
+                    {% for trim in trimestres %}
+                    <option value="{{ trim.id }}" {% if selected_trimestre == trim.id|stringformat:"s" %}selected{% endif %}>
+                        {{ trim.numero_trimestre }} ({{ trim.annee }})
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            {% endif %}
+        </form>
+
+        <!-- Affichage des étudiants et notes -->
+        {% if etudiants and selected_trimestre %}
+        <form method="post">
+            {% csrf_token %}
+            <input type="hidden" name="trimestre" value="{{ selected_trimestre }}">
+
+            <table class="table table-bordered table-hover">
+                <thead class="thead-light">
+                    <tr>
+                        <th>{% trans "Étudiant" %}</th>
+                        <th>{% trans "Note Directeur" %}</th>
+                        <th>{% trans "Note Étude" %}</th>
+                        <th>{% trans "Note Formation" %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for etu in etudiants %}
+                    <tr>
+                        <td>{{ etu.nom }} {{ etu.prenom }} <small>({{ etu.matricule }})</small></td>
+                        <td>
+                            <input type="number" step="0.01" min="0" max="20"
+                                   name="note_directeur_{{ etu.id }}" class="form-control"
+                                   value="{{ etu.notes.directeur }}">
+                        </td>
+                        <td>
+                            <input type="number" step="0.01" min="0" max="20"
+                                   name="note_etude_{{ etu.id }}" class="form-control"
+                                   value="{{ etu.notes.etude }}">
+                        </td>
+                        <td>
+                            <input type="number" step="0.01" min="0" max="20"
+                                   name="note_formation_{{ etu.id }}" class="form-control"
+                                   value="{{ etu.notes.formation }}">
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <div class="text-right mt-3">
+                <button type="submit" class="btn btn-success">
+                    <i class="fa fa-save"></i> {% trans "Enregistrer les notes" %}
+                </button>
+            </div>
+        </form>
+        {% elif selected_secteur and not etudiants %}
+        <div class="alert alert-warning">
+            <i class="fa fa-exclamation-triangle"></i>
+            {% trans "Aucun étudiant trouvé pour ce secteur." %}
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}

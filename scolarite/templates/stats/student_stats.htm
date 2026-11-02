@@ -1,0 +1,728 @@
+<!-- templates/stats/student_stats.html -->
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block title %}{% trans "Statistiques Étudiants" %}{% endblock %}
+
+{% block content %}
+<div class="box">
+<div class="box-header"></div>
+<div class="box-body">
+   <div class="row">
+
+        <div class="col-md-12">
+          <!-- Custom Tabs (Pulled to the right) -->
+          <div class="nav-tabs-custom">
+            <ul class="nav nav-tabs pull-right">
+              <li class="active"><a href="#tab_1-1" data-toggle="tab">{% trans "Statistique Aujourd'hui" %}</a></li>
+              <li><a href="#tab_2-2" data-toggle="tab">{% trans "Statistique cette semaine" %}</a></li>
+              <li><a href="#tab_3-2" data-toggle="tab">{% trans "Statistique ce mois" %}</a></li>
+
+            </ul>
+            <div class="tab-content">
+              <div class="tab-pane active" id="tab_1-1">
+                      <div class="row">
+        <div class="col-12">
+            <div class="box">
+                <div class="box-header">
+                    <h3 class="box-title">
+                        <i class="fa fa-chart-bar"></i>
+                        {% trans "Statistiques des Présences Étudiants" %}
+                    </h3>
+                </div>
+            <div class="alert alert-info">
+                            <h1 align="center">{% trans "Statistique Aujourd'hui" %}</h1>
+
+            </div>
+                <div class="box-body">
+                    <!-- Indicateur de chargement -->
+                    <div id="loading" class="text-center" style="display: none;">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="sr-only">{% trans "Chargement..." %}</span>
+                        </div>
+                        <p class="mt-2">{% trans "Chargement des données..." %}</p>
+                    </div>
+
+                    <!-- Statistiques principales -->
+                    <div class="row mb-4">
+{#                        <div class="col-lg-3 col-6">#}
+{#                            <div class="small-box bg-success">#}
+{#                                <div class="inner">#}
+{#                                    <h3 id="presentCount">{{ etudiants_presents.jour }}</h3>#}
+{#                                    <p>{% trans "Présences" %}</p>#}
+{#                                </div>#}
+{#                                <div class="icon">#}
+{#                                    <i class="ion ion-person-add"></i>#}
+{#                                </div>#}
+{#                            </div>#}
+{#                        </div>#}
+
+                        <div class="col-lg-4 col-6">
+                            <div class="small-box bg-danger">
+                                <div class="inner">
+{#                                    <h3 id="absentCount">{% widthratio total_absent 2 1 %}</h3>#}
+                                                                        <h3 id="absentCount">{{ absence_par_jour }}</h3>
+
+                                    <p>{% trans "Absences" %}</p>
+                                </div>
+                                <div class="icon">
+                                    <i class="ion ion-person-stalker"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4 col-6">
+                            <div class="small-box bg-warning">
+                                <div class="inner">
+                                    <h3 id="justifiedCount">{{  etudiants_absents_justifies.jour }}</h3>
+                                    <p>{% trans "Justifiées" %}</p>
+                                </div>
+                                <div class="icon">
+                                    <i class="ion ion-document-text"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4 col-6">
+                            <div class="small-box bg-info">
+                                <div class="inner">
+                                    <h3 id="absentPercentage">{{ absent_percentage }}%</h3>
+                                    <p>{% trans "Taux d'absence" %}</p>
+                                </div>
+                                <div class="icon">
+                                    <i class="ion ion-stats-bars"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Graphiques -->
+                <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">
+                        <i class="fa fa-pie-chart"></i>
+                        {% trans "Distribution today" %}
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <canvas id="todayChart" height="250"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">
+                        <i class="fa fa-bar-chart"></i>
+                        {% trans "Details today" %}
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <canvas id="todayBarChart" height="250"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+                    <!-- Tableaux -->
+                    <div class="row mt-4">
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h4 class="card-title">
+                                        <i class="fa fa-list"></i>
+                                        {% trans "Taux de présence par classe" %}
+                                    </h4>
+                                </div>
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th>{% trans "Classe" %}</th>
+                                                    <th>{% trans "Présences" %}</th>
+                                                    <th>{% trans "Absences" %}</th>
+                                                    <th>{% trans "Taux de presence" %}</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="classTableBody">
+                                               {% for stat in today_secteur_stats %}
+<tr>
+    <td>{{ stat.secteur_nom }}</td>
+    <td>{{ stat.present }}</td>
+    <td>{{ stat.absent }}</td>
+    <td>
+        <div class="progress progress-xs">
+            <div class="progress-bar bg-success" style="width: {{ stat.taux_presence }}%"></div>
+        </div>
+        <span class="badge bg-success">{{ stat.taux_presence }}%</span>
+    </td>
+</tr>
+{% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h4 class="card-title">
+                                        <i class="fa fa-list"></i>
+                                        {% trans "Étudiants les plus absents" %}
+                                    </h4>
+                                </div>
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th>{% trans "Étudiant" %}</th>
+                                                    <th>{% trans "Classe" %}</th>
+                                                    <th>{% trans "Absences" %}</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="studentTableBody">
+                                                {% for stat in today_student_stats %}
+                                                <tr>
+                                                    <td>{{ stat.etudiant__prenom }} {{ stat.etudiant__nom }}</td>
+                                                    <td>{{ stat.etudiant__classe }}</td>
+                                                    <td>
+                                                        <span class="badge bg-danger">{{ stat.absences }}</span>
+                                                    </td>
+
+                                                </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+              </div>
+
+              <div class="tab-pane" id="tab_2-2">
+                     <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i class="fa fa-chart-bar"></i>
+                        {% trans "Statistiques des Présences Étudiants" %}
+                    </h3>
+                </div>
+
+                  <div class="alert alert-info">
+                            <h1 align="center">{% trans "Statistique cette semaine" %}</h1>
+
+            </div>
+                <div class="card-body">
+                    <!-- Indicateur de chargement -->
+                    <div id="loading" class="text-center" style="display: none;">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="sr-only">{% trans "Chargement..." %}</span>
+                        </div>
+                        <p class="mt-2">{% trans "Chargement des données..." %}</p>
+                    </div>
+
+                    <!-- Statistiques principales -->
+                    <div class="row mb-4">
+{#                        <div class="col-lg-3 col-6">#}
+{#                            <div class="small-box bg-success">#}
+{#                                <div class="inner">#}
+{#                                    <h3 id="presentCount">{{ etudiants_presents.semaine }}</h3>#}
+{#                                    <p>{% trans "Présences" %}</p>#}
+{#                                </div>#}
+{#                                <div class="icon">#}
+{#                                    <i class="ion ion-person-add"></i>#}
+{#                                </div>#}
+{#                            </div>#}
+{#                        </div>#}
+
+                        <div class="col-lg-4 col-6">
+                            <div class="small-box bg-danger">
+                                <div class="inner">
+{#                                    <h3 id="absentCount">{% widthratio total_absent 2 1 %}</h3>#}
+                                                                        <h3 id="absentCount">{{ absence_par_semaine }}</h3>
+
+                                    <p>{% trans "Absences" %}</p>
+                                </div>
+                                <div class="icon">
+                                    <i class="ion ion-person-stalker"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4 col-6">
+                            <div class="small-box bg-warning">
+                                <div class="inner">
+                                    <h3 id="justifiedCount">{{   etudiants_absents_justifies.semaine }}</h3>
+                                    <p>{% trans "Justifiées" %}</p>
+                                </div>
+                                <div class="icon">
+                                    <i class="ion ion-document-text"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4 col-6">
+                            <div class="small-box bg-info">
+                                <div class="inner">
+                                    <h3 id="absentPercentage">{{ absent_percentageps }}%</h3>
+                                    <p>{% trans "Taux d'absence" %}</p>
+                                </div>
+                                <div class="icon">
+                                    <i class="ion ion-stats-bars"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Graphiques -->
+                    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">
+                        <i class="fa fa-pie-chart"></i>
+                        {% trans "Distribution this week" %}
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <canvas id="weekChart" height="250"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">
+                        <i class="fa fa-bar-chart"></i>
+                        {% trans "Details this week" %}
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <canvas id="weekBarChart" height="250"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+                    <!-- Tableaux -->
+                    <div class="row mt-4">
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h4 class="card-title">
+                                        <i class="fa fa-list"></i>
+                                        {% trans "Taux de présence par classe" %}
+                                    </h4>
+                                </div>
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th>{% trans "Classe" %}</th>
+                                                    <th>{% trans "Présences" %}</th>
+                                                    <th>{% trans "Absences" %}</th>
+                                                    <th>{% trans "Taux de presence" %}</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="classTableBody">
+                                               {% for stat in week_secteur_stats %}
+<tr>
+    <td>{{ stat.secteur_nom }}</td>
+    <td>{{ stat.present }}</td>
+    <td>{{ stat.absent }}</td>
+    <td>
+        <div class="progress progress-xs">
+            <div class="progress-bar bg-success" style="width: {{ stat.taux_presence }}%"></div>
+        </div>
+        <span class="badge bg-success">{{ stat.taux_presence }}%</span>
+    </td>
+</tr>
+{% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h4 class="card-title">
+                                        <i class="fa fa-list"></i>
+                                        {% trans "Étudiants les plus absents" %}
+                                    </h4>
+                                </div>
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th>{% trans "Étudiant" %}</th>
+                                                    <th>{% trans "Classe" %}</th>
+                                                    <th>{% trans "Absences" %}</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="studentTableBody">
+                                                {% for stat in week_student_stats %}
+                                                <tr>
+                                                    <td>{{ stat.etudiant__prenom }} {{ stat.etudiant__nom }}</td>
+                                                    <td>{{ stat.etudiant__classe }}</td>
+                                                    <td>
+                                                        <span class="badge bg-danger">{{ stat.absences }}</span>
+                                                    </td>
+
+                                                </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+              </div>
+
+              <div class="tab-pane" id="tab_3-2">
+                     <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i class="fa fa-chart-bar"></i>
+                        {% trans "Statistiques des Présences Étudiants" %}
+                    </h3>
+                </div>
+                     <div class="alert alert-info">
+                            <h1 align="center">{% trans "Statistique ce mois" %}</h1>
+
+            </div>
+                <div class="card-body">
+
+                    <!-- Indicateur de chargement -->
+                    <div id="loading" class="text-center" style="display: none;">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="sr-only">{% trans "Chargement..." %}</span>
+                        </div>
+                        <p class="mt-2">{% trans "Chargement des données..." %}</p>
+                    </div>
+
+                    <!-- Statistiques principales -->
+                    <div class="row mb-4">
+{#                        <div class="col-lg-3 col-6">#}
+{#                            <div class="small-box bg-success">#}
+{#                                <div class="inner">#}
+{#                                    <h3 id="presentCount">{{ etudiants_presents.total }} / {{ etudiants_presents.mois }}</h3>#}
+{#                                    <p>{% trans "Présences" %}</p>#}
+{#                                </div>#}
+{#                                <div class="icon">#}
+{#                                    <i class="ion ion-person-add"></i>#}
+{#                                </div>#}
+{#                            </div>#}
+{#                        </div>#}
+
+                        <div class="col-lg-4 col-6">
+                            <div class="small-box bg-danger">
+                                <div class="inner">
+{#                                    <h3 id="absentCount">{% widthratio total_absent 2 1 %}</h3>#}
+                                                                        <h3 id="absentCount">{{ absence_par_mois }}</h3>
+
+                                    <p>{% trans "Absences" %}</p>
+                                </div>
+                                <div class="icon">
+                                    <i class="ion ion-person-stalker"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4 col-6">
+                            <div class="small-box bg-warning">
+                                <div class="inner">
+                                    <h3 id="justifiedCount"> {{ etudiants_absents_justifies.mois}}</h3>
+                                    <p>{% trans "Justifiées" %}</p>
+                                </div>
+                                <div class="icon">
+                                    <i class="ion ion-document-text"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4 col-6">
+                            <div class="small-box bg-info">
+                                <div class="inner">
+                                    <h3 id="absentPercentage">{{ absent_percentagepm }}%</h3>
+                                    <p>{% trans "Taux d'absence" %}</p>
+                                </div>
+                                <div class="icon">
+                                    <i class="ion ion-stats-bars"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Graphiques -->
+            <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">
+                        <i class="fa fa-pie-chart"></i>
+                        {% trans "Distribution this month" %}
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <canvas id="monthChart" height="250"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">
+                        <i class="fa fa-bar-chart"></i>
+                        {% trans "Details this month" %}
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <canvas id="monthBarChart" height="250"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+                    <!-- Tableaux -->
+                    <div class="row mt-4">
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h4 class="card-title">
+                                        <i class="fa fa-list"></i>
+                                        {% trans "Taux de présence par classe" %}
+                                    </h4>
+                                </div>
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th>{% trans "Classe" %}</th>
+                                                    <th>{% trans "Présences" %}</th>
+                                                    <th>{% trans "Absences" %}</th>
+                                                    <th>{% trans "Taux de presence" %}</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="classTableBody">
+                                               {% for stat in month_secteur_stats %}
+<tr>
+    <td>{{ stat.secteur_nom }}</td>
+    <td>{{ stat.present }}</td>
+    <td>{{ stat.absent }}</td>
+    <td>
+        <div class="progress progress-xs">
+            <div class="progress-bar bg-success" style="width: {{ stat.taux_presence }}%"></div>
+        </div>
+        <span class="badge bg-success">{{ stat.taux_presence }}%</span>
+    </td>
+</tr>
+{% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h4 class="card-title">
+                                        <i class="fa fa-list"></i>
+                                        {% trans "Étudiants les plus absents" %}
+                                    </h4>
+                                </div>
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th>{% trans "Étudiant" %}</th>
+                                                    <th>{% trans "Classe" %}</th>
+                                                    <th>{% trans "Absences" %}</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="studentTableBody">
+                                                {% for stat in month_student_stats %}
+                                                <tr>
+                                                    <td>{{ stat.etudiant__prenom }} {{ stat.etudiant__nom }}</td>
+                                                    <td>{{ stat.etudiant__classe }}</td>
+                                                    <td>
+                                                        <span class="badge bg-danger">{{ stat.absences }}</span>
+                                                    </td>
+
+                                                </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+</div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+// Fonction pour créer un graphique en camembert
+function createPieChart(id, labels, data, colors) {
+    const ctx = document.getElementById(id).getContext('2d');
+    return new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: labels,
+            datasets: [{
+                data: data,
+                backgroundColor: colors || ['#28a745', '#dc3545', '#ffc107'],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'right',
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return `${context.label}: ${context.raw}`;
+                        }
+                    }
+                }
+            }
+        }
+    });
+}
+
+// Fonction pour créer un graphique à barres
+function createBarChart(id, labels, data) {
+    const ctx = document.getElementById(id).getContext('2d');
+    return new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [
+                {
+                    label: labels[0],
+                    data: [data[0]],
+                    backgroundColor: 'rgba(40, 167, 69, 0.8)',
+                    borderColor: 'rgba(40, 167, 69, 1)',
+                    borderWidth: 1
+                },
+                {
+                    label: labels[1],
+                    data: [data[1]],
+                    backgroundColor: 'rgba(220, 53, 69, 0.8)',
+                    borderColor: 'rgba(220, 53, 69, 1)',
+                    borderWidth: 1
+                },
+                {
+                    label: labels[2],
+                    data: [data[2]],
+                    backgroundColor: 'rgba(255, 193, 7, 0.8)',
+                    borderColor: 'rgba(255, 193, 7, 1)',
+                    borderWidth: 1
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { position: 'top' }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    max: 100,
+                    title: {
+                        display: true,
+                        text: 'Pourcentage '
+                    }
+                }
+            }
+        }
+    });
+}
+
+// Initialisation des graphiques
+document.addEventListener('DOMContentLoaded', function() {
+    // Graphiques pour aujourd'hui
+    createPieChart('todayChart',
+        {{ daily_labels|safe }},
+        {{ daily_data|safe }},
+        ['#28a745', '#dc3545', '#ffc107']
+    );
+    createBarChart('todayBarChart',
+        {{ daily_labels|safe }},
+        {{ daily_data|safe }}
+    );
+
+    // Graphiques pour cette semaine
+    createPieChart('weekChart',
+        {{ weekly_labels|safe }},
+        {{ weekly_data|safe }},
+        ['#28a745', '#dc3545', '#ffc107']
+    );
+    createBarChart('weekBarChart',
+        {{ weekly_labels|safe }},
+        {{ weekly_data|safe }}
+    );
+
+    // Graphiques pour ce mois
+    createPieChart('monthChart',
+        {{ monthly_labels|safe }},
+        {{ monthly_data|safe }},
+        ['#28a745', '#dc3545', '#ffc107']
+    );
+    createBarChart('monthBarChart',
+        {{ monthly_labels|safe }},
+        {{ monthly_data|safe }}
+    );
+});
+</script>
+{% endblock %}

@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% load i18n %}  {# Charger les tags de traduction #}
+
+{% block content %}
+<div class="box">
+    <div class="box-header">
+        <h3 class="box-title">{% trans "evs" %}</h3>
+    </div>
+    <div class="box-body">
+
+        <form method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">{% trans "Supprimer" %}</button>
+            <a href="{% url 'formation_list' %}" class="btn btn-secondary">{% trans "Annuler" %}</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

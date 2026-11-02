@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="box box-default">
+    <div class="box-header with-border">
+        <h3 class="card-title">
+            {% if form.instance.pk %}Modifier{% else %}Ajouter{% endif %} une séance
+        </h3>
+    </div>
+
+    {% if form.non_field_errors %}
+        <div class="alert alert-danger">
+            {% for error in form.non_field_errors %}
+                {{ error }}
+            {% endfor %}
+        </div>
+    {% endif %}
+    <div class="box-body">
+               <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-success"><i class="fa fa-save"></i> Enregistrer</button>
+            <a href="{% url 'emploi_liste' %}" class="btn btn-secondary"><i class="fa fa-arrow-left"></i> Retour</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

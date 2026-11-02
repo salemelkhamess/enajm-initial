@@ -1,0 +1,46 @@
+{% extends 'rapports/_base_rapport.html' %}
+{% block filtres_extra %}
+<div class="form-group">
+    <label>{{ L2.seuils }}</label>
+    <input type="text" name="seuils" class="form-control" value="{{ seuils_str }}" placeholder="4,8,12">
+</div>
+<div class="form-group">
+    <label>{{ L2.statut }}</label>
+    <select name="statut" class="form-control">
+        <option value="non_justifiees" {% if statut == 'non_justifiees' %}selected{% endif %}>{{ L2.non_justifiees }}</option>
+        <option value="justifiees" {% if statut == 'justifiees' %}selected{% endif %}>{{ L2.justifiees }}</option>
+        <option value="en_attente" {% if statut == 'en_attente' %}selected{% endif %}>{{ L2.en_attente }}</option>
+        <option value="toutes" {% if statut == 'toutes' %}selected{% endif %}>{{ L2.toutes }}</option>
+    </select>
+</div>
+{% endblock %}
+{% block tableau %}
+{% if lignes %}
+<table class="rapport-table">
+    <thead>
+        <tr>
+            <th>{{ L.matiere }}</th>
+            {% for s in seuils %}<th>{{ L2.au_moins }} {{ s }} {{ L.seances|lower }} ({{ s|add:s }} h)</th>{% endfor %}
+        </tr>
+    </thead>
+    <tbody>
+    {% for m in lignes %}
+        <tr>
+            <td><strong>{{ m.nom }}</strong>{% if m.secteur %}<br><span class="rapport-sub">{{ m.secteur }}</span>{% endif %}</td>
+            {% for c in m.colonnes %}
+            <td>
+                <strong>{{ c.nombre }}</strong> {{ L2.etudiants }}
+                {% for e in c.etudiants %}<div class="rapport-sub">{{ e.nom }} ({{ e.n }})</div>{% endfor %}
+            </td>
+            {% endfor %}
+        </tr>
+    {% endfor %}
+        <tr class="total">
+            <td>{{ L.total }}</td>
+            {% for t in totaux %}<td class="num">{{ t.nombre }}</td>{% endfor %}
+        </tr>
+    </tbody>
+</table>
+<p class="rapport-sub">{{ L2.note }}</p>
+{% else %}<p class="text-center">{{ L.aucune }}</p>{% endif %}
+{% endblock %}

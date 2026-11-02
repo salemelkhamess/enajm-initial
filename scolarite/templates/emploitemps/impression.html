@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% load i18n_jours %}
+
+{% block content %}
+    <p class="text-right"><a onclick="printDiv('printme')"  class="btn btn-primary" style="width: 200px"><i class="fa fa-print"></i> Imprimer</a>
+
+<div class="box mt-4" id="printme">
+    <h2>Emploi du temps de {{ professeur.nom }} {{ professeur.prenom }}</h2>
+
+    <table class="table table-bordered mt-3">
+        <thead>
+            <tr>
+                <th>Jour</th>
+                <th>Heure de début</th>
+                <th>Heure de fin</th>
+                <th>Matière</th>
+                <th>Secteur</th>
+
+                <th>Trimestre</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for emploi in emplois %}
+            <tr>
+                <td>{{ emploi.jour_semaine|jour_i18n }}</td>
+                <td>{{ emploi.heure_debut }}</td>
+                <td>{{ emploi.heure_fin }}</td>
+                <td>{{ emploi.matiere.nom }}</td>
+                <td>{{ emploi.formation.nom }}</td>
+
+                <td>{{ emploi.trimestre.numero_trimestre }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5">Aucun emploi du temps disponible pour ce professeur.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</div>
+{% endblock %}
+
+
+{% block scripts %}
+        <script>
+        function printDiv(divName){
+            var printContents = document.getElementById(divName).innerHTML;
+            var originalContents = document.body.innerHTML;
+            document.body.innerHTML = printContents;
+            window.print();
+            document.body.innerHTML = originalContents;
+
+        }
+    </script>
+{% endblock %}

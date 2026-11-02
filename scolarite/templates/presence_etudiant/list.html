@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% load role_tags %}
+{% load i18n %}
+{% block content %}
+<div class="">
+    <div class="box">
+        <div class="box-header">
+            <h3>{% trans "Liste des absences des étudiants" %}</h3>
+            {% if user|has_any_role:"ADMIN,POINTEUR,SUPER_ADMIN" %}
+
+            <p class="text-right">
+                <a href="{% url 'enregistrement_presence' %}" class="btn btn-primary float-right">{% trans "Ajouter absence" %}</a>
+            </p>
+            {% endif %}
+        </div>
+
+        <div class="box-body table-responsive">
+            <table class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>{% trans 'Date' %}</th>
+                        <th>{% trans "Étudiant" %}</th>
+                        <th>{% trans "Matière" %}</th>
+                        <th>{% trans "Justification" %}</th>
+                        <th>{% trans "Date du cours" %}</th>
+                        <th>{% trans "Actions" %}</th>
+                    </tr>
+                </thead>
+             <tbody>
+    {% for presence in presences %}
+        {% if not presence.present %}  <!-- Affiche seulement si present=0 -->
+        <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ presence.date_cours|date:"d/m/Y" }}</td>
+            <td>{{ presence.etudiant.nom }} {{ presence.etudiant.prenom }} ({{ presence.etudiant.matricule }})</td>
+            <td>{{ presence.matiere.nom }}</td>
+            <td>{{ presence.justification|default:"-" }}</td>
+            <td>{{ presence.date_cours|default:"-" }}</td>
+            <td>
+                <a href="{% url 'presence_updatee' presence.id %}" class="btn btn-sm btn-info" title="{% trans "Modifier" %}"><i class="fa fa-edit"></i></a>
+{#                <a href="{% url 'presence_deletee' presence.id %}" class="btn btn-sm btn-danger" title="{% trans "Supprimer" %}"><i class="fa fa-trash-o"></i></a>#}
+            </td>
+        </tr>
+        {% endif %}
+    {% empty %}
+        <tr>
+            <td colspan="8" class="text-center">{% trans "Aucune absence enregistrée." %}</td>
+        </tr>
+    {% endfor %}
+</tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block content %}
+<div class="box box-primary">
+    <div class="box-header with-border">
+        <h3 class="box-title">Rôles de {{ user.get_full_name }}</h3>
+    </div>
+    <div class="box-body">
+
+<h3 class="mt-4">{% trans "Rôles assignés" %}</h3>
+<ul class="list-group mb-4">
+    {% for user_role in user_roles %}
+    <li class="list-group-item d-flex justify-content-between align-items-center">
+        {{ user_role.role.name }}
+        <form method="post" action="{% url 'remove_role_from_user' user.id user_role.role.id %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-sm btn-danger">{% trans "Retirer" %}</button>
+        </form>
+    </li>
+    {% empty %}
+    <li class="list-group-item">{% trans "Aucun rôle assigné" %}</li>
+    {% endfor %}
+</ul>
+
+<h3>{% trans "Ajouter un rôle" %}</h3>
+<form method="post" action="{% url 'add_role_to_user' user.id %}">
+    {% csrf_token %}
+    <div class="input-group mb-3">
+        <select name="role_id" class="form-select">
+            {% for role in available_roles %}
+            <option value="{{ role.id }}">{{ role.name }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit" class="btn btn-primary">{% trans "Ajouter" %}</button>
+    </div>
+</form>
+
+<a href="{% url 'admin:yourapp_user_changelist' %}" class="btn btn-secondary">{% trans "Retour à la liste des utilisateurs" %}</a>
+    </div>
+</div>
+{% endblock %}

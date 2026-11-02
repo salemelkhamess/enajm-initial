@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block content %}
+<div class="box">
+    <div class="box-header">
+        <h1 align="center" class="box-title">
+            {% blocktrans with secteur_nom=secteur.nom %}
+            <h1>{{ secteur_nom }}</h1>
+            {% endblocktrans %}
+        </h1>
+    </div>
+    <div class="box-body">
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>{% trans "Matricule" %}</th>
+                    <th>{% trans "Nom" %}</th>
+                    <th>{% trans "NNI" %}</th>
+                    <th>{% trans "Date de naissance" %}</th>
+                    <th>{% trans "Lieu de naissance" %}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for etudiant in etudiants %}
+                <tr>
+                    <td>{{ etudiant.matricule }}</td>
+                    <td>{{ etudiant.nom }}</td>
+                    <td>{{ etudiant.nni }}</td>
+                    <td>{{ etudiant.date_naissance}}</td>
+                    <td>{{ etudiant.lieu_naissance}}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5">{% trans "Aucun étudiant dans ce secteur" %}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

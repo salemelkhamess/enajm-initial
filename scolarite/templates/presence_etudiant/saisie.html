@@ -1,0 +1,98 @@
+<!-- presence_etudiant/saisie.html -->
+{% extends 'base.html' %}
+{% load i18n_jours %}
+{% load static %}
+{% load i18n %}
+{% load custom_filters %}
+
+{% block content %}
+<div class="mt-4">
+    {% if messages %}
+    <div class="messages">
+        {% for message in messages %}
+        <div class="alert alert-{% if message.tags %}{{ message.tags }}{% endif %} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="box">
+        <div class="box-header text-white">
+            <h3>{% trans "Saisie des présences" %}</h3>
+            <p>
+                {% trans "Date" %}: {{ filter_data.date_cours }} |
+                {% trans "Jour" %}: {{ filter_data.jour|jour_i18n }} |
+                {% trans "Secteur" %}: {{ secteur.nom }}
+            </p>
+        </div>
+        <div class="box-body">
+            <form method="post" action="{% url 'enregistrer_presence' %}">
+                {% csrf_token %}
+                {% if is_update %}
+                    <input type="hidden" name="is_update" value="true">
+                {% endif %}
+                <input type="hidden" name="annee_id" value="{{ filter_data.annee_id }}">
+                <input type="hidden" name="trimestre_id" value="{{ filter_data.trimestre_id }}">
+                <input type="hidden" name="secteur_id" value="{{ filter_data.secteur_id }}">
+                <input type="hidden" name="date_cours" value="{{ filter_data.date_cours }}">
+                <input type="hidden" name="jour" value="{{ filter_data.jour }}">
+
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>{% trans "Étudiant" %}</th>
+                                {% for emploi in emplois %}
+                                <th>
+                                    {{ emploi.matiere.nom }}<br>
+                                    <small>{{ emploi.heure_debut|time:"H:i" }} - {{ emploi.heure_fin|time:"H:i" }}</small>
+                                </th>
+                                {% endfor %}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for etudiant in etudiants %}
+                            <tr>
+
+                                <td>
+                                    {{ etudiant.nom }} {{ etudiant.prenom }}<br>
+                                    <small>{{ etudiant.matricule }}</small>
+                                </td>
+                                {% for emploi in emplois %}
+                                <td>
+                                <select name="presence_{{ etudiant.id }}_{{ emploi.matiere.id }}" class="form-control">
+    {% with presence_key="presence_"|add:etudiant.id|add:"_"|add:emploi.matiere.id %}
+        <!-- DEBUG: {{ presence_key }} = {{ presences_existantes|get_item:presence_key }} -->
+
+        <option value="present" {% if presences_existantes|get_item:presence_key == 'present' %}selected{% endif %}>
+            {% trans "Présent" %}
+        </option>
+        <option value="absent" {% if presences_existantes|get_item:presence_key == 'absent' %}selected{% endif %}>
+            {% trans "Absent" %}
+        </option>
+    {% endwith %}
+</select>
+                                </td>
+                                {% endfor %}
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <button type="submit" class="btn btn-success">
+                    <i class="fas fa-save"></i>
+                    {% if is_update %}
+                        {% trans "Mettre à jour" %}
+                    {% else %}
+                        {% trans "Enregistrer" %}
+                    {% endif %}
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

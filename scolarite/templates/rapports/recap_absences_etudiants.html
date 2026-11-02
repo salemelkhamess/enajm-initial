@@ -1,0 +1,43 @@
+{% extends 'rapports/_base_rapport.html' %}
+{% block filtres_extra %}
+<div class="form-group">
+    <label>{{ L.matiere }}</label>
+    <select name="matiere" class="form-control">
+        <option value="">{{ L.tous }}</option>
+        {% for m in matieres %}<option value="{{ m.id }}" {% if matiere_id == m.id %}selected{% endif %}>{{ m.nom }}</option>{% endfor %}
+    </select>
+</div>
+{% endblock %}
+{% block tableau %}
+{% if groupes %}
+<table class="rapport-table">
+    <thead>
+        <tr>
+            <th>{{ L.matricule }}</th><th>{{ L.etudiant }}</th>
+            <th>{{ L2.non_justifiees }} ({{ L.seances|lower }})</th><th>{{ L2.heures_nj }}</th><th>{{ L2.en_attente }}</th><th>{{ L2.justifiees }}</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for secteur, g in groupes %}
+        <tr class="groupe"><td colspan="6">{{ secteur }}</td></tr>
+        {% for l in g.lignes %}
+        <tr>
+            <td>{{ l.etudiant__matricule }}</td>
+            <td>{{ l.etudiant__nom }} {{ l.etudiant__prenom }}</td>
+            <td class="num">{{ l.total }}</td><td class="num">{{ l.heures }}</td><td class="num">{{ l.en_attente }}</td><td class="num">{{ l.justifiees }}</td>
+        </tr>
+        {% endfor %}
+        <tr class="total">
+            <td colspan="2">{{ L.total }} — {{ secteur }}</td>
+            <td class="num">{{ g.total }}</td><td class="num">{{ g.heures }}</td><td class="num">{{ g.en_attente }}</td><td class="num">{{ g.justifiees }}</td>
+        </tr>
+    {% endfor %}
+        <tr class="total">
+            <td colspan="2">{{ L.total }}</td>
+            <td class="num">{{ total_general.total }}</td><td class="num">{{ total_general.heures }}</td><td class="num">{{ total_general.en_attente }}</td><td class="num">{{ total_general.justifiees }}</td>
+        </tr>
+    </tbody>
+</table>
+<p class="rapport-sub">{{ L2.note }}</p>
+{% else %}<p class="text-center">{{ L.aucune }}</p>{% endif %}
+{% endblock %}

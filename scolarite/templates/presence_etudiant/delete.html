@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="box box-default">
+        <div class=" box-header">
+            <h3>{% trans "Confirmer la suppression" %}</h3>
+        </div>
+        <div class="box-body">
+            <p>Êtes-vous sûr de vouloir supprimer cette présence pour <strong>{{ object.etudiant.nom }} {{ object.etudiant.prenom }} {{ object.etudiant.matricule }}</strong> en <strong>{{ object.matiere }}</strong> ?</p>
+            <form method="post">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger">{% trans "Oui, supprimer" %}</button>
+                <a href="{% url 'presence_list' %}" class="btn btn-secondary">{% trans "Annuler" %}</a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

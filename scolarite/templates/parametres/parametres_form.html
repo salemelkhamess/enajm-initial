@@ -1,0 +1,107 @@
+<!-- parametres/templates/parametres/parametres_form.html -->
+{% extends 'base.html' %}
+{% load i18n %}
+{% block styles %}
+<style>
+
+    #filterForm.rtl-lang .row > div.col-md-6 {
+        float: right;
+    }
+</style>
+{% endblock %}
+{% block content %}
+<div class="box">
+    <div class="box-header">
+        <h3 class="card-title">{% trans "paramètres général" %}</h3>
+    </div>
+
+    <div class="box-body">
+        {% if messages %}
+            {% for message in messages %}
+            <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+        <form method="post"  id="filterForm" class="{% if LANGUAGE_CODE == 'ar' %}rtl-lang{% endif %}">
+            {% csrf_token %}
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        {{ form.annee_courante.label_tag }}
+                        {{ form.annee_courante }}
+                        {{ form.annee_courante.errors }}
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group">
+                        {{ form.trimestre_courant.label_tag }}
+                        {{ form.trimestre_courant }}
+                        {{ form.trimestre_courant.errors }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label style="font-weight:normal;cursor:pointer;">
+                            {{ form.alertes_absences_actives }}
+                            <strong>{{ form.alertes_absences_actives.label }}</strong>
+                        </label>
+                        <p class="help-block">{% if LANGUAGE_CODE == 'ar' %}عند التعطيل لا يظهر إنذار الغياب ولا إشعارات الغيابات الحرجة.{% else %}Désactivée, ni la bannière d'alerte ni les notifications d'absences critiques ne s'affichent.{% endif %}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group text-right">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> {% trans "Enregistrer" %}
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+{% endblock %}
+
+{% block scripts %}
+<!-- JavaScript pour le chargement dynamique des trimestres -->
+<script>
+// Exécuté directement (pas de $(document).ready) : une erreur dans un autre
+// callback ready du layout (jQuery 2.x) empêcherait sinon son exécution.
+(function(){
+    var form = $('#filterForm');
+
+    // L'enregistrement est automatique dès que l'année ou le trimestre change
+    $('#id_annee_courante').change(function(){
+        var anneeId = $(this).val();
+        if(!anneeId) { return; }
+        $.ajax({
+            url: '{% url "parametres_get_trimestres" %}',
+            data: {'annee_id': anneeId},
+            success: function(data){
+                var trim = $('#id_trimestre_courant');
+                trim.html(data);
+                // premier vrai trimestre de l'année sélectionné d'office
+                var first = trim.find('option[value!=""]').first().val();
+                if(first) {
+                    trim.val(first);
+                    form.submit();
+                } else {
+                    trim.trigger('change.select2');
+                }
+            }
+        });
+    });
+
+    $('#id_alertes_absences_actives').change(function(){ form.submit(); });
+
+    $('#id_trimestre_courant').change(function(){
+        if($(this).val()) { form.submit(); }
+    });
+})();
+</script>
+
+{% endblock %}

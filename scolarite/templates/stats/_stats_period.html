@@ -1,0 +1,134 @@
+{% load i18n %}
+<div class="row">
+    <!-- Statistiques principales -->
+    <div class="col-md-12">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="small-box bg-success">
+                    <div class="inner">
+                        <h3>{{ stats.total_present }}</h3>
+                        <p>Présences ({{ stats.present_percent }}%)</p>
+                    </div>
+                    <div class="icon">
+                        <i class="ion ion-person-add"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="small-box bg-danger">
+                    <div class="inner">
+                        <h3>{{ stats.total_absent }}</h3>
+                        <p>Absences ({{ stats.absent_percent }}%)</p>
+                    </div>
+                    <div class="icon">
+                        <i class="ion ion-person-stalker"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="small-box bg-warning">
+                    <div class="inner">
+                        <h3>{{ stats.total_justified }}</h3>
+                        <p>Justifiées ({{ stats.justified_percent }}%)</p>
+                    </div>
+                    <div class="icon">
+                        <i class="ion ion-document-text"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Graphique -->
+    <div class="col-md-8">
+        <div class="box">
+            <div class="box-header">
+                <h3 class="box-title">{% trans "Évolution quotidienne" %}</h3>
+            </div>
+            <div class="box-body">
+                <canvas id="chart_{{ period }}" height="300"></canvas>
+                <script id="data_{{ period }}" type="application/json">
+                {
+                    "labels": {{ stats.daily_stats.keys()|list|json }},
+                    "data": {
+                        "present": {{ stats.daily_stats.values()|map(attribute='present')|list|json }},
+                        "absent": {{ stats.daily_stats.values()|map(attribute='absent')|list|json }},
+                        "justified": {{ stats.daily_stats.values()|map(attribute='justified')|list|json }}
+                    }
+                }
+                </script>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stats par secteur -->
+    <div class="col-md-4">
+        <div class="box">
+            <div class="box-header">
+                <h3 class="box-title">{% trans "Par secteur" %}</h3>
+            </div>
+            <div class="box-body">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>{% trans "Secteur" %}</th>
+                                <th>{% trans "Présences" %}</th>
+                                <th>{% trans "Absences" %}</th>
+                                <th>{% trans "Taux" %}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for stat in stats.secteur_stats %}
+                            <tr>
+                                <td>{{ stat.nom }}</td>
+                                <td>{{ stat.present }}</td>
+                                <td>{{ stat.absent }}</td>
+                                <td>
+                                    <div class="progress progress-xs">
+                                        <div class="progress-bar bg-success" style="width: {{ stat.present_percent }}%"></div>
+                                    </div>
+                                    <span class="badge bg-success">{{ stat.present_percent }}%</span>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Étudiants les plus absents -->
+    <div class="col-md-12">
+        <div class="box">
+            <div class="box-header">
+                <h3 class="box-title">{% trans "Étudiants les plus absents" %}</h3>
+            </div>
+            <div class="box-body">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>{% trans "Étudiant" %}</th>
+                                <th>{% trans "Secteur" %}</th>
+                                <th>{% trans "Absences" %}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for stat in stats.student_stats %}
+                            <tr>
+                                <td>{{ stat.prenom }} {{ stat.nom }}</td>
+                                <td>{{ stat.secteur }}</td>
+                                <td><span class="badge bg-danger">{{ stat.absent }}</span></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,186 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block styles %}
+<style>
+    @media print {
+        @page {
+            size: A4 landscape;
+            margin: 1cm;
+        }
+        body {
+            font-family: 'Traditional Arabic', Arial, sans-serif;
+            direction: rtl;
+        }
+        .no-print {
+            display: none;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12pt;
+        }
+        th, td {
+            border: 1px solid #000;
+            padding: 5px;
+            text-align: center;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+    th, td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: right;
+    }
+    th {
+        background-color: #f2f2f2;
+        position: sticky;
+        top: 0;
+    }
+    .secteur-row {
+        background-color: #e7f3fe;
+        font-weight: bold;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+
+    <div class="box no-print">
+        <div class="box-header">
+            <h3>
+                {% if LANGUAGE_CODE == 'ar' %}
+                    تقرير غيابات الطلاب حسب الساعات
+                {% else %}
+                    Rapport des absences par éléves fonctionnaires selon les nombres des heurs
+                {% endif %}
+            </h3>
+        </div>
+
+        <div class="box-body">
+            <form method="get" id="filterForm">
+                <div class="form-group">
+                    <label for="hours">
+                        {% if LANGUAGE_CODE == 'ar' %}
+                            عدد الساعات
+                        {% else %}
+                            Nombre d'heures
+                        {% endif %}
+                    </label>
+                    <input type="number"
+                           id="hours"
+                           name="hours"
+                           value="{{ hours }}"
+                           class="form-control"
+                           min="2"
+                           step="2"
+                           required>
+                    <small class="form-text text-muted">
+                        {% if LANGUAGE_CODE == 'ar' %}
+                            (كل حصة تساوي ساعتين)
+                        {% else %}
+                            (1 séance = 2 heures)
+                        {% endif %}
+                    </small>
+                </div>
+                <button type="submit" class="btn btn-primary">
+                    {% trans "Filtrer" %}
+                </button>
+            </form>
+        </div>
+    </div>
+
+        <p class="text-right">
+        <a onclick="printDiv('printme')" class="btn btn-primary" style="width: 200px">
+            <i class="fa fa-print"></i> {% trans "Imprimer" %}
+        </a>
+    </p>
+    <div id="printme">
+        <div class="box">
+            <div class="box-body">
+                {% include "entete/show.html" with entete=entete %}
+
+                <h2 align="center">
+                    {% if LANGUAGE_CODE == 'ar' %}
+                        تقرير غيابات الطلاب غير المبررة حسب الساعات
+                    {% else %}
+                        Rapport des absences non justifiées par heur des éléves fonctionnaires
+                    {% endif %}
+                </h2>
+<h4 align="center">{{ trimestre_courant }}</h4>
+
+                <table border="1">
+                    <thead>
+                        <tr>
+                            <th>{% trans "Secteur" %}</th>
+                            <th>{% if LANGUAGE_CODE == 'ar' %}الرقم{% else %}Matricule{% endif %}</th>
+                            <th>{% if LANGUAGE_CODE == 'ar' %}الاسم{% else %}Nom{% endif %}</th>
+                            <th>{% if LANGUAGE_CODE == 'ar' %}عدد الحصص{% else %}Séances{% endif %}</th>
+                            <th>{% if LANGUAGE_CODE == 'ar' %}عدد الساعات{% else %}Heures{% endif %}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% regroup absences_par_etudiant by etudiant__secteur__nom as absences_grouped %}
+                        {% for secteur in absences_grouped %}
+                            {% for absence in secteur.list %}
+                            <tr>
+                                {% if forloop.first %}
+                                <td class="secteur-row" rowspan="{{ secteur.list|length }}">{{ secteur.grouper }}</td>
+                                {% endif %}
+                                <td>{{ absence.etudiant__matricule }}</td>
+                                <td>{{ absence.etudiant__nom }} {{ absence.etudiant__prenom }}</td>
+                                <td>{{ absence.nombre_absences }}</td>
+                                <td>{{ absence.nombre_heures }}</td>
+                            </tr>
+                            {% endfor %}
+                        {% empty %}
+                            <tr>
+                                <td colspan="5" class="text-center">
+                                    {% if LANGUAGE_CODE == 'ar' %}
+                                        لا توجد غيابات غير مبررة
+                                    {% else %}
+                                        Aucune absence non justifiée
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    $(document).ready(function() {
+        // Handle form submission
+        $('#filterForm').submit(function(e) {
+            const hours = $('#hours').val();
+
+            if (!hours || hours < 2) {
+                alert("{% if LANGUAGE_CODE == 'ar' %}يجب إدخال عدد ساعات صحيح (2 على الأقل){% else %}Veuillez entrer un nombre d'heures valide (2 minimum){% endif %}");
+                e.preventDefault();
+            }
+        });
+    });
+
+    function printDiv(divName) {
+        var printContents = document.getElementById(divName).innerHTML;
+        var originalContents = document.body.innerHTML;
+        document.body.innerHTML = printContents;
+        window.print();
+        document.body.innerHTML = originalContents;
+        location.reload();
+    }
+</script>
+{% endblock %}

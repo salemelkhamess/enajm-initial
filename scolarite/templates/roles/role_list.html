@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block content %}
+<div class="box">
+<div class="box-header">
+        <h2>{% trans "Liste des Rôles" %}</h2>
+
+</div>
+<div class="box-body">
+{#<a href="{% url 'role_create' %}" class="btn btn-primary mb-3"></a>#}
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>{% trans "roles" %}</th>
+           <th>{% trans "Actions" %}</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for role in roles %}
+        <tr>
+            <td>{{ role.name }}</td>
+        <td>
+               <a href="{% url 'role_edit' role.pk %}" class="btn btn-sm btn-warning">{% trans "Modifier" %}</a>
+{#                <a href="{% url 'role_delete' role.pk %}" class="btn btn-sm btn-danger">Supprimer</a>#}
+           </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+</div>
+</div>
+{% endblock %}

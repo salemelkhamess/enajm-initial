@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block content %}
+<div class="box">
+<div class="box-body box-danger">
+    <h3>{% trans "Supprimer l'emploi du temps" %}</h3>
+    <p>{% trans "Êtes-vous sûr de vouloir supprimer cet emploi du temps ?" %}</p>
+
+    <ul>
+        <li><strong>Professeur :</strong> {{ object.professeur }}</li>
+        <li><strong>Matière :</strong> {{ object.matiere }}</li>
+        <li><strong>Jour :</strong> {{ object.jour_semaine }}</li>
+        <li><strong>Heure :</strong> de {{ object.heure_debut }} à {{ object.heure_fin }}</li>
+        <li><strong>Trimestre :</strong> {{ object.trimestre }}</li>
+    </ul>
+
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">{% trans "Oui, supprimer" %}</button>
+        <a href="{% url 'emploi_list' %}" class="btn btn-secondary">{% trans "Annuler" %}</a>
+    </form>
+</div>
+</div>
+{% endblock %}

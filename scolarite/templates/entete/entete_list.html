@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block content %}
+<div class="box">
+    <div class="box-header">
+        <h3>{% trans "Liste des entêtes" %}</h3>
+        <p class="text-right">
+            <a href="{% url 'entete_create' %}" class="btn btn-success">
+                <i class="fa fa-plus"></i> {% trans "Ajouter" %}
+            </a>
+        </p>
+    </div>
+    <div class="box-body">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>{% trans "Logo" %}</th>
+                    <th>{% trans "Nom (Français)" %}</th>
+                    <th>{% trans "الاسم (العربية)" %}</th>
+                    <th>{% trans "Titre" %}</th>
+                    <th>{% trans "العنوان" %}</th>
+                    <th>{% trans "Actions" %}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for entete in entetes %}
+                <tr>
+                    <td>
+                        {% if entete.logo %}
+                            <img src="{{ entete.logo.url }}" alt="{% trans 'Logo' %}" style="max-height: 50px;">
+                        {% else %}
+                            {% trans "Aucun logo" %}
+                        {% endif %}
+                    </td>
+                    <td>{{ entete.nom_fr }}</td>
+                    <td>{{ entete.nom_ar }}</td>
+                    <td>{{ entete.titre_fr }}</td>
+                    <td>{{ entete.titre_ar }}</td>
+                    <td>
+                        <a href="{% url 'entete_update' entete.pk %}" class="btn btn-primary btn-sm">
+                            {% trans "Modifier" %}
+                        </a>
+                        <a href="{% url 'entete_delete' entete.pk %}" class="btn btn-danger btn-sm">
+                            {% trans "Supprimer" %}
+                        </a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6">{% trans "Aucune entête trouvée." %}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

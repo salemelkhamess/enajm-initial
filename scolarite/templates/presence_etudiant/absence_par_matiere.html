@@ -1,0 +1,195 @@
+{% extends 'base.html' %}
+{% load i18n_jours %}
+{% load i18n custom_filters %}
+
+{% block styles %}
+<style>
+    @media print {
+        body * {
+            visibility: hidden;
+        }
+        .table-responsive, .table-responsive * {
+            visibility: visible;
+        }
+        .table-responsive {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+        }
+        .no-print {
+            display: none !important;
+        }
+    }
+
+    .rtl-form {
+        direction: rtl;
+        text-align: right;
+    }
+    .rtl-form .form-control {
+        text-align: right;
+    }
+
+        #filterForm.rtl-lang .row > div.col-md-3 {
+        float: right;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-4">
+<div class="box">
+    <div class="box-body">
+    <form method="get"  id="filterForm" class="{% if LANGUAGE_CODE == 'ar' %}rtl-lang{% endif %}">
+        <div class="row">
+            <!-- Matière -->
+            <div class="col-md-3">
+                <label>
+                    {% if LANGUAGE_CODE == 'ar' %}المادة{% else %}{% trans "Matière" %}{% endif %}
+                </label>
+                <select name="matiere" class="form-control">
+                    <option value="">{% if LANGUAGE_CODE == 'ar' %}كل المواد{% else %}{% trans "Toutes les matières" %}{% endif %}</option>
+                    {% for matiere in matieres %}
+                        <option value="{{ matiere.id }}" {% if request.GET.matiere == matiere.id|stringformat:"s" %}selected{% endif %}>
+                            {{ matiere.nom }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- Date range -->
+            <div class="col-md-3">
+                <label>{% trans "Date début" %}</label>
+                <input type="date" name="date_debut" class="form-control" value="{{ request.GET.date_debut }}">
+            </div>
+
+            <div class="col-md-3">
+                <label>{% trans "Date fin" %}</label>
+                <input type="date" name="date_fin" class="form-control" value="{{ request.GET.date_fin }}">
+            </div>
+
+            <!-- Submit -->
+            <div class="col-md-3 " style="margin-top: 20px">
+                <button type="submit" class="btn btn-primary w-100">
+                    <i class="fa fa-search"></i> {% trans "Rechercher" %}
+                </button>
+            </div>
+        </div>
+    </form>
+    </div>
+</div>
+<p class="text-right">
+    <a onclick="printDiv('printme')" class="btn btn-primary" style="width: 200px">
+        <i class="fa fa-print"></i> {% trans "Imprimer" %}
+    </a>
+</p>
+
+<div class="box" id="printme">
+    <div class="box-body">
+        {% include "entete/show.html" with entete=entete %}
+
+            <h2 class="text-center mb-4">
+        {% if LANGUAGE_CODE == 'ar' %}
+            تقرير الغيابات حسب المادة
+        {% else %}
+            {% trans "Absences par matière" %}
+        {% endif %}
+    </h2>
+
+    {% if absences %}
+        <div class="table-responsive">
+      <table border="1" style="width: 100%; border-collapse: collapse;">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>{% trans "Date" %}</th>
+                        <th>{% if LANGUAGE_CODE == 'ar' %}اليوم{% else %}{% trans "Jour" %}{% endif %}</th>
+                        <th>{% trans "Étudiant" %}</th>
+                        <th>{% if LANGUAGE_CODE == 'ar' %}المادة{% else %}{% trans "Matière" %}{% endif %}</th>
+                        <th>{% if LANGUAGE_CODE == 'ar' %}الساعات{% else %}{% trans "Heures" %}{% endif %}</th>
+                        <th>{% trans "État" %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for absence in absences %}
+                        <tr>
+                            <td>{{ absence.date_cours|date:"d/m/Y" }}</td>
+                            <td>
+                                {{ absence.jour|jour_i18n }}
+                            </td>
+                            <td>{{ absence.etudiant.nom }} {{ absence.etudiant.prenom }}</td>
+                            <td>{{ absence.matiere.nom }}</td>
+                            <td class="text-center">2</td>  <!-- 1 absence = 2 heures -->
+                            <td class="text-center">
+                                {% if absence.etat_absence == 'en_attente' %}
+                                    <span class="label label-warning">{% trans "En attente" %} — {{ absence.heures_avant_validation }} {% trans "h restantes" %}</span>
+                                {% else %}
+                                    <span class="label label-danger">{% trans "Validée" %}</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr class="font-weight-bold">
+                        <td colspan="4" class="text-right">
+                            {% if LANGUAGE_CODE == 'ar' %}المجموع{% else %}{% trans "Total" %}{% endif %}:
+                        </td>
+                        <td class="text-center">
+                            {{ total_seances_validees|multiply:2 }}
+                            {% if LANGUAGE_CODE == 'ar' %}ساعة{% else %}{% trans "heures" %}{% endif %}
+                        </td>
+                        <td></td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+
+    {% else %}
+        <div class="alert alert-info text-center">
+            {% if LANGUAGE_CODE == 'ar' %}
+                لا توجد غيابات مسجلة للبحث المحدد
+            {% else %}
+                {% trans "Aucune absence trouvée pour les critères sélectionnés" %}
+            {% endif %}
+        </div>
+    {% endif %}
+    </div>
+</div>
+</div>
+
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+
+$(document).ready(function() {
+    // Initialize datepickers
+    $('input[type="date"]').datepicker({
+        format: 'yyyy-mm-dd',
+        autoclose: true
+    });
+
+    // Handle form submission
+    $('#filterForm').submit(function(e) {
+        // Validate date range
+        const dateDebut = $('input[name="date_debut"]').val();
+        const dateFin = $('input[name="date_fin"]').val();
+
+        if (dateDebut && dateFin && dateDebut > dateFin) {
+            alert("{% if LANGUAGE_CODE == 'ar' %}تاريخ البداية يجب أن يكون قبل تاريخ النهاية{% else %}La date de début doit être avant la date de fin{% endif %}");
+            e.preventDefault();
+        }
+    });
+});
+    function printDiv(divName) {
+        var printContents = document.getElementById(divName).innerHTML;
+        var originalContents = document.body.innerHTML;
+        document.body.innerHTML = printContents;
+        window.print();
+        document.body.innerHTML = originalContents;
+        location.reload(); // Recharge la page après impression
+    }
+
+</script>
+{% endblock %}

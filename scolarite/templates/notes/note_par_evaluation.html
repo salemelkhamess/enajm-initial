@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+{% load i18n number_filters %}
+
+{% block content %}
+
+<div class="box">
+    <div class="box-header box-info">
+        <h3>{% trans "Saisir les notes pour une évaluation" %}</h3>
+    </div>
+
+{% if messages %}
+<div class="messages">
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+    {% endfor %}
+</div>
+{% endif %}
+    <div class="box-body">
+        <form method="get" class="form-inline mr5 ml5">
+            <!-- Sélection de la formation -->
+            <div class="form-group">
+                <select name="formation" class="form-control select" onchange="this.form.submit()">
+                    <option value="">{% trans "-- Choisir la Formation --" %}</option>
+                    {% for form in formations %}
+                        <option value="{{ form.id }}" {% if selected_formation == form.id|stringformat:"s" %}selected{% endif %}>{{ form.nom }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- Sélection du secteur -->
+            {% if secteurs %}
+            <div class="form-group">
+                <select name="secteur" class="form-control select" onchange="this.form.submit()">
+                    <option value="">{% trans "-- Choisir le Secteur --" %}</option>
+                    {% for secteur in secteurs %}
+                        <option value="{{ secteur.id }}" {% if selected_secteur == secteur.id|stringformat:"s" %}selected{% endif %}>{{ secteur.nom }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            {% endif %}
+
+            <!-- Sélection du trimestre -->
+            {% if trimestres %}
+            <div class="form-group">
+                <select name="trimestre" class="form-control select" onchange="this.form.submit()">
+                    <option value="">{% trans "-- Choisir le Trimestre --" %}</option>
+                    {% for trim in trimestres %}
+                        <option value="{{ trim.id }}" {% if selected_trimestre == trim.id|stringformat:"s" %}selected{% endif %}>{{ trim }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            {% endif %}
+
+            <!-- Sélection du type d'évaluation -->
+            {% if selected_trimestre %}
+            <div class="form-group">
+                <select name="type" class="form-control select" onchange="this.form.submit()">
+                    <option value="">{% trans "-- Type d'évaluation --" %}</option>
+                    <option value="devoir" {% if selected_type == "devoir" %}selected{% endif %}>{% trans "Devoir" %}</option>
+                    <option value="examen" {% if selected_type == "examen" %}selected{% endif %}>{% trans "Examen" %}</option>
+                </select>
+            </div>
+            {% endif %}
+        </form>
+
+        <!-- Affichage des évaluations et étudiants -->
+    {% if evaluations and selected_type and etudiants %}
+<hr>
+<form method="post">
+    {% csrf_token %}
+    {% for eval in evaluations %}
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h4>{{ eval.matiere.nom }} ({{ eval.get_type_display }})</h4>
+        </div>
+        <div class="panel-body">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>{% trans "Étudiant" %}</th>
+                        <th>{% trans "Note / 20" %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for etu in etudiants %}
+                    <tr>
+                        <td>{{ etu.nom }} {{ etu.prenom }}</td>
+                        <td>
+                            <input type="number" step="0.01"
+                                   name="note_{{ eval.id }}_{{ etu.id }}"
+                                   class="form-control"
+                                   value="{% for note in etu.note_set.all %}{% if note.evaluation_id == eval.id %}{{ note.note_sur_20|replace_comma|default_if_none:'' }}{% endif %}{% endfor %}">
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% endfor %}
+    <button type="submit" class="btn btn-success">{% trans "Enregistrer" %}</button>
+</form>
+{% endif %}
+    </div>
+</div>
+
+{% endblock %}

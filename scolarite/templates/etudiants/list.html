@@ -1,0 +1,120 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block content %}
+    <div class="box box-default">
+        <div class="box-header d-flex justify-content-between align-items-center">
+            <h3 class="box-title">{% trans "Liste des étudiants" %}</h3>
+
+
+            <p class="text-right">
+                <a href="{% url 'etudiant_create' %}" class="btn btn-primary">
+                    <i class="fa fa-plus"></i> {% trans "Ajouter un étudiant" %}
+                </a>
+            </p>
+        </div>
+        <div class="box-body">
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <th>{% trans "Photo" %}</th>
+                    <th>{% trans "Matricule" %}</th>
+
+                    <th>{% trans "Nom" %}</th>
+                    <th>{% trans "Prénom" %}</th>
+                    <th>{% trans "Departement" %}</th>
+                    <th>{% trans "Année" %}</th>
+                    <th>{% trans "Actions" %}</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for etudiant in etudiants %}
+                    <tr>
+                        <td>
+                            {% if etudiant.photo %}
+                                <img src="{{ etudiant.photo.url }}" alt="Photo de {{ etudiant.nom }}" height="50"
+                                     width="50">
+                            {% else %}
+                                <p>{% trans "Pas de photo" %}</p>
+                            {% endif %}
+                        </td>
+                        <td>{{ etudiant.matricule }}</td>
+
+                        <td>{{ etudiant.nom }}</td>
+                        <td>{{ etudiant.prenom }}</td>
+                        <td>{{ etudiant.formation.nom }}</td>
+                        <td>{{ etudiant.annee.numero_annee }}</td>
+                        <td>
+
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-success">{% trans "Actions" %}</button>
+                                <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown"
+                                        aria-expanded="false">
+                                    <span class="caret"></span>
+                                    <span class="sr-only">Toggle Dropdown</span>
+                                </button>
+                                <ul class="dropdown-menu" role="menu">
+
+                                    <li>                                    <a href="{% url 'absences_etudiant' etudiant.pk %}"> {% trans "Absences" %}</a>
+</li>
+<li>                                    <a href="{% url 'carte_etudiant' etudiant.matricule %}">{% trans "Voir Carte" %}</a>
+</li>
+                                    {#                                    <li>#}
+{#                                        <a href="{% url 'nscription' etudiant.pk %}" >#}
+{#                                            {% trans 'attestation d inscription' %}#}
+{#                                        </a>#}
+{#                                    </li>#}
+                                    <li>
+                                        <a href="{% url 'etudiant_registration' pk=etudiant.pk %}"
+                                           title=""> {% trans 'fiche scolaire' %}</a>
+                                    </li>
+                                    <li>
+                                        <a href="{% url 'etudiant_attestation' etudiant.pk %}"
+                                           >
+                                        {% trans 'imprimer attestation d inscription' %}
+                                        </a>
+                                    </li>
+                                    <li>
+                                                 <a href="{% url 'document_list' etudiant.id %}" >
+    <i class="fa fa-file-pdf"></i> {% trans "Gérer les documents" %}
+</a>
+                                    </li>
+                                    <li><a href="{% url 'etudiant_edit' etudiant.pk %}"
+                                           title="">
+                                        {% trans 'Modifier' %}
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            {#                        <div class="btn-group">#}
+                            {#                  <button type="button" class="btn btn-success">{% trans "Actions" %}</button>#}
+                            {#                  <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-expanded="false">#}
+                            {#                    <span class="caret"></span>#}
+                            {#                    <span class="sr-only">Toggle Dropdown</span>#}
+                            {#                  </button>#}
+                            {#                  <ul class="dropdown-menu" role="menu">#}
+                            {#                    <li>                        <a href="{% url 'nscription' etudiant.pk %}" class="btn btn-sm btn-warning"><i class="fa fa-print" title="{% trans 'attestation d inscription' %}"></i></a>#}
+                            {#</li>#}
+                            {#                    <li>                       <a href="{% url 'etudiant_registration' pk=etudiant.pk %}" class="btn btn-info" title="{% trans 'fiche scolaire' %}"> <i class="fa fa-print"></i></a>#}
+                            {#</li>#}
+                            {#                    <li>                        <a href="{% url 'etudiant_attestation' etudiant.pk %}" class="btn btn-sm btn-warning"><i class="fa fa-print" title="{% trans 'imprimer attestation d inscription' %}"></i></a>#}
+                            {#</li>#}
+                            {#                           <li>                         <a href="{% url 'etudiant_edit' etudiant.pk %}" class="btn btn-sm btn-warning" title="{% trans 'Modifier' %}"><i class="fa fa-edit"></i></a>#}
+                            {#</li>#}
+                            {#                  </ul>#}
+                            {#                </div>#}
+
+
+                            {#                        <a href="{% url 'etudiant_delete' etudiant.pk %}" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></a>#}
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="7">{% trans "Aucun étudiant trouvé." %}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

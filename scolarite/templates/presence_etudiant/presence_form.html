@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% load i18n_jours %}
+{% load i18n %}
+
+{% block title %}{% trans "Liste des présences" %}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2>{% trans "Liste des présences" %}</h2>
+
+    <div class="card mb-4">
+        <div class="card-body">
+            <h5 class="card-title">{% trans "Détails du cours" %}</h5>
+            <p class="card-text">
+                <strong>{% trans "Secteur" %}:</strong> {{ secteur.nom }}<br>
+                <strong>{% trans "Matière" %}:</strong> {{ matiere.nom }}<br>
+                <strong>{% trans "Date" %}:</strong> {{ date_cours }}<br>
+                <strong>{% trans "Jour" %}:</strong> {{ jour|jour_i18n }}<br>
+            </p>
+        </div>
+    </div>
+
+    <form method="post">
+        {% csrf_token %}
+        <table class="table table-bordered table-hover">
+            <thead class="thead-dark">
+                <tr>
+                    <th>{% trans "Nom" %}</th>
+                    <th>{% trans "Matricule" %}</th>
+                    <th>{% trans "Présent" %}</th>
+                    <th>{% trans "Justification" %}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for etudiant in etudiants %}
+                <tr>
+                    <td>{{ etudiant.nom }} {{ etudiant.prenom }}</td>
+                    <td>{{ etudiant.matricule }}</td>
+                    <td>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox"
+                                   id="present_{{ etudiant.id }}"
+                                   name="present_{{ etudiant.id }}"
+                                   checked>
+                            <label class="form-check-label" for="present_{{ etudiant.id }}">
+                                {% trans "Présent" %}
+                            </label>
+                        </div>
+                    </td>
+                    <td>
+                        <input type="text" class="form-control"
+                               name="justification_{{ etudiant.id }}"
+                               placeholder="{% trans 'Raison absence...' %}">
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="text-center mt-3">
+            <button type="submit" class="btn btn-primary btn-lg">
+                <i class="fas fa-save"></i> {% trans "Enregistrer les présences" %}
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}

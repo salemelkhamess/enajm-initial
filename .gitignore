@@ -1,0 +1,7 @@
+# Dumps de base et archives : contiennent des données réelles, ne jamais versionner
+*.sql
+*.sql.gz
+*.tar.gz
+*.zip
+*.bak
+enajm_pass

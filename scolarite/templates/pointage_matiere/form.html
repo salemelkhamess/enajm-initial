@@ -1,0 +1,155 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block styles %}
+<style>
+#filterForm.rtl-lang .row > div.col-md-6 {
+  float: right;
+}
+
+
+</style>
+{% endblock %}
+{% block content %}
+<div class="box">
+    <div class="box-header">
+        <h3>
+            {% if object %}
+                {% trans "Modifier pointage matière" %}
+            {% else %}
+                {% trans "Ajouter pointage matière" %}
+            {% endif %}
+        </h3>
+    </div>
+    <div class="box-body">
+        <form method="post" id="filterForm" class="{% if lang == 'ar' %}rtl-lang{% endif %}">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        {{ form.annee.label_tag }}
+                        {{ form.annee }}
+                        {{ form.annee.errors }}
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        {{ form.trimestre.label_tag }}
+                        {{ form.trimestre }}
+                        {{ form.trimestre.errors }}
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        {{ form.secteur.label_tag }}
+                        {{ form.secteur }}
+                        {{ form.secteur.errors }}
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        {{ form.matiere.label_tag }}
+                        {{ form.matiere }}
+                        {{ form.matiere.errors }}
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        {{ form.professeur.label_tag }}
+                        {{ form.professeur }}
+                        {{ form.professeur.errors }}
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        {{ form.date_cours.label_tag }}
+                        {{ form.date_cours }}
+                        {{ form.date_cours.errors }}
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        {{ form.heure_debut.label_tag }}
+                        {{ form.heure_debut }}
+                        {{ form.heure_debut.errors }}
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        {{ form.heure_fin.label_tag }}
+                        {{ form.heure_fin }}
+                        {{ form.heure_fin.errors }}
+                    </div>
+                </div>
+            </div>
+
+
+        <div class="row">
+
+                 <div class="col-md-6">
+                     <div class="form-group ">
+                {{ form.contenu.label_tag }}
+                {{ form.contenu }}
+                {{ form.contenu.errors }}
+            </div>
+            </div>
+                 <div class="col-md-6">
+                      <div class="form-group ">
+                {{ form.remarques.label_tag }}
+                {{ form.remarques }}
+                {{ form.remarques.errors }}
+            </div>
+            </div>
+        </div>
+
+        <div class="row">
+                   <div class="col-md-6">
+                        <div class="form-group ">
+                {{ form.etat.label_tag }}
+                {{ form.etat }}
+                {{ form.etat.errors }}
+            </div>
+            </div>
+        </div>
+            
+            <div class="form-group text-right">
+                <button type="submit" class="btn btn-primary">
+                    {% if object %}
+                        {% trans "Mettre à jour" %}
+                    {% else %}
+                        {% trans "Enregistrer" %}
+                    {% endif %}
+                </button>
+                <a href="{% url 'pointage_matiere_list' %}" class="btn btn-default">
+                    {% trans "Annuler" %}
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+ // Validation dynamique des heures
+    $('form').on('change', '#id_heure_debut, #id_heure_fin', function() {
+        const debut = $('#id_heure_debut').val();
+        const fin = $('#id_heure_fin').val();
+
+        if (debut && fin && fin <= debut) {
+            $('#id_heure_fin').addClass('is-invalid');
+        } else {
+            $('#id_heure_fin').removeClass('is-invalid');
+        }
+    });
+</script>
+
+{% endblock %}

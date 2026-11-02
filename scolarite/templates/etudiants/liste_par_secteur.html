@@ -1,0 +1,417 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block styles %}
+<style>
+#filterForm.rtl-lang .row > div.col-md-4 {
+  float: right;
+}
+
+table thead th{
+    background-color: green;
+    color: white;
+    text-align: center;
+    padding: 10px;
+    border: 1px solid #ddd;
+}
+
+table tbody td {
+    text-align: center;
+    padding: 8px;
+    border: 1px solid #ddd;
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.screen-form-line-double {
+    display: flex;
+    margin-bottom: 10px;
+}
+
+.screen-form-line-left {
+    flex: 1;
+    padding: 5px;
+}
+
+.rtl-direction {
+    direction: rtl;
+    text-align: right;
+}
+
+.ltr-direction {
+    direction: ltr;
+    text-align: left;
+}
+
+        #filterForm.rtl-lang .row > div.col-md-3 {
+  float: right;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="box">
+    <div class="box-body">
+        <form method="get" id="filterForm" class="{% if LANGUAGE_CODE == 'ar' %}rtl-lang{% endif %}">
+           <div class="row">
+                <div class="col-md-3">
+                    <label>
+                        {% if LANGUAGE_CODE == 'ar'%}
+                            السنة
+                        {% else %}
+                            {% trans "Année" %}
+                        {% endif %}
+                    </label>
+                    <select name="annee" class="form-control select" required>
+                        <option value="">
+                            {% if LANGUAGE_CODE == 'ar' %}
+                                اختر السنة
+                            {% else %}
+                                {% trans "Choisir l'année" %}
+                            {% endif %}
+                        </option>
+                        {% for annee in annees %}
+                            <option value="{{ annee.id }}" {% if annee.id|stringformat:"s" == selected_annee %}selected{% endif %}>
+                                {% if LANGUAGE_CODE == 'ar' or LANGUAGE_CODE == 'ar-ma' %}
+                                    السنة {{ annee.numero_annee }} - {{ annee.formation.nom_ar }}
+                                {% else %}
+                                    Année {{ annee.numero_annee }} - {{ annee.formation.nom_fr }}
+                                {% endif %}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="col-md-3">
+                    <label>
+                        {% if LANGUAGE_CODE == 'ar'  %}
+                            الفصل
+                        {% else %}
+                            {% trans "Trimestre" %}
+                        {% endif %}
+                    </label>
+                    <select name="trimestre" class="form-control select" required>
+                        <option value="">
+                            {% if LANGUAGE_CODE == 'ar'  %}
+                                اختر الفصل
+                            {% else %}
+                                {% trans "Choisir le trimestre" %}
+                            {% endif %}
+                        </option>
+                        {% for trimestre in trimestres %}
+                            <option value="{{ trimestre.id }}" {% if trimestre.id|stringformat:"s" == selected_trimestre %}selected{% endif %}>
+                                {% if LANGUAGE_CODE == 'ar' %}
+                                    {{ trimestre.nom_ar }}
+                                {% else %}
+                                    {{ trimestre.nom_fr }}
+                                {% endif %}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="col-md-3">
+                    <label>
+                        {% if LANGUAGE_CODE == 'ar' or LANGUAGE_CODE == 'ar-ma' %}
+                            القسم
+                        {% else %}
+                            {% trans "Secteur" %}
+                        {% endif %}
+                    </label>
+                    <select name="secteur" class="form-control select" required>
+                        <option value="">
+                            {% if LANGUAGE_CODE == 'ar' or LANGUAGE_CODE == 'ar-ma' %}
+                                اختر القسم
+                            {% else %}
+                                {% trans "Choisir le secteur" %}
+                            {% endif %}
+                        </option>
+                        {% for secteur in secteurs %}
+                            <option value="{{ secteur.id }}" {% if secteur.id|stringformat:"s" == selected_secteur %}selected{% endif %}>
+                                {% if LANGUAGE_CODE == 'ar' or LANGUAGE_CODE == 'ar-ma' %}
+                                    {{ secteur.nom }}
+                                {% else %}
+                                    {{ secteur.nom }}
+                                {% endif %}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="col-md-3 align-self-end" style="margin-top: 24px">
+                    <button type="submit" class="btn btn-primary mt-2">
+                        {% if LANGUAGE_CODE == 'ar' or LANGUAGE_CODE == 'ar-ma' %}
+                            بحث
+                        {% else %}
+                            {% trans "Rechercher" %}
+                        {% endif %}
+                    </button>
+                </div>
+           </div>
+        </form>
+    </div>
+</div>
+
+<br>
+
+{% if etudiants %}
+<p class="text-right">
+    <a onclick="printDiv('printme')" class="btn btn-primary" style="width: 200px">
+        <i class="fa fa-print"></i>
+        {% if LANGUAGE_CODE == 'ar' or LANGUAGE_CODE == 'ar-ma' %}
+            طباعة
+        {% else %}
+            {% trans "Imprimer" %}
+        {% endif %}
+    </a>
+</p>
+
+<div class="box" id="printme">
+    {% include "entete/show.html" with entete=entete %}
+
+    <div class="box-header">
+        <h3 align="center" class="{% if LANGUAGE_CODE == 'ar' %}rtl-direction{% else %}ltr-direction{% endif %}">
+            {% if LANGUAGE_CODE == 'ar' or LANGUAGE_CODE == 'ar-ma' %}
+                قائمة الموظفين حسب القسم
+            {% else %}
+                {% trans "Liste des Employé par classe" %}
+            {% endif %}
+        </h3>
+    </div>
+
+    <div class="box-body">
+        <h4 align="center" class="{% if LANGUAGE_CODE == 'ar' or LANGUAGE_CODE == 'ar-ma' %}rtl-direction{% else %}ltr-direction{% endif %}">
+            {% if selected_secteur_obj %}
+                {% if LANGUAGE_CODE == 'ar' or LANGUAGE_CODE == 'ar-ma' %}
+                    القسم: {{ selected_secteur_obj.nom }}
+                {% else %}
+                    Secteur: {{ selected_secteur_obj.nom }}
+                {% endif %}
+
+                {% if selected_annee_obj %}
+                    -
+                    {% if LANGUAGE_CODE == 'ar' or LANGUAGE_CODE == 'ar-ma' %}
+                        السنة {{ selected_annee_obj.numero_annee }}
+                    {% else %}
+                        Année {{ selected_annee_obj.numero_annee }}
+                    {% endif %}
+                {% endif %}
+
+                {% if selected_trimestre_obj %}
+                    -
+                    {% if LANGUAGE_CODE == 'ar' or LANGUAGE_CODE == 'ar-ma' %}
+                        {{ selected_trimestre_obj.nom_ar }}
+                    {% else %}
+                        {{ selected_trimestre_obj.nom_fr }}
+                    {% endif %}
+                {% endif %}
+            {% endif %}
+        </h4>
+
+        <table border="1" width="100%" class="{% if LANGUAGE_CODE == 'ar' or LANGUAGE_CODE == 'ar-ma' %}rtl-direction{% else %}ltr-direction{% endif %}">
+            <thead>
+                <tr>
+                    <th>
+                        {% if LANGUAGE_CODE == 'ar' or LANGUAGE_CODE == 'ar-ma' %}
+                            الرقم
+                        {% else %}
+                            {% trans "N°" %}
+                        {% endif %}
+                    </th>
+                    <th>
+                        {% if LANGUAGE_CODE == 'ar' or LANGUAGE_CODE == 'ar-ma' %}
+                            الاسم الكامل
+                        {% else %}
+                            {% trans "Nom Complet" %}
+                        {% endif %}
+                    </th>
+                    <th>
+                        {% if LANGUAGE_CODE == 'ar' or LANGUAGE_CODE == 'ar-ma' %}
+                            تاريخ ومحل الميلاد
+                        {% else %}
+                            {% trans "Date et Lieu de Naissance" %}
+                        {% endif %}
+                    </th>
+                    <th>
+                        {% if LANGUAGE_CODE == 'ar' or LANGUAGE_CODE == 'ar-ma' %}
+                            الرقم الوطني
+                        {% else %}
+                            {% trans "N° National" %}
+                        {% endif %}
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for etudiant in etudiants %}
+                <tr>
+                    <td>{{ etudiant.matricule}}</td>
+                    <td>
+                        {% if LANGUAGE_CODE == 'ar' or LANGUAGE_CODE == 'ar-ma' %}
+                            {{ etudiant.prenom }} {{ etudiant.nom }}
+                        {% else %}
+                            {{ etudiant.nom }} {{ etudiant.prenom }}
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if etudiant.date_naissance %}
+                            {{ etudiant.date_naissance|date:"d/m/Y" }}
+                        {% endif %}
+                        {% if etudiant.lieu_naissance %}
+                            {% if etudiant.date_naissance %} - {% endif %}
+                            {{ etudiant.lieu_naissance }}
+                        {% endif %}
+                        {% if not etudiant.date_naissance and not etudiant.lieu_naissance %}
+                            -
+                        {% endif %}
+                    </td>
+                    <td>{{ etudiant.nni|default:"-" }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <!-- Informations supplémentaires -->
+        <div class="mt-4 {% if LANGUAGE_CODE == 'ar' or LANGUAGE_CODE == 'ar-ma' %}rtl-direction{% else %}ltr-direction{% endif %}">
+            <div class="screen-form-line-double form-line-double">
+                <div class="screen-form-line-left form-line-left">
+                    {% if LANGUAGE_CODE == 'ar' or LANGUAGE_CODE == 'ar-ma' %}
+                        <span><strong>عدد الطلاب:</strong></span>
+                        <span>{{ etudiants.count }}</span>
+                    {% else %}
+                        <span><strong>Nombre d'étudiants:</strong></span>
+                        <span>{{ etudiants.count }}</span>
+                    {% endif %}
+                </div>
+            </div>
+
+            {% if selected_secteur_obj.formation %}
+            <div class="screen-form-line-double form-line-double">
+                <div class="screen-form-line-left form-line-left">
+                    {% if LANGUAGE_CODE == 'ar' or LANGUAGE_CODE == 'ar-ma' %}
+                        <span><strong>التكوين:</strong></span>
+                        <span>{{ selected_secteur_obj.formation.nom_ar }}</span>
+                    {% else %}
+                        <span><strong>Formation:</strong></span>
+                        <span>{{ selected_secteur_obj.formation.nom_fr }}</span>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Statistiques par sexe -->
+        {% if stats_sexe %}
+        <div class="mt-4 {% if LANGUAGE_CODE == 'ar' or LANGUAGE_CODE == 'ar-ma' %}rtl-direction{% else %}ltr-direction{% endif %}">
+            <h5>
+                {% if LANGUAGE_CODE == 'ar' or LANGUAGE_CODE == 'ar-ma' %}
+                    إحصائيات حسب الجنس:
+                {% else %}
+                    {% trans "Statistiques par sexe:" %}
+                {% endif %}
+            </h5>
+            <table border="1" width="50%" style="margin: 0 auto;">
+                <thead>
+                    <tr>
+                        <th>
+                            {% if LANGUAGE_CODE == 'ar' or LANGUAGE_CODE == 'ar-ma' %}
+                                الجنس
+                            {% else %}
+                                {% trans "Sexe" %}
+                            {% endif %}
+                        </th>
+                        <th>
+                            {% if LANGUAGE_CODE == 'ar' or LANGUAGE_CODE == 'ar-ma' %}
+                                العدد
+                            {% else %}
+                                {% trans "Nombre" %}
+                            {% endif %}
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for stat in stats_sexe %}
+                    <tr>
+                        <td>
+                            {% if stat.sexe == 'H' %}
+                                {% if LANGUAGE_CODE == 'ar' or LANGUAGE_CODE == 'ar-ma' %}
+                                    ذكر
+                                {% else %}
+                                    {% trans "Homme" %}
+                                {% endif %}
+                            {% elif stat.sexe == 'F' %}
+                                {% if LANGUAGE_CODE == 'ar' or LANGUAGE_CODE == 'ar-ma' %}
+                                    أنثى
+                                {% else %}
+                                    {% trans "Femme" %}
+                                {% endif %}
+                            {% else %}
+                                {% if LANGUAGE_CODE == 'ar' or LANGUAGE_CODE == 'ar-ma' %}
+                                    غير محدد
+                                {% else %}
+                                    {% trans "Non spécifié" %}
+                                {% endif %}
+                            {% endif %}
+                        </td>
+                        <td>{{ stat.count }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endif %}
+
+{% if not etudiants and request.GET.annee and request.GET.trimestre and request.GET.secteur %}
+<div class="box">
+    <div class="box-body text-center">
+        <h4>
+            {% if LANGUAGE_CODE == 'ar' or LANGUAGE_CODE == 'ar-ma' %}
+                لا يوجد موظفين في هذا القسم للسنة والفصل المحددين
+            {% else %}
+                {% trans "Aucun étudiant trouvé pour ce secteur, cette année et ce trimestre" %}
+            {% endif %}
+        </h4>
+    </div>
+</div>
+{% endif %}
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+function printDiv(divName) {
+    var printContents = document.getElementById(divName).innerHTML;
+    var originalContents = document.body.innerHTML;
+    document.body.innerHTML = printContents;
+    window.print();
+    document.body.innerHTML = originalContents;
+}
+
+// JavaScript pour charger les trimestres en fonction de l'année sélectionnée
+$(document).ready(function() {
+    $('select[name="annee"]').change(function() {
+        var anneeId = $(this).val();
+        if (anneeId) {
+            $.ajax({
+                url: '{% url "get_trimestres" %}',  // Vous devrez créer cette URL
+                data: {
+                    'annee_id': anneeId
+                },
+                success: function(data) {
+                    $('select[name="trimestre"]').html('<option value="">{% if LANGUAGE_CODE == "ar" or LANGUAGE_CODE == "ar-ma" %}اختر الفصل{% else %}{% trans "Choisir le trimestre" %}{% endif %}</option>');
+                    $.each(data.trimestres, function(key, value) {
+                        $('select[name="trimestre"]').append('<option value="' + value.id + '">' + value.nom + '</option>');
+                    });
+                }
+            });
+        } else {
+            $('select[name="trimestre"]').html('<option value="">{% if LANGUAGE_CODE == "ar" or LANGUAGE_CODE == "ar-ma" %}اختر الفصل{% else %}{% trans "Choisir le trimestre" %}{% endif %}</option>');
+        }
+    });
+});
+</script>
+{% endblock %}

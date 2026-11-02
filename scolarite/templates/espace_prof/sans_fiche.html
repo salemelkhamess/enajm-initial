@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block content %}
+<div class="box box-danger">
+    <div class="box-header with-border"><h3 class="box-title">{% trans "Espace professeur" %}</h3></div>
+    <div class="box-body">
+        <p>{% trans "Aucune fiche professeur n'est liée à votre compte. Demandez à l'administration de lier votre compte à votre fiche professeur." %}</p>
+    </div>
+</div>
+{% endblock %}

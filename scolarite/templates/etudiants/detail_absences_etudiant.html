@@ -1,0 +1,123 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block styles  %}
+
+<style>
+    @media print {
+        .card-header, .card-footer {
+            display: none;
+        }
+        body {
+            padding: 0;
+            font-size: 12pt;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 4px;
+            border: 1px solid #ddd;
+        }
+    }
+</style>
+{% endblock %}
+{% block content %}
+<div class="container-fluid mt-4">
+    <p class="text-right">
+    <a onclick="printDiv('printme')" class="btn btn-primary" style="width: 200px">
+        <i class="fa fa-print"></i> {% trans "Print" %}
+    </a>
+</p>
+    <div class="box" id="printme">
+        {% include "entete/show.html" with entete=entete %}
+
+        <h3 align="center">
+                    {% if LANGUAGE_CODE == 'ar' %}
+                        غيابات الطالب: {{ etudiant.nom }} {{ etudiant.prenom }}
+                    {% else %}
+                        {% trans "Absences de" %} {{ etudiant.nom }} {{ etudiant.prenom }}
+                    {% endif %}
+                </h3>
+        <div class="box-body">
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <p><strong>{% trans "Matricule" %}:</strong> {{ etudiant.matricule }}</p>
+                    <p><strong>{% if LANGUAGE_CODE == 'ar' %}القسم{% else %}{% trans "Secteur" %}{% endif %}:</strong>
+                       {{ etudiant.secteur.nom }}</p>
+                </div>
+                <div class="col-md-6">
+                    <p><strong>{% if LANGUAGE_CODE == 'ar' %}التكوين{% else %}{% trans "Formation" %}{% endif %}:</strong>
+                       {{ etudiant.formation.nom }}</p>
+                    <p><strong> {{ trimestre_courant }}</strong>
+</p>
+                </div>
+            </div>
+
+            <div class="table-responsive">
+        <table border="1" width="100%" style="text-align: center; direction: rtl;">
+                    <thead class="thead-light">
+                        <tr>
+                            <th>{% if LANGUAGE_CODE == 'ar' %}المادة{% else %}{% trans "Matière" %}{% endif %}</th>
+                            <th>{% if LANGUAGE_CODE == 'ar' %}عدد الغيابات{% else %}{% trans "Nombre d'absences" %}{% endif %}</th>
+                            <th>{% if LANGUAGE_CODE == 'ar' %}الساعات الضائعة{% else %}{% trans "Heures perdues" %}{% endif %}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for absence in absences_par_matiere %}
+                            <tr>
+                                <td>{{ absence.matiere__nom }}</td>
+                                <td class="text-center">{{ absence.total_absences }}</td>
+                                <td class="text-center">{{ absence.total_heures }}</td>
+
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="4" class="text-center text-muted">
+                                    {% if LANGUAGE_CODE == 'ar' %}
+                                        لا توجد غيابات مسجلة
+                                    {% else %}
+                                        {% trans "Aucune absence enregistrée" %}
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                    <tfoot class="font-weight-bold bg-light">
+                        <tr>
+                            <td>{% if LANGUAGE_CODE == 'ar' %}المجموع{% else %}{% trans "Total" %}{% endif %}</td>
+                            <td class="text-center">{{ total_absences }}</td>
+                            <td class="text-center">{{ total_heures }}</td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+
+
+    </div>
+
+
+     <div class="card-footer text-right">
+            <a href="{{ request.META.HTTP_REFERER }}" class="btn btn-secondary">
+                <i class="fa fa-arrow-left"></i>
+                {% if LANGUAGE_CODE == 'ar' %}رجوع{% else %}{% trans "Retour" %}{% endif %}
+            </a>
+
+        </div>
+</div>
+
+{% endblock %}
+
+
+{% block scripts %}
+<script>
+function printDiv(divName) {
+    var printContents = document.getElementById(divName).innerHTML;
+    var originalContents = document.body.innerHTML;
+    document.body.innerHTML = printContents;
+    window.print();
+    document.body.innerHTML = originalContents;
+}
+</script>
+{% endblock %}

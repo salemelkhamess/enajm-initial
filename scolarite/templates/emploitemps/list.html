@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load i18n_jours %}
+{% block content %}
+<div class="box">
+<div class="box-header">
+       <h3>{% trans "Emploi du temps" %}</h3>
+    <p class="text-right">
+        <a href="{% url 'emploi_create' %}" class="btn btn-primary">{% trans "Ajouter" %}</a>
+
+    </p>
+</div>
+<div class="box-body">
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>{% trans "Professeur" %}</th>
+            <th>{% trans "Matière" %}</th>
+            <th>{% trans "Jour" %}</th>
+            <th>{% trans "Heure début" %}</th>
+            <th>{% trans "Heure fin" %}</th>
+            <th>{% trans "Trimestre" %}</th>
+            <th>{% trans "Actions" %}</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for emploi in emplois %}
+        <tr>
+            <td>{{ emploi.professeur }}</td>
+            <td>{{ emploi.matiere }}</td>
+            <td>{{ emploi.jour_semaine|jour_i18n }}</td>
+            <td>{{ emploi.heure_debut }}</td>
+            <td>{{ emploi.heure_fin }}</td>
+            <td>{{ emploi.trimestre }}</td>
+            <td>
+                <a href="{% url 'emploi_impression' emploi.professeur.id %}" class="btn btn-info btn-sm">
+    <i class="fa fa-print"></i> Imprimer l'emploi du temps
+</a>
+
+                <a href="{% url 'emploi_edit' emploi.pk %}" class="btn btn-sm btn-warning">✏</a>
+                <a href="{% url 'emploi_delete' emploi.pk %}" class="btn btn-sm btn-danger">🗑</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+</div>
+</div>
+{% endblock %}

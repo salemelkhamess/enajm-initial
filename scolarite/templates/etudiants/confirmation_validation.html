@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block content %}
+<div class="container-fluid mt-4">
+   <div class="box">
+       <div class="box-body">
+            <h2>{% trans "Confirmer la validation" %}</h2>
+    <p>{% trans "Voulez-vous vraiment valider cette absence ?" %}</p>
+    <p>{% trans "Étudiant" %}: {{ absence.etudiant.nom }} {{ absence.etudiant.prenom }}</p>
+    <p>{% trans "Matière" %}: {{ absence.matiere.nom }}</p>
+    <p>{% trans "Date" %}: {{ absence.date_cours }}</p>
+
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-success">{% trans "Confirmer la validation" %}</button>
+        <a href="{% url 'liste_absences_non_justifiees' %}" class="btn btn-secondary">{% trans "Annuler" %}</a>
+    </form>
+       </div>
+   </div>
+</div>
+{% endblock %}

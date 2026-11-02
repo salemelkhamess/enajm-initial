@@ -1,0 +1,126 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block styles %}
+    <style>
+            #filterForm.rtl-lang .row > div.col-md-3 {
+  float: right;}
+    </style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="card">
+        <div class="card-header bg-primary text-white">
+            <h3 class="card-title">{% trans "Rapport des pointages de matière" %}</h3>
+        </div>
+        <div class="card-body">
+            <!-- Formulaire de filtrage -->
+            <form method="get" id="filterForm" class="{% if LANGUAGE_CODE == 'ar' %}rtl-lang{% endif %}">
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>{% trans "Annee" %}</label>
+                            <select name="annee" class="form-control">
+                                <option value="">{% trans "Toutes les années" %}</option>
+                                {% for annee in annees %}
+                                <option value="{{ annee.id }}" {% if selected_annee == annee.id|stringformat:"s" %}selected{% endif %}>
+                                    {{ annee }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>{% trans "Trimestre" %}</label>
+                            <select name="trimestre" class="form-control">
+                                <option value="">{% trans "Tous les trimestres" %}</option>
+                                {% for trimestre in trimestres %}
+                                <option value="{{ trimestre.id }}" {% if selected_trimestre == trimestre.id|stringformat:"s" %}selected{% endif %}>
+                                    {{ trimestre.nom }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>{% trans "Classe" %}</label>
+                            <select name="secteur" class="form-control">
+                                <option value="">{% trans "Tous les secteurs" %}</option>
+                                {% for secteur in secteurs %}
+                                <option value="{{ secteur.id }}" {% if selected_secteur == secteur.id|stringformat:"s" %}selected{% endif %}>
+                                    {{ secteur.nom }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>{% trans "État" %}</label>
+                            <select name="etat" class="form-control">
+                                <option value="">{% trans "Tous les états" %}</option>
+                                {% for etat_code, etat_label in etats %}
+                                <option value="{{ etat_code }}" {% if selected_etat == etat_code %}selected{% endif %}>
+                                    {{ etat_label }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-right mt-2">
+                    <button type="submit" class="btn btn-primary">{% trans "Filtrer" %}</button>
+                    <a href="?" class="btn btn-secondary">{% trans "Réinitialiser" %}</a>
+                </div>
+            </form>
+
+
+
+            <!-- Tableau des pointages -->
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>{% trans "Date" %}</th>
+                            <th>{% trans "Matière" %}</th>
+                            <th>{% trans "Classe" %}</th>
+                            <th>{% trans "Professeur" %}</th>
+                            <th>{% trans "Heures" %}</th>
+                            <th>{% trans "Durée" %}</th>
+                            <th>{% trans "État" %}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for pointage in pointages %}
+                        <tr>
+                            <td>{{ pointage.date_cours|date:"d/m/Y" }}</td>
+                            <td>{{ pointage.matiere.nom }}</td>
+                            <td>{{ pointage.secteur.nom }}</td>
+                            <td>{{ pointage.professeur.nom }} {{ pointage.professeur.prenom }}</td>
+                            <td>{{ pointage.heure_debut|time:"H:i" }} - {{ pointage.heure_fin|time:"H:i" }}</td>
+                            <td>{{ pointage.duree|floatformat:2 }}h</td>
+                            <td>
+                                <span class="badge 
+                                    {% if pointage.etat == 'EF' %}badge-success
+                                    {% elif pointage.etat == 'AN' %}badge-danger
+                                    {% else %}badge-warning{% endif %}">
+                                    {{ pointage.get_etat_display }}
+                                </span>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="7" class="text-center">{% trans "Aucun pointage trouvé avec ces critères" %}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+
+        </div>
+    </div>
+</div>
+{% endblock %}

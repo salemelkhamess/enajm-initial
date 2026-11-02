@@ -1,0 +1,301 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block styles %}
+<style>
+#filterForm.rtl-lang .row > div.col-lg-4 {
+  float: right;
+}
+table th {
+    text-align: center !important;
+    vertical-align: middle !important;
+}
+
+table td {
+    text-align: center;
+    vertical-align: middle;
+}
+
+</style>
+{% endblock %}
+{% block content %}
+    <div class="box">
+    <div class="box-header">
+        <h3>{% translate 'Emploie des temps par classe' %} </h3>
+    </div>
+    <div class="box-body">
+
+<form method="get" id="filterForm"  class="{% if langue == 'ar' %}rtl-lang{% endif %}" >
+            <div class="row ">
+                <!-- Champ Année (toujours visible) -->
+                <div class="col-lg-4">
+                    <label>{% trans "Annee" %}</label>
+                    <select name="annee_id" id="anneeSelect" class="form-control select" onchange="this.form.submit()" >
+                        <option value="">{% trans "Anne" %}</option>
+                        {% for annee in annees %}
+                            <option value="{{ annee.id }}" {% if annee_selectionnee and annee.id == annee_selectionnee.id %}selected{% endif %}>
+                                {{ annee.numero_annee }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- Champ Trimestre (caché initialement) -->
+                <div class="col-lg-4" id="trimestreField" {% if not annee_selectionnee %}style="display:none;"{% endif %}>
+                    <label>{% trans "Trimestre" %}</label>
+                    <select name="trimestre_id" id="trimestreSelect" class="form-control select" onchange="this.form.submit()">
+                        <option value="">{% trans "Trimestre" %}</option>
+                        {% for trimestre in trimestres %}
+                            <option value="{{ trimestre.id }}" {% if trimestre_selectionne and trimestre.id == trimestre_selectionne.id %}selected{% endif %}>
+                                {{ trimestre.nom }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- Champ Secteur (caché initialement) -->
+                <div class="col-lg-4" id="secteurField" {% if not trimestre_selectionne %}style="display:none;"{% endif %}>
+                    <label>{% trans "Classe" %}</label>
+                    <select name="secteur_id" id="secteurSelect" class="form-control select" onchange="this.form.submit()">
+                        <option value="">{% trans "Classe" %}</option>
+                        {% for secteur in secteurs %}
+                            <option value="{{ secteur.id }}" {% if secteur_selectionne and secteur.id == secteur_selectionne.id %}selected{% endif %}>
+                                {{ secteur.nom }} ({{ secteur.formation.nom }})
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+        </form>
+
+    </div>
+    </div>
+    <p class="text-right">
+    <a onclick="printDiv('printme')" class="btn btn-primary" style="width: 200px">
+        <i class="fa fa-print"></i> Imprimer
+    </a>
+</p>
+<div class="box box-default" id="printme" style="display:none;">
+    <div class="box-header with-border">
+    {% include "entete/show.html" with entete=entete %}
+
+
+      <h1 align="center">
+          {% trans "Emploi du temps pour" %} {{ secteur_selectionne.nom }} <br>  {{ trimestre_selectionne.nom }} -
+            {{ annee_selectionnee.numero_annee }}
+
+        </h1>
+    </div>
+
+
+
+    <div class="box-body">
+
+
+{% if emploi %}
+
+<table border="1" width="100%" style="text-align: center; direction: ltr;">
+    <thead>
+        <tr style="background-color: green; color: white; text-align: center">
+            <th>السبت<br>Samedi <br><span>ابتداء من 10:00 صباحا</span></th>
+            <th>الجمعة<br>Vendredi</th>
+            <th>الخميس<br>Jeudi</th>
+            <th>الأربعاء<br>Mercredi</th>
+            <th>الثلاثاء<br>Mardi</th>
+            <th>الإثنين<br>Lundi</th>
+            <th>التوقيت<br>Horaire</th>
+        </tr>
+    </thead>
+    <tbody>
+        <!-- Première plage horaire 8h-10h -->
+        <tr>
+            <td rowspan="3">لقاء التجربة</td>
+            <td>
+                {% for cours in emploi %}
+                    {% if cours.jour == 'Vendredi' and cours.heure_debut.hour == 8 %}
+                        {{ cours.matiere.nom }}<br>
+                        {{ cours.professeur.nom }} {{ cours.professeur.prenom }}<br>
+                        {{ cours.salle.nom }}
+                    {% endif %}
+                {% endfor %}
+            </td>
+            <td>
+                {% for cours in emploi %}
+                    {% if cours.jour == 'Jeudi' and cours.heure_debut.hour == 8 %}
+                        {{ cours.matiere.nom }}<br>
+                        {{ cours.professeur.nom }} {{ cours.professeur.prenom }}<br>
+                        {{ cours.salle.nom }}
+                    {% endif %}
+                {% endfor %}
+            </td>
+            <td>
+                {% for cours in emploi %}
+                    {% if cours.jour == 'Mercredi' and cours.heure_debut.hour == 8 %}
+                        {{ cours.matiere.nom }}<br>
+                        {{ cours.professeur.nom }} {{ cours.professeur.prenom }}<br>
+                        {{ cours.salle.nom }}
+                    {% endif %}
+                {% endfor %}
+            </td>
+            <td>
+                {% for cours in emploi %}
+                    {% if cours.jour == 'Mardi' and cours.heure_debut.hour == 8 %}
+                        {{ cours.matiere.nom }}<br>
+                        {{ cours.professeur.nom }} {{ cours.professeur.prenom }}<br>
+                        {{ cours.salle.nom }}
+                    {% endif %}
+                {% endfor %}
+            </td>
+            <td>
+                {% for cours in emploi %}
+                    {% if cours.jour == 'Lundi' and cours.heure_debut.hour == 8 %}
+                        {{ cours.matiere.nom }}<br>
+                        {{ cours.professeur.nom }} {{ cours.professeur.prenom }}<br>
+                        {{ cours.salle.nom }}
+                    {% endif %}
+                {% endfor %}
+            </td>
+            <td>10-8</td>
+        </tr>
+
+        <!-- Deuxième plage horaire 10h-12h -->
+        <tr>
+            <td>
+                {% for cours in emploi %}
+                    {% if cours.jour == 'Vendredi' and cours.heure_debut.hour == 10 %}
+                        {{ cours.matiere.nom }}<br>
+                        {{ cours.professeur.nom }} {{ cours.professeur.prenom }}<br>
+                        {{ cours.salle.nom }}
+                    {% endif %}
+                {% endfor %}
+            </td>
+            <td>
+                {% for cours in emploi %}
+                    {% if cours.jour == 'Jeudi' and cours.heure_debut.hour == 10 %}
+                        {{ cours.matiere.nom }}<br>
+                        {{ cours.professeur.nom }} {{ cours.professeur.prenom }}<br>
+                        {{ cours.salle.nom }}
+                    {% endif %}
+                {% endfor %}
+            </td>
+            <td>
+                {% for cours in emploi %}
+                    {% if cours.jour == 'Mercredi' and cours.heure_debut.hour == 10 %}
+                        {{ cours.matiere.nom }}<br>
+                        {{ cours.professeur.nom }} {{ cours.professeur.prenom }}<br>
+                        {{ cours.salle.nom }}
+                    {% endif %}
+                {% endfor %}
+            </td>
+            <td>
+                {% for cours in emploi %}
+                    {% if cours.jour == 'Mardi' and cours.heure_debut.hour == 10 %}
+                        {{ cours.matiere.nom }}<br>
+                        {{ cours.professeur.nom }} {{ cours.professeur.prenom }}<br>
+                        {{ cours.salle.nom }}
+                    {% endif %}
+                {% endfor %}
+            </td>
+            <td>
+                {% for cours in emploi %}
+                    {% if cours.jour == 'Lundi' and cours.heure_debut.hour == 10 %}
+                        {{ cours.matiere.nom }}<br>
+                        {{ cours.professeur.nom }} {{ cours.professeur.prenom }}<br>
+                        {{ cours.salle.nom }}
+                    {% endif %}
+                {% endfor %}
+            </td>
+            <td>12-10</td>
+        </tr>
+
+        <!-- Troisième plage horaire 12h-14h -->
+        <tr>
+            <td>
+                {% for cours in emploi %}
+                    {% if cours.jour == 'Vendredi' and cours.heure_debut.hour == 12 %}
+                        {{ cours.matiere.nom }}<br>
+                        {{ cours.professeur.nom }} {{ cours.professeur.prenom }}<br>
+                        {{ cours.salle.nom }}
+                    {% endif %}
+                {% endfor %}
+            </td>
+            <td>
+                {% for cours in emploi %}
+                    {% if cours.jour == 'Jeudi' and cours.heure_debut.hour == 12 %}
+                        {{ cours.matiere.nom }}<br>
+                        {{ cours.professeur.nom }} {{ cours.professeur.prenom }}<br>
+                        {{ cours.salle.nom }}
+                    {% endif %}
+                {% endfor %}
+            </td>
+            <td>
+                {% for cours in emploi %}
+                    {% if cours.jour == 'Mercredi' and cours.heure_debut.hour == 12 %}
+                        {{ cours.matiere.nom }}<br>
+                        {{ cours.professeur.nom }} {{ cours.professeur.prenom }}<br>
+                        {{ cours.salle.nom }}
+                    {% endif %}
+                {% endfor %}
+            </td>
+            <td>
+                {% for cours in emploi %}
+                    {% if cours.jour == 'Mardi' and cours.heure_debut.hour == 12 %}
+                        {{ cours.matiere.nom }}<br>
+                        {{ cours.professeur.nom }} {{ cours.professeur.prenom }}<br>
+                        {{ cours.salle.nom }}
+                    {% endif %}
+                {% endfor %}
+            </td>
+            <td>
+                {% for cours in emploi %}
+                    {% if cours.jour == 'Lundi' and cours.heure_debut.hour == 12 %}
+                        {{ cours.matiere.nom }}<br>
+                        {{ cours.professeur.nom }} {{ cours.professeur.prenom }}<br>
+                        {{ cours.salle.nom }}
+                    {% endif %}
+                {% endfor %}
+            </td>
+            <td>14-12</td>
+        </tr>
+    </tbody>
+</table>
+{% elif secteur_selectionne %}
+    <p>Aucun cours trouvé pour ce classe.</p>
+{% endif %}
+    </div>
+</div>
+{% endblock %}
+
+
+{% block scripts %}
+<script>
+
+function printDiv(divName) {
+    var printContents = document.getElementById(divName).innerHTML;
+    var originalContents = document.body.innerHTML;
+    document.body.innerHTML = printContents;
+    window.print();
+    document.body.innerHTML = originalContents;
+}
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const secteurSelect = document.getElementById("secteurSelect");
+        const printmeDiv = document.getElementById("printme");
+
+        if (secteurSelect && printmeDiv) {
+            // Affiche le div si une valeur est sélectionnée
+            if (secteurSelect.value !== "") {
+                printmeDiv.style.display = "block";
+            }
+
+            // Optionnel : si tu veux réagir instantanément au changement sans soumettre le formulaire :
+            // secteurSelect.addEventListener("change", function () {
+            //     if (this.value !== "") {
+            //         printmeDiv.style.display = "block";
+            //     } else {
+            //         printmeDiv.style.display = "none";
+            //     }
+            // });
+        }
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,288 @@
+{% load static %}
+{% load i18n %}
+{% load role_tags %}
+
+
+<aside class="main-sidebar">
+    <section class="sidebar">
+
+
+        <ul class="sidebar-menu" style="color: #00a157!important;">
+            <br><br>
+            <li class="header" style="color: #00a157!important; text-align: center">Sys Scolaire</li>
+            {% if user|has_any_role:"PROFESSEUR" %}
+                <li class="treeview">
+                    <a href="#">
+                        <i class="fa fa-graduation-cap"></i> <span>{% trans "Espace professeur" %}</span>
+                        <i class="fa fa-angle-left pull-right"></i>
+                    </a>
+                    <ul class="treeview-menu menu-open" style="display:block;">
+                        <li><a href="{% url 'espace_prof' %}"><i class="fa fa-circle-o"></i> {% trans "Mes cours" %}</a></li>
+                        <li><a href="{% url 'espace_prof_notes' %}"><i class="fa fa-circle-o"></i> {% trans "Notes des devoirs et examens" %}</a></li>
+                    </ul>
+                </li>
+            {% endif %}
+            {% if not professeur_seul %}
+            <li class="treeview">
+                <a href="#">
+                    <i class="fa fa-dashboard"></i> <span>{% trans "Accueil" %}</span> <i
+                        class="fa fa-angle-left pull-right"></i>
+                </a>
+                <ul class="treeview-menu">
+                    <li class="active"><a href="{% url 'home' %}"><i class="fa fa-circle-o"></i> {% trans "Accueil" %}
+                    </a></li>
+                </ul>
+            </li>
+            {% endif %}
+
+            {# Employé #}
+            {% if user|has_any_role:"ADMIN,POINTEUR,SUPER_ADMIN" %}
+
+                <li class="treeview">
+                    <a href="#">
+                        <i class="fa fa-users"></i>
+                        <span>{% trans "Etudiant" %}</span>
+                        <i class="fa fa-angle-left pull-right"></i>
+                    </a>
+                    <ul class="treeview-menu">
+                        {% if user|has_any_role:"ADMIN,SUPER_ADMIN,MANAGER" %}
+
+                            <li><a href="{% url 'etudiant_list' %}"><i class="fa fa-circle-o"></i> {% trans "Liste" %}
+                            </a></li>
+                        {% endif %}
+                        <li><a href="{% url 'enregistrement_presence' %}"><i
+                                class="fa fa-circle-o"></i> {% trans "Absence" %}</a></li>
+                        {#                  <li><a href="{% url 'selection' %}"><i class="fa fa-circle-o"></i> {% trans "Absence hors emploie" %}</a></li>#}
+
+                        <li><a href="{% url 'pv_list' %}"><i class="fa fa-circle-o"></i> {% trans "pvl" %}</a></li>
+
+                    </ul>
+                </li>
+
+            {% endif %}
+
+            {# Absence #}
+
+            {% if user|has_any_role:"DOCTOR" %}
+                <li class="treeview">
+                    <a href="#">
+                        <i class="fa fa-users"></i>
+                        <span>{% trans "Justification" %}</span>
+                        <i class="fa fa-angle-left pull-right"></i>
+                    </a>
+                    <ul class="treeview-menu">
+                        <li><a href="{% url 'liste_absences_non_justifiees' %}"><i
+                                class="fa fa-circle-o"></i> {% trans "Justification" %}</a></li>
+                    </ul>
+                </li>
+            {% endif %}
+            {% if user|has_any_role:"ADMIN,SUPER_ADMIN,POINTEUR" %}
+
+                {# Proffesseurs #}
+
+                <li class="treeview">
+                    <a href="#">
+                        <i class="fa fa-user-md"></i>
+                        <span>{% trans "Proffesseurs" %}</span>
+                        <i class="fa fa-angle-left pull-right"></i>
+                    </a>
+                    <ul class="treeview-menu">
+                        {% if user|has_any_role:"ADMIN,SUPER_ADMIN" %}
+
+                            <li><a href="{% url 'professeur_list' %}"><i class="fa fa-circle-o"></i> {% trans "Liste" %}
+                            </a></li>
+                        {% endif %}
+                        <li><a href="{% url 'pointage_list' %}"><i class="fa fa-circle-o"></i> {% trans "Pointage" %}
+                        </a></li>
+                        <li><a href="{% url 'pointage_matiere_list' %}"><i
+                                class="fa fa-circle-o"></i> {% trans "Liste des pointages des matières" %}</a></li>
+
+                    </ul>
+                </li>
+                {# emploie de temps #}
+                <li class="treeview">
+                    <a href="#">
+                        <i class="fa fa-calendar"></i>
+                        <span>{% trans "et" %}</span>
+                        <i class="fa fa-angle-left pull-right"></i>
+                    </a>
+                    <ul class="treeview-menu">
+                        <li><a href="{% url 'emploi_liste' %}"><i class="fa fa-circle-o"></i> {% trans "Ajouter" %}</a>
+                        </li>
+                    </ul>
+                </li>
+                {% if user|has_any_role:"ADMIN,SUPER_ADMIN,POINTEUR" %}
+
+                    {#        Rapport #}
+                    <li class="treeview">
+                        <a href="#">
+                            <i class="fa fa-bar-chart-o"></i> <span>{% trans "Rapport" %}</span>
+                            <i class="fa fa-angle-left pull-right"></i>
+                        </a>
+                        <ul class="treeview-menu">
+                            <li><a href="{% url 'presence-par-matier' %}"><i
+                                    class="fa fa-circle-o"></i> {% trans "Absence par matier" %}</a></li>
+                            <li><a href="{% url 'emploi_par_secteur' %}"><i class="fa fa-circle-o"></i>{% trans 'et' %}
+                            </a></li>
+                            <li><a href="{% url 'rapport_absences' %}"><i
+                                    class="fa fa-circle-o"></i> {% trans "RapportA" %}</a></li>
+                            <li><a href="{% url 'pv_rapport' %}"><i
+                                    class="fa fa-circle-o"></i> {% trans "Rapport des pvs" %}</a></li>
+                            <li><a href="{% url 'rapport_presence_professeurs' %}"><i
+                                    class="fa fa-circle-o"></i> {% trans "Rapport Absence" %}</a></li>
+                            <li><a href="{% url 'rapport_absence_etudiants' %}"><i class="fa fa-circle-o"></i>
+                                {% if LANGUAGE_CODE == 'ar' %}
+                                    الحضور اليومي  للتلاميذ الموظفين
+                                {% elif LANGUAGE_CODE == 'fr' %}
+                                    Présence quotidienne des étudiants
+                                {% else %}
+                                    Student Attendance Daily
+                                {% endif %}
+                            </a></li>
+
+                            <li><a href="{% url 'formulaire-presence' %}"><i
+                                    class="fa fa-circle-o"></i> {% trans "formulaire de présence aux contrôles" %}</a>
+                            </li>
+
+                            <li><a href="{% url 'rapport_pointages' %}"><i
+                                    class="fa fa-circle-o"></i> {% trans "Absence par matier" %}</a></li>
+                            <li><a href="{% url 'liste_par_secteur' %}"><i
+                                    class="fa fa-circle-o"></i> {% trans "Liste par classe" %}</a></li>
+
+                          <li><a href="{% url 'absences_non_justifiees' %}"><i
+                                    class="fa fa-circle-o"></i> {% trans "Absence des eleves fonctionnaires par heurs" %}</a></li>
+
+                           <li><a href="{% url 'absences_professeurs' %}"><i
+                                    class="fa fa-circle-o"></i> {% trans "Absence des professeur par heurs" %}</a></li>
+
+                           <li><a href="{% url 'recap_absences_etudiants' %}"><i class="fa fa-circle-o"></i>
+                               {% if LANGUAGE_CODE == 'ar' %}ملخص غيابات التلاميذ{% else %}Récap. absences des élèves{% endif %}</a></li>
+                           <li><a href="{% url 'recap_absences_seuils' %}"><i class="fa fa-circle-o"></i>
+                               {% if LANGUAGE_CODE == 'ar' %}الغيابات حسب عدد الحصص{% else %}Absences par seuil de séances{% endif %}</a></li>
+                           <li><a href="{% url 'horaires_absences_professeurs' %}"><i class="fa fa-circle-o"></i>
+                               {% if LANGUAGE_CODE == 'ar' %}ساعات غياب الأساتذة{% else %}Horaires d'absence des professeurs{% endif %}</a></li>
+                           <li><a href="{% url 'heures_cours_trimestre' %}"><i class="fa fa-circle-o"></i>
+                               {% if LANGUAGE_CODE == 'ar' %}ساعات الدروس حسب الفصل{% else %}Heures de cours par trimestre{% endif %}</a></li>
+
+                           <li><a href="{% url 'absences_par_matiere' %}"><i
+                                    class="fa fa-circle-o"></i>
+                                       {% if LANGUAGE_CODE == 'ar' %}
+الغيابات حسب المادة                                {% elif LANGUAGE_CODE == 'fr' %}
+Absences par matiere                                {% else %}
+Absences par matiere                                {% endif %}
+
+                           </a></li>
+                        </ul>
+                    </li>
+
+                {% endif %}
+            {% endif %}
+            {# Evaluations #}
+            {% if user|has_any_role:"MANAGER" %}
+                <li class="treeview">
+                    <a href="#">
+                        <i class="fa fa-edit"></i> <span>{% trans "Evaluations" %}</span>
+                        <i class="fa fa-angle-left pull-right"></i>
+                    </a>
+                    <ul class="treeview-menu">
+                        <li><a href="{% url 'evaluation_list' %}"><i class="fa fa-circle-o"></i> {% trans "Liste" %}</a>
+                        </li>
+                        <li><a href="{% url 'note_list' %}"><i class="fa fa-circle-o"></i> {% trans "Note" %}</a></li>
+                        <li><a href="{% url 'afficher_bulletin' %}"><i
+                                class="fa fa-circle-o"></i> {% trans "Bulletin" %}</a></li>
+                    </ul>
+                </li>
+            {% endif %}
+
+            {% if user|has_any_role:"ADMIN,SUPER_ADMIN,POINTEUR" %}
+
+                {# Classe  #}
+
+                <li class="treeview">
+                    <a href="#">
+                        <i class="fa fa-home"></i>
+                        <span>{% trans "Secteurs" %}</span>
+                        <i class="fa fa-angle-left pull-right"></i>
+                    </a>
+                    <ul class="treeview-menu">
+                        <li><a href="{% url 'formation_list' %}"><i
+                                class="fa fa-list"></i> {% trans "Liste des secteurs" %}</a></li>
+                        <li><a href="{% url 'secteur_list' %}"><i
+                                class="fa fa-list"></i> {% trans "Liste des branches" %}</a></li>
+                        <li><a href="{% url 'matiere_list' %}"><i class="fa fa-circle-o"></i> {% trans "Matiére" %}</a>
+                        </li>
+                    </ul>
+                </li>
+
+            {% endif %}
+
+            {# Annee #}
+            {% if user|has_any_role:"ADMIN,SUPER_ADMIN" %}
+
+                <li class="treeview">
+                    <a href="#">
+                        <i class="fa fa-pie-chart"></i>
+                        <span>{% trans "Année" %}</span>
+                        <i class="fa fa-angle-left pull-right"></i>
+                    </a>
+                    <ul class="treeview-menu">
+                        <li><a href="{% url 'annee_list' %}"><i class="fa fa-circle-o"></i> {% trans "Création" %}</a>
+                        </li>
+                        <li><a href="{% url 'trimestre_list' %}"><i class="fa fa-circle-o"></i> {% trans "Trimestre" %}
+                        </a></li>
+                    </ul>
+                </li>
+            {% endif %}
+            {# Salles #}
+            {% if user|has_any_role:"ADMIN,SUPER_ADMIN,POINTEUR" %}
+
+                <li class="treeview">
+                    <a href="#">
+                        <i class="fa fa-pie-chart"></i>
+                        <span>{% trans "Salles" %}</span>
+                        <i class="fa fa-angle-left pull-right"></i>
+                    </a>
+                    <ul class="treeview-menu">
+                        <li><a href="{% url 'salle_list' %}"><i class="fa fa-circle-o"></i> {% trans "Liste" %}</a></li>
+                    </ul>
+                </li>
+
+                {# Conférences #}
+
+                <li class="treeview">
+                    <a href="#">
+                        <i class="fa fa-table"></i> <span>{% trans "Conférences" %}</span>
+                        <i class="fa fa-angle-left pull-right"></i>
+                    </a>
+                    <ul class="treeview-menu">
+                        <li><a href=""><i class="fa fa-circle-o"></i> {% trans "Céation" %}</a></li>
+                    </ul>
+                </li>
+            {% endif %}
+            {# Paramétres #}
+            {% if user|has_any_role:"SUPER_ADMIN" %}
+
+                <li class="treeview">
+                    <a href="#">
+                        <i class="fa fa-cogs"></i> <span>{% trans "Paramétres" %}</span>
+                        <i class="fa fa-angle-left pull-right"></i>
+                    </a>
+                    <ul class="treeview-menu">
+                        <li><a href="{% url 'update_params' %}"><i
+                                class="fa fa-circle-o"></i> {% trans "paramètres général" %}</a></li>
+
+                        <li><a href="{% url 'entete_list' %}"><i class="fa fa-circle-o"></i> {% trans "Entéte" %}</a>
+                        </li>
+                        <li><a href="{% url 'group_list' %}"><i class="fa fa-users"></i> {% trans "Groupe" %}</a></li>
+                        <li><a href="{% url 'user_list' %}"><i class="fa fa-users"></i> {% trans "Utilisateurs" %}</a>
+                        </li>
+                        <li><a href="{% url 'role_list' %}"><i class="fa fa-users"></i> {% trans "roles" %}</a></li>
+
+
+                    </ul>
+                </li>
+            {% endif %}
+
+        </ul>
+    </section>
+</aside>

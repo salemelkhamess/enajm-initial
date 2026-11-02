@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block content %}
+<div class="box box-default">
+    <div class="box-header d-flex justify-content-between align-items-center">
+        <h3 class="card-title">{% trans "Liste des PV" %}</h3>
+        <p class="text-right">
+            <a href="{% url 'pv_create' %}" class="btn btn-primary">
+                <i class="fa fa-plus"></i> {% trans "Ajouter un PV" %}
+            </a>
+        </p>
+    </div>
+    <div class="box-body">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>{% trans "Étudiant" %}</th>
+                    <th>{% trans "Type" %}</th>
+                    <th>{% trans "Contenu" %}</th>
+                    <th>{% trans "Date" %}</th>
+                    <th>{% trans "Actions" %}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for pv in pvs %}
+                <tr>
+                    <td>{{ pv.etudiant }}</td>
+                    <td>{{ pv.get_type_display }}</td>
+                    <td>{{ pv.contenu|truncatewords:10 }}</td>
+                    <td>{{ pv.date_creation|date:"d/m/Y" }}</td>
+                    <td>
+                             <a href="{% url 'pv_triche' pv.pk %}" class="btn btn-warning btn-sm" title="{% trans 'imprimer' %}">
+                            <i class="fa fa-print"></i>
+                        </a>
+                        <a href="{% url 'pv_edit' pv.pk %}" class="btn btn-warning btn-sm" title="{% trans 'Modifier' %}">
+                            <i class="fa fa-edit"></i>
+                        </a>
+{#                        <a href="{% url 'pv_delete' pv.pk %}" class="btn btn-danger btn-sm" title="{% trans 'Supprimer' %}">#}
+{#                            <i class="fa fa-trash"></i>#}
+{#                        </a>#}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5">{% trans "Aucun PV enregistré." %}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

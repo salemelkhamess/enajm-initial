@@ -1,0 +1,139 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block styles %}
+<style>
+#filterForm.rtl-lang .row > div.col-md-4 {
+  float: right;
+}
+
+table thead th {
+  text-align: center;
+}
+</style>
+{% endblock %}
+{% block content %}
+<div class="box">
+    <div class="box-body">
+        <form method="get" id="filterForm" class="{% if langue == 'ar' %}rtl-lang{% endif %}">
+           <div class="row">
+                <div class="col-md-4">
+                    <label>{% trans "Start Date" %}</label>
+                    <input type="date" name="date_debut" class="form-control" value="{{ date_debut_str }}">
+                </div>
+                <div class="col-md-4">
+                    <label>{% trans "End Date" %}</label>
+                    <input type="date" name="date_fin" class="form-control" value="{{ date_fin_str }}">
+                </div>
+                <div class="col-md-4 align-self-end" style="margin-top: 24px">
+                    <button type="submit" class="btn btn-primary mt-2">{% trans "Search" %}</button>
+                </div>
+           </div>
+        </form>
+    </div>
+</div>
+
+<br>
+<p class="text-right">
+    <a onclick="printDiv('printme')" class="btn btn-primary" style="width: 200px">
+        <i class="fa fa-print"></i> {% trans "Print" %}
+    </a>
+</p>
+
+{% if date_debut and date_fin %}
+<div class="box" id="printme">
+    {% include "entete/show.html" with entete=entete %}
+
+    <div class="box-header">
+        <h3 align="center">{% trans "Teacher Attendance Report" %}</h3>
+    </div>
+
+    <div class="box-body">
+        <h3 align="center">
+            {% trans "Teacher Attendance Daily" %}
+            {% if date_debut %}
+                - {{ date_debut|date:"d/m/Y" }}
+                {% if date_fin %}
+                    {% blocktrans %} - {% endblocktrans %} {{ date_fin|date:"d/m/Y" }}
+                {% endif %}
+            {% endif %}
+        </h3>
+
+        <table border="1" width="100%" style="text-align: center;">
+            <thead>
+                <tr style="background-color: #2e383c; color: white;">
+                    <th>{% trans "Date" %}</th>
+                    <th>{% trans "Time" %}</th>
+                    <th>{% trans "Specialty" %}</th>
+                    <th>{% trans "Subject" %}</th>
+                    <th>{% trans "Teacher" %}</th>
+                    <th>{% trans "Status" %}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% regroup presences_combinees by secteur as specialites %}
+                {% for specialite in specialites %}
+                    {% for presence in specialite.list %}
+                        <tr>
+                            <td>{{ presence.date|date:"d/m/Y" }}</td>
+                            <td>
+                                {% if presence.heure_debut %}
+                                    {{ presence.heure_debut|time:"H:i" }} - {{ presence.heure_fin|time:"H:i" }}
+                                {% endif %}
+                            </td>
+                            <td>{{ presence.secteur }}</td>
+                            <td>{{ presence.matiere }}</td>
+                            <td>{{ presence.professeur }}</td>
+                            <td>
+                                {% if presence.etat == 'present' %}{% trans "Present" %}
+                                {% elif presence.etat == 'absent' %}{% trans "Absent" %}
+                                {% elif presence.etat == 'retard' %}{% trans "Late" %}
+                                {% elif presence.etat == 'conge' %}{% trans "On leave" %}
+                                {% elif presence.etat == 'EF' %}{% trans "Present" %}
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                {% empty %}
+                    <tr>
+                        <td colspan="6">{% trans "No data available" %}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <!-- Résumé des absences -->
+        <div class="mt-4">
+            <h4>{% trans "Absence Summary by Teacher" %}:</h4>
+            <table border="1" width="100%" style="text-align: center;">
+                <thead>
+                    <tr style="background-color: #f2f2f2;">
+                        <th>{% trans "Teacher" %}</th>
+                        <th>{% trans "Number of Absences" %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for absence in absences_par_professeur %}
+                    <tr>
+                        <td>{{ absence.professeur__nom }} {{ absence.professeur__prenom }}</td>
+                        <td>{{ absence.total_absences }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+<script>
+function printDiv(divName) {
+    var printContents = document.getElementById(divName).innerHTML;
+    var originalContents = document.body.innerHTML;
+    document.body.innerHTML = printContents;
+    window.print();
+    document.body.innerHTML = originalContents;
+}
+</script>
+{% endblock %}

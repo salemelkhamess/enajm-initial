@@ -1,0 +1,121 @@
+<!-- presence_etudiant/selection.html -->
+{% extends 'base.html' %}
+{% load i18n %}
+{% block styles %}
+    <style>
+
+        #filterForm.rtl-lang .row > div.col-md-6 {
+  float: right;
+}
+
+                #filterForm.rtl-lang .row > div.col-md-3 {
+  float: right;
+}
+
+    </style>
+{% endblock %}
+
+{% block content %}
+<div class=" mt-4">
+    <div class="box">
+        <div class="box-header bg-info text-white">
+            <h3>{% trans "Saisie des présences" %}</h3>
+        </div>
+        <div class="box-body">
+            <form method="get" action="{% url 'presence_saisie' %}" id="filterForm"  class="{% if langue == 'ar' %}rtl-lang{% endif %}">
+
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            {{ form.annee.label_tag }}
+                            {{ form.annee }}
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            {{ form.trimestre.label_tag }}
+                            {{ form.trimestre }}
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            {{ form.secteur.label_tag }}
+                            {{ form.secteur }}
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            {{ form.jour.label_tag }}
+                            {{ form.jour }}
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="date_cours">{% trans "Date du cours" %}</label>
+                            <input type="date" name="date_cours" class="form-control" required>
+                        </div>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-success mt-3">
+                    {% trans "Afficher les étudiants" %}
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}
+{% block scripts %}
+    <script>
+function loadTrimestres(anneeId) {
+    const trimestreSelect = document.getElementById("id_trimestre");
+
+    if (!anneeId) {
+        trimestreSelect.innerHTML = '<option value="">---------</option>';
+        return;
+    }
+
+    fetch(`{% url 'load_trimestres' %}?annee_id=${anneeId}`)
+    .then(response => {
+        if (!response.ok) throw new Error('Erreur réseau');
+        return response.json();
+    })
+    .then(data => {
+        console.log('Réponse complète:', data);
+
+        // Gestion des deux formats possibles
+        const options = Array.isArray(data) ? data : data.options;
+
+        if (options && Array.isArray(options)) {
+            trimestreSelect.innerHTML = options.map(opt =>
+                `<option value="${opt.id}">${opt.nom_fr || opt.text}</option>`
+            ).join('');
+        } else {
+            throw new Error('Format de réponse inattendu');
+        }
+    })
+    .catch(error => {
+        console.error('Erreur:', error);
+        trimestreSelect.innerHTML = `<option value="">Erreur de chargement</option>`;
+    });
+}
+
+// Initialisation
+document.addEventListener('DOMContentLoaded', function() {
+    const anneeSelect = document.getElementById("id_annee");
+
+    anneeSelect.addEventListener('change', function() {
+        loadTrimestres(this.value);
+    });
+
+    // Chargement initial si une année est sélectionnée
+    if (anneeSelect.value) {
+        loadTrimestres(anneeSelect.value);
+    }
+});
+</script>
+{% endblock %}

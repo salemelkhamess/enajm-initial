@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% load i18n_jours %}
+{% load i18n %}
+
+{% block content %}
+<div class="container-fluid mt-4">
+<div class="box">
+    <div class="box-header">
+                    <h2>{% trans "Absences Étudiants" %}</h2>
+
+    </div>
+    <div class="box-body">
+    <div class="card mb-4">
+        <div class="card-body">
+            <h5 class="card-title">{% trans "Informations du cours" %}</h5>
+            <p><strong>{% trans "Matière" %}:</strong> {{ matiere.nom }}</p>
+            <p><strong>{% trans "Date" %}:</strong> {{ date_cours }} ({{ jour|jour_i18n }})</p>
+
+        </div>
+    </div>
+
+    <form method="post" action="{% url "enregistrement_presence_etudiants" %}">
+        {% csrf_token %}
+        <table class="table table-bordered">
+            <thead class="thead-light">
+                <tr>
+                    <th>{% trans "Etudiant" %}</th>
+                    <th>{% trans "Présences" %}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for etudiant in etudiants %}
+                <tr>
+                    <td>
+                        {{ etudiant.etudiant.nom }} {{ etudiant.etudiant.prenom }}
+                        <input type="hidden" name="etudiant_{{ etudiant.etudiant.id }}" value="absent">
+                    </td>
+                    <td>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio"
+                                   name="etudiant_{{ etudiant.etudiant.id }}"
+                                   id="present_{{ etudiant.etudiant.id }}"
+                                   value="present"
+                                   {% if etudiant.present %}checked{% endif %}>
+                            <label class="form-check-label" for="present_{{ etudiant.etudiant.id }}">{% trans "Présent" %}</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio"
+                                   name="etudiant_{{ etudiant.etudiant.id }}"
+                                   id="absent_{{ etudiant.etudiant.id }}"
+                                   value="absent"
+                                   {% if not etudiant.present %}checked{% endif %}>
+                            <label class="form-check-label" for="absent_{{ etudiant.etudiant.id }}">{% trans "Absent" %}</label>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <div class="mt-3">
+            <button type="submit" class="btn btn-success">{% trans "Enregistrer" %}</button>
+            <a href="{% url 'enregistrement_presence' %}" class="btn btn-secondary">{% trans "Retour" %}</a>
+        </div>
+    </form>
+    </div>
+</div>
+</div>
+{% endblock %}

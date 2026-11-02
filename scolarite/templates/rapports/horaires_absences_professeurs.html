@@ -1,0 +1,23 @@
+{% extends 'rapports/_base_rapport.html' %}
+{% block tableau %}
+{% if professeurs %}
+<table class="rapport-table">
+    <thead>
+        <tr><th>{{ L.professeur }}</th><th>{{ L.matiere }}</th><th>{{ L.seances }}</th><th>{{ L.heures }}</th></tr>
+    </thead>
+    <tbody>
+    {% for p in professeurs %}
+        {% for m in p.matieres %}
+        <tr>
+            {% if forloop.first %}<td rowspan="{{ p.matieres|length|add:1 }}"><strong>{{ p.nom }}</strong></td>{% endif %}
+            <td>{{ m.nom }}</td>
+            <td class="num">{{ m.seances }}</td><td class="num">{{ m.heures|floatformat:"-2" }}</td>
+        </tr>
+        {% endfor %}
+        <tr class="total"><td>{{ L.total }}</td><td class="num">{{ p.seances }}</td><td class="num">{{ p.heures|floatformat:"-2" }}</td></tr>
+    {% endfor %}
+        <tr class="total"><td colspan="2">{{ L.total }}</td><td class="num">{{ total.seances }}</td><td class="num">{{ total.heures|floatformat:"-2" }}</td></tr>
+    </tbody>
+</table>
+{% else %}<p class="text-center">{{ L.aucune }}</p>{% endif %}
+{% endblock %}

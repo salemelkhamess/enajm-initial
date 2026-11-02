@@ -1,0 +1,135 @@
+{% load static i18n %}
+
+<header class="main-header">
+    <img src="{% static 'dist/img/logo.jpeg' %}" style="height: 100px; width: 230px; max-width: 100%;">
+
+    <!-- Header Navbar: style can be found in header.less -->
+    <nav class="navbar navbar-static-top" style="background-color: #f64040!important;">
+        <!-- Sidebar toggle button-->
+        <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
+            <span class="sr-only">Toggle navigation</span>
+        </a>
+
+        <!-- Année et Trimestre Courant -->
+        <div class="navbar-period-info hidden-xs {% if LANGUAGE_CODE == 'ar' %}rtl-period{% endif %}">
+            <div class="period-container">
+                <div class="period-item">
+                    <i class="fa fa-calendar-check-o"></i>
+                    <span class="period-label">{% trans "Année" %}:</span>
+                    {% if professeur_seul %}<span class="period-value animate-fade">{{ annee_courante|default:"-" }}</span>{% else %}
+                    <form method="post" action="{% url 'set_annee_consultee' %}" style="display:inline;margin:0;">
+                        {% csrf_token %}
+                        <input type="hidden" name="next" value="{{ request.get_full_path }}">
+                        <select name="annee_id" onchange="this.form.submit()" title="{% trans 'Année consultée' %}"
+                                style="color:#333;border-radius:3px;border:1px solid #ddd;padding:1px 4px;{% if annee_consultee_differente %}background:#fff3cd;font-weight:bold;{% endif %}">
+                            {% for a in annees_disponibles %}
+                                <option value="{{ a.id }}" {% if a.id == annee_courante.id %}selected{% endif %}>{{ a }}{% if a.id == annee_active_id %} ★{% endif %}</option>
+                            {% endfor %}
+                        </select>
+                    </form>
+                    {% endif %}
+                </div>
+                <div class="period-item">
+                    <i class="fa fa-calendar"></i>
+                    <span class="period-label">{% trans "Trimestre" %}:</span>
+                    <span class="period-value animate-fade">
+                        {% if LANGUAGE_CODE == 'ar' %}
+                            {{ trimestre_courant.nom_ar|default:"-" }}
+                        {% else %}
+                            {{ trimestre_courant.nom_fr|default:"-" }}
+                        {% endif %}
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <div class="navbar-custom-menu">
+            <ul class="nav navbar-nav">
+                <!-- Notifications -->
+                <li class="dropdown notifications-menu">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        <i class="fa fa-bell-o"></i>
+                        {% if critical_absences %}
+                            <span class="label label-danger">{{ critical_absences|length }}</span>
+                        {% else %}
+                            <span class="label label-default">0</span>
+                        {% endif %}
+                    </a>
+                    {% if critical_absences %}
+                        <ul class="dropdown-menu">
+                            <li class="header">{% trans "Étudiants avec ≥ 4 absences dans une matière" %}</li>
+                            <li>
+                                <ul class="menu">
+                                    {% for absence in critical_absences %}
+                                        <li>
+                                            <a href="{% url 'rapport_absences' %}">
+                                                <i class="fa fa-warning text-red"></i>
+                                                {{ absence.etudiant__nom }} {{ absence.etudiant__prenom }} ({{ absence.matiere__nom }}) - {{ absence.total }} {% trans "absences" %}
+                                            </a>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </li>
+                            <li class="footer"><a href="{% url 'rapport_absences' %}">{% trans "Voir tout" %}</a></li>
+                        </ul>
+                    {% endif %}
+                </li>
+
+                <!-- User Account -->
+                <li class="dropdown user user-menu">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        <span class="hidden-xs">{{ user.first_name }}</span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li class="user-header">
+                            <p>{{ user.first_name }}</p>
+                            <p>{{ user.email }}</p>
+                        </li>
+                        <li class="user-footer">
+                            <div class="pull-left">
+                                <a href="{% url "profile_view" %}" class="btn btn-default btn-flat">{% trans "Profile" %}</a>
+                            </div>
+                            <div class="pull-right">
+                                <form method="post" action="{% url 'logout' %}" style="display:inline;margin:0;">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-default btn-flat">{% trans "Sign out" %}</button>
+                                </form>
+                            </div>
+                        </li>
+                    </ul>
+                </li>
+
+                <!-- Language Menu -->
+                <li class="dropdown language-menu">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        <i class="fa fa-globe"></i>
+                        <span class="hidden-xs">
+                            {% if request.LANGUAGE_CODE == 'fr' %}
+                                <img src="{% static 'dist/img/france.png' %}" width="20px" height="13px"> Français
+                            {% elif request.LANGUAGE_CODE == 'ar' %}
+                                <img src="{% static 'dist/img/ar.svg' %}" width="20px" height="13px"> العربية
+                            {% else %}
+                                {% trans "Langue" %}
+                            {% endif %}
+                        </span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <form action="{% url 'set_language' %}" method="post" style="padding: 10px; min-width: 160px;">
+                                {% csrf_token %}
+                                <input name="next" type="hidden" value="{{ request.path }}">
+                                <button type="submit" name="language" value="fr" class="btn btn-block btn-flat {% if request.LANGUAGE_CODE == 'fr' %}btn-primary{% else %}btn-default{% endif %}">
+                                    <img src="{% static 'dist/img/france.png' %}" width="20px" height="13px"> Français
+                                </button>
+                                <button type="submit" name="language" value="ar" class="btn btn-block btn-flat {% if request.LANGUAGE_CODE == 'ar' %}btn-primary{% else %}btn-default{% endif %}">
+                                    <img src="{% static 'dist/img/ar.svg' %}" width="20px" height="13px"> العربية
+                                </button>
+                            </form>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </nav>
+</header>
+

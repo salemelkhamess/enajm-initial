@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block content %}
+<div id="alert-container" class="alert-container">
+    <div class="alert-banner hidden">
+        <div class="alert-content">
+            <span id="alert-message"></span>
+            <button id="dismiss-alert" class="btn btn-sm btn-danger">{% trans "Fermer" %}</button>
+        </div>
+    </div>
+</div>
+
+<audio id="alert-sound" preload="auto">
+    <source src="/static/sounds/alert.mp3" type="audio/mpeg">
+</audio>
+
+{% endblock %}

@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block content %}
+<div class="">
+<div class="box">
+<div class="box-header">
+                <h2>{% trans "Créer un utilisateur" %}</h2>
+
+</div>
+    <div class="box-body">
+
+    <form method="post">
+        {% csrf_token %}
+        {% for field in form.visible_fields %}
+            <div class="mb-3">
+                <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+                {% if field.help_text %}
+                    <div class="form-text">{{ field.help_text }}</div>
+                {% endif %}
+                {% for error in field.errors %}
+                    <div class="text-danger">{{ error }}</div>
+                {% endfor %}
+            </div>
+        {% endfor %}
+
+
+
+        <button type="submit" class="btn btn-primary">{% trans "Enregistrer" %}</button>
+        <a href="{% url 'user_list' %}" class="btn btn-secondary">{% trans "Annuler" %}</a>
+    </form>
+    </div>
+</div>
+</div>
+{% endblock %}

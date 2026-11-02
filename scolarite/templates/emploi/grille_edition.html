@@ -1,0 +1,239 @@
+{% extends 'base.html' %}
+{% load i18n_jours %}
+{% load static %}
+{% load emploi_tags %}
+{% load i18n %}
+
+{% block styles %}
+<style>
+    .form-control.select {
+        margin-top: 5px;
+        margin-bottom: 5px;
+    }
+    .toast {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 1000;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="box box-default">
+    <div class="box-header with-border">
+        <h3 class="card-title">{% trans "Création d'emploi du temps par classe" %}</h3>
+    </div>
+    <div class="box-body">
+        <form method="get" id="params-form">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-primary" style="display:none;">{% trans "Afficher la grille" %}</button>
+        </form>
+
+        {% if show_grille %}
+        <hr>
+        <h4>{% trans "Emploi du temps pour" %} {{ secteur.nom }} - {{ trimestre.nom }} {{ annee.nom }}</h4>
+
+        <form method="post" id="grille-form" action="{% url 'sauvegarder_grille' %}">
+            {% csrf_token %}
+            <input type="hidden" name="annee_id" value="{{ annee.id }}">
+            <input type="hidden" name="trimestre_id" value="{{ trimestre.id }}">
+            <input type="hidden" name="secteur_id" value="{{ secteur.id }}">
+
+            <div class="table-responsive">
+                <table class="table table-bordered" id="emploi-table">
+                    <thead>
+                        <tr>
+                            <th>{% trans "Créneau" %}</th>
+                            {% for jour in jours %}
+                                    <th>{{ jour|jour_i18n }}</th>
+
+
+                            {% endfor %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for creneau in creneaux %}
+                        <tr data-creneau="{{ creneau.debut }}-{{ creneau.fin }}">
+                            <td>
+                                {{ creneau.debut }} - {{ creneau.fin }}
+                                <input type="hidden" name="creneau_debut[]" value="{{ creneau.debut }}">
+                                <input type="hidden" name="creneau_fin[]" value="{{ creneau.fin }}">
+                            </td>
+                            {% for jour in jours %}
+                                <td>
+                                    {% with existing=emplois_existants|get_item:jour|get_item:creneau.debut|add:"-"|add:creneau.fin %}
+                                    <select name="matiere_{{ jour }}_{{ creneau.debut }}_{{ creneau.fin }}"
+                                            class="form-control select matiere-select">
+                                        <option value="">-- {% trans "Matière" %} --</option>
+                                        {% for matiere in matieres %}
+                                            <option value="{{ matiere.id }}"
+                                                {% if existing and existing.matiere_id == matiere.id %}selected{% endif %}>
+                                                {{ matiere.nom }}
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+
+                                    <select name="professeur_{{ jour }}_{{ creneau.debut }}_{{ creneau.fin }}"
+                                            class="form-control select professeur-select">
+                                        <option value="">-- {% trans "Professeur" %} --</option>
+                                        {% for professeur in professeurs %}
+                                            <option value="{{ professeur.id }}"
+                                                {% if existing and existing.professeur_id == professeur.id %}selected{% endif %}>
+                                                {{ professeur.nom }} {{ professeur.prenom }}
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+
+                                    <select name="salle_{{ jour }}_{{ creneau.debut }}_{{ creneau.fin }}"
+                                            class="form-control select salle-select">
+                                        <option value="">-- {% trans "Salle" %} --</option>
+                                        {% for salle in salles %}
+                                            <option value="{{ salle.id }}"
+                                                {% if existing and existing.salle_id == salle.id %}selected{% endif %}>
+                                                {{ salle.nom }}
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+                                    {% endwith %}
+                                </td>
+                            {% endfor %}
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+         {% comment %}   <button type="button" id="add-creneau" class="btn btn-info">
+                <i class="fa fa-plus"></i> {% trans "Ajouter un créneau" %}
+            </button>{% endcomment %}
+
+            <button type="submit" class="btn btn-success">
+                <i class="fa fa-save"></i> {% trans "Enregistrer" %}
+            </button>
+        </form>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Toast Notification -->
+<div id="toast" class="toast" role="alert" aria-live="assertive" aria-atomic="true" style="display: none;">
+    <div class="toast-header">
+        <strong class="me-auto" id="toast-title">{% trans "Notification" %}</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+    </div>
+    <div class="toast-body" id="toast-message"></div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    // Chargement automatique quand le secteur change
+    $("#id_secteur").change(function() {
+        if ($(this).val() && $("#id_annee").val() && $("#id_trimestre").val()) {
+            $("#params-form").submit();
+        }
+    });
+
+    // Chargement des trimestres
+    $("#id_annee").change(function() {
+        var annee_id = $(this).val();
+        if (!annee_id) return;
+
+        $.ajax({
+            url: "{% url 'load_trimestres' %}",
+            data: { 'annee_id': annee_id },
+            dataType: 'json',
+            success: function(data) {
+                console.log(data)
+                var options = '<option value="">---------</option>';
+                $.each(data, function(index, trimestre) {
+                    options += '<option value="' + trimestre.id + '">' + trimestre.nom_fr + '</option>';
+                });
+                $("#id_trimestre").html(options);
+
+                // Si un secteur est déjà sélectionné, charger la grille
+                if ($("#id_secteur").val()) {
+                    $("#params-form").submit();
+                }
+            }
+        });
+    });
+
+    // Ajout d'un nouveau créneau
+    $("#add-creneau").click(function() {
+        var newRow = `
+        <tr class="new-creneau">
+            <td>
+                <input type="time" name="new_creneau_debut" class="form-control" value="08:00">
+                <input type="time" name="new_creneau_fin" class="form-control" value="10:00">
+            </td>
+            {% for jour in jours %}
+            <td>
+                <select name="new_matiere_{{ jour }}" class="form-control matiere-select">
+                    <option value="">-- {% trans "Matière" %} --</option>
+                    {% for matiere in matieres %}
+                        <option value="{{ matiere.id }}">{{ matiere.nom }}</option>
+                    {% endfor %}
+                </select>
+
+                <select name="new_professeur_{{ jour }}" class="form-control professeur-select">
+                    <option value="">-- {% trans "Professeur" %} --</option>
+                    {% for professeur in professeurs %}
+                        <option value="{{ professeur.id }}">{{ professeur.nom }} {{ professeur.prenom }}</option>
+                    {% endfor %}
+                </select>
+
+                <select name="new_salle_{{ jour }}" class="form-control salle-select">
+                    <option value="">-- {% trans "Salle" %} --</option>
+                    {% for salle in salles %}
+                        <option value="{{ salle.id }}">{{ salle.nom }}</option>
+                    {% endfor %}
+                </select>
+            </td>
+            {% endfor %}
+        </tr>`;
+        $("#emploi-table tbody").append(newRow);
+    });
+
+    // Soumission du formulaire de grille
+    $("#grille-form").submit(function(e) {
+        e.preventDefault();
+
+        $.ajax({
+            url: $(this).attr('action'),
+            type: 'POST',
+            data: $(this).serialize(),
+            success: function(response) {
+                if (response.success) {
+                    Swal.fire({
+                        title: '{% trans "Succès!" %}',
+                        text: '{% trans "Emploi du temps enregistré avec succès!" %}',
+                        icon: 'success',
+                        confirmButtonText: '{% trans "OK" %}'
+                    }).then(() => {
+                        window.location.reload();
+                    });
+                } else {
+                    Swal.fire({
+                        title: '{% trans "Erreur!" %}',
+                        text: response.error || '{% trans "Une erreur est survenue" %}',
+                        icon: 'error',
+                        confirmButtonText: '{% trans "OK" %}'
+                    });
+                }
+            },
+            error: function(xhr) {
+                Swal.fire({
+                    title: '{% trans "Erreur!" %}',
+                    text: xhr.responseText || '{% trans "Une erreur est survenue" %}',
+                    icon: 'error',
+                    confirmButtonText: '{% trans "OK" %}'
+                });
+            }
+        });
+    });
+</script>
+{% endblock %}

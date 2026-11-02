@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block content %}
+<div class="box box-danger">
+    <div class="box-header with-border">
+        <h3 class="box-title">{% trans "Confirmation de suppression" %}</h3>
+    </div>
+    <div class="box-body">
+        <form method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">{% trans "Oui, supprimer" %}</button>
+            <a href="{% url 'pv_list' %}" class="btn btn-secondary">{% trans "Annuler" %}</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

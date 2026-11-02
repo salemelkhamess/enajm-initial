@@ -1,0 +1,40 @@
+{% load static %}
+{% load i18n %}
+
+
+
+<div style="text-align: center; margin-bottom: 20px; line-height: 1.5;">
+    <!-- Conteneur principal avec direction LTR forcée -->
+    <div style="display: flex; justify-content: space-between; align-items: flex-start; direction: ltr; unicode-bidi: bidi-override;">
+
+        <!-- Partie française - Toujours à gauche -->
+        <div style="width: 45%; text-align: left;">
+                      <img src="{% static 'dist/img/logo.png' %}" class="user-image" alt="Logo" width="100" height="100">
+
+        </div>
+
+        <!-- Logo au centre -->
+        <div>
+
+              <h4 style="margin: 5px 0; font-weight: bold; font-size: 18px!important; ">الجمهورية الإسلامية الموريتانية</h4>
+            <h4 style="margin: 5px 0; font-weight: bold; font-size: 18px!important;">شرف  - إخاء - عدل</h4>
+            <h4 style="margin: 5px 0; font-size: 15px!important;">الوزارة الأولى</h4>
+            <h4 style="margin: 5px 0; font-size: 15px!important;">المدرسة الوطنية للإدارة والصحافة والقضاء</h4>
+                        <hr>
+
+                     <h4 style="margin: 5px 0; font-weight: bold; font-size: 18px!important;">République islamique de Mauritanie</h4>
+            <h5 style="margin: 5px 0; font-weight: bold; font-size: 18px!important; ">Honneur - Fraternité - Justice</h5>
+            <h5 style="margin: 5px 0; font-size: 15px!important;">Le Premier Ministère</h5>
+            <h5 style="margin: 5px 0; font-size: 15px!important;">École Nationale d'Administration, de Journalisme et de Magistrature</h5>
+        </div>
+
+        <!-- Partie arabe - Toujours à droite avec direction RTL interne -->
+        <div style="width: 45%; text-align: right; direction: rtl; unicode-bidi: embed;">
+                        <img src="{% static 'dist/img/logo.jpeg' %}" class="user-image" alt="Logo" width="100" height="100">
+
+
+        </div>
+    </div>
+
+
+</div>

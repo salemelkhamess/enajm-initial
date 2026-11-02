@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block content %}
+<div class="box box-primary">
+    <div class="box-header with-border">
+        <h3 class="box-title">{% trans "Notes des devoirs et examens" %}</h3>
+    </div>
+    <div class="box-body">
+        <a href="{% url 'espace_prof_evaluation_nouvelle' %}" class="btn btn-primary"><i class="fa fa-plus"></i> {% trans "Nouvelle évaluation" %}</a>
+        <a href="{% url 'espace_prof' %}" class="btn btn-link">{% trans "Retour" %}</a>
+        <p class="text-muted" style="margin-top:10px;">{% trans "Les notes que vous saisissez sont soumises à validation par l'administration avant d'apparaître au bulletin." %}</p>
+        <table class="table table-bordered" style="margin-top:10px;">
+            <thead><tr>
+                <th>{% trans "Date" %}</th><th>{% trans "Matière" %}</th><th>{% trans "Secteur" %}</th><th>{% trans "Type" %}</th>
+                <th>{% trans "Coefficient" %}</th><th>{% trans "Notes saisies" %}</th><th></th>
+            </tr></thead>
+            <tbody>
+            {% for ev in evaluations %}
+                <tr>
+                    <td>{{ ev.date|date:"d/m/Y" }}</td><td>{{ ev.matiere.nom }}</td><td>{{ ev.secteur.nom }}</td>
+                    <td>{{ ev.get_type_display }}</td><td>{{ ev.coefficient }}</td>
+                    <td>{{ ev.nb_notes }}{% if ev.nb_en_attente %} <span class="label label-warning">{{ ev.nb_en_attente }} {% trans "en attente de validation" %}</span>{% endif %}</td>
+                    <td><a href="{% url 'espace_prof_notes_saisie' ev.id %}" class="btn btn-sm btn-success">{% trans "Saisir / modifier les notes" %}</a></td>
+                </tr>
+            {% empty %}
+                <tr><td colspan="7">{% trans "Aucune évaluation pour vos matières." %}</td></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

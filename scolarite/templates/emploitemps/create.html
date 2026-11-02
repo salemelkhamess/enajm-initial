@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block content %}
+<div class="box mt-4">
+<div class="box-header box-primary">
+        <h3>{% trans "Ajouter un emploi du temps" %}</h3>
+
+</div>
+ <div class="box-body">
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">{% trans "Enregistrer" %}</button>
+</form>
+
+ </div>
+</div>
+{% endblock %}

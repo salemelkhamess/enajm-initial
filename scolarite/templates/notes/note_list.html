@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% load i18n role_tags %}
+
+{% block content %}
+<div class="box">
+    <div class="box-header">
+        <h3>{% trans "Liste des notes" %}</h3>
+
+        <div class="row">
+            <div class="col-md-12">
+                        <p class="text-right">
+            <a href="{% url 'note_par_evaluation' %}" class="btn btn-success mb-3">
+                {% trans "Ajouter" %} /  {% trans "Modifier" %}
+            </a>
+    {% if user|has_any_role:"ADMIN,SUPER_ADMIN" %}
+
+                                 <a href="{% url 'edition_notes' %}" class="btn btn-success mb-3">
+                {% trans "Validation des notes" %}
+            </a>
+
+{% endif %}
+                            <a href="{% url 'gestion_notes_speciales' %}" class="btn btn-success mb-3">
+                {% trans "Ajouter/Modifier une note spéciale" %}
+            </a>
+        </p>
+            </div>
+
+        </div>
+
+
+    </div>
+
+    <div class="box-body">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>{% trans "Étudiant" %}</th>
+                    <th>{% trans "Évaluation" %}</th>
+                    <th>{% trans "Note /20" %}</th>
+                    <th>{% trans "Actions" %}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for note in notes %}
+                <tr>
+                    <td>{{ note.etudiant.nom }} {{ note.etudiant.prenom }}</td>
+                    <td>{{ note.evaluation.type }} - {{ note.evaluation.date }}</td>
+                    <td>{{ note.note_sur_20 }}</td>
+                    <td>
+                        <a href="{% url 'note_update' note.pk %}" class="btn btn-info btn-sm">
+                            {% trans "Modifier" %}
+                        </a>
+                        <a href="{% url 'note_delete' note.pk %}" class="btn btn-danger btn-sm">
+                            {% trans "Supprimer" %}
+                        </a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4">{% trans "Aucune note trouvée." %}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

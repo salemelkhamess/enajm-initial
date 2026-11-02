@@ -1,0 +1,267 @@
+{% extends 'base.html' %}
+{% load i18n_jours %}
+{% load i18n custom_filters %}
+
+{% block styles %}
+<style>
+    @media print {
+        a[href]:after {
+            content: none !important;
+        }
+        @page {
+            margin-top: 0;
+            margin-bottom: 0;
+        }
+        body {
+            padding-top: 72px;
+            padding-bottom: 72px;
+        }
+    }
+    #filterForm.rtl-lang .row > div.col-md-3 {
+        float: right;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="box">
+    <div class="box-header">
+<h3>
+    {% if LANGUAGE_CODE == 'ar' %}
+       بحث حول غيابات الموظفين
+    {% else %}
+Recherche des absences des employés
+    {% endif %}
+</h3>
+    </div>
+
+    <div class="box-body">
+    <a href="{% url "rapport_absences_classe" %}">{% if LANGUAGE_CODE == 'ar' %} تقرير عام{% else %}{% trans "Rapport Général " %}{% endif %}</a>
+        <form method="get" id="filterForm" class="{% if LANGUAGE_CODE == 'ar' %}rtl-lang{% endif %}">
+            <div class="row">
+
+
+                <!-- Secteur -->
+     <div class="col-md-3">
+    <label>{% if LANGUAGE_CODE == 'ar' %} القسم {% else %}{% trans "Secteur" %}{% endif %}</label>
+    <select name="secteur_id" class="form-control select">
+        <option value="all">{% if LANGUAGE_CODE == 'ar' %}الكل{% else %}{% trans "Tous" %}{% endif %}</option>
+        {% for secteur in secteurs %}
+        <option value="{{ secteur.id }}" {% if secteur.id|stringformat:"s" == secteur_id %}selected{% endif %}>
+            {{ secteur.nom }}
+        </option>
+        {% endfor %}
+    </select>
+</div>
+
+                <!-- Dates -->
+                <div class="col-md-3">
+                    <label>{% trans "Date début" %}</label>
+                    <input type="date" name="date_debut" class="form-control" value="{{ date_debut }}">
+                </div>
+                <div class="col-md-3">
+                    <label>{% trans "Date fin" %}</label>
+                    <input type="date" name="date_fin" class="form-control" value="{{ date_fin }}">
+                </div>
+
+                <!-- Submit -->
+                <div class="col-md-3 align-self-end" style="margin-top: 24px">
+                    <button type="submit" class="btn btn-primary mt-2">{% trans "Rechercher" %}</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Impression -->
+{% if secteur_id %}
+<p class="text-right">
+    <a onclick="printDiv('printme')" class="btn btn-primary" style="width: 200px">
+        <i class="fa fa-print"></i> {% trans "Imprimer" %}
+    </a>
+</p>
+
+<div class="box" id="printme">
+    {% include "entete/show.html" with entete=entete %}
+
+<div class="box-header text-center">
+    <strong>
+        {% if LANGUAGE_CODE == 'ar' %}
+            {% if date_debut and date_fin %}
+                  تقرير غيابات التلاميذ الموظفين من {{ date_debut }} إلى {{ date_fin }}
+            {% elif date_debut %}
+                 تقرير غيابات التلاميذ الموظفين ابتداءً من {{ date_debut }}
+            {% elif date_fin %}
+                تقرير غيابات التلاميذ الموظفين  حتى {{ date_fin }}
+            {% else %}
+                تقرير الغيابات (جميع التواريخ)
+            {% endif %}
+        {% else %}
+            {% if date_debut and date_fin %}
+                {% blocktrans %}Rapport des absences des élèves fonctionnaires du {{ date_debut }} au {{ date_fin }}{% endblocktrans %}
+            {% elif date_debut %}
+                {% blocktrans %}Rapport des absences des élèves fonctionnaires  à partir du {{ date_debut }}{% endblocktrans %}
+            {% elif date_fin %}
+                {% blocktrans %}Rapport des absences des élèves fonctionnaires  jusqu'au {{ date_fin }}{% endblocktrans %}
+            {% else %}
+                {% trans "Rapport des absences (toutes les dates)" %}
+            {% endif %}
+        {% endif %}
+    </strong>
+</div>
+
+{% if secteur %}
+    <h2 align="center">
+        {% if LANGUAGE_CODE == 'ar' %}
+            {{ secteur.nom }}
+        {% else %}
+            {{ secteur.nom }}
+        {% endif %}
+    </h2>
+{% endif %}
+
+
+    <div class="box-body">
+
+ <table border="1" style="width: 100%; border-collapse: collapse;">
+    <thead>
+        <tr>
+            <th style="text-align: center;">{% trans "Secteur" %}</th>
+            <th style="text-align: center;">{% trans "Étudiant" %}</th>
+            <th style="text-align: center;">{% trans "Matricule" %}</th>
+            <th style="text-align: center;">{% trans "Matière" %}</th>
+            <th style="text-align: center;">{% trans "Jour" %}</th>
+            <th style="text-align: center;">{% trans "Date" %}</th>
+            <th style="text-align: center;">
+                {% if LANGUAGE_CODE == 'ar' %}عدد الحصص{% else %}Séances{% endif %}
+            </th>            <th style="text-align: center;">{% trans "Heures" %}</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for secteur_id, secteur_data in absences_par_secteur.items %}
+            {% for etudiant_id, etudiant_data in secteur_data.etudiants.items %}
+                {% for absence in etudiant_data.absences %}
+                <tr>
+                    <!-- Colonne Secteur -->
+                    {% if forloop.first and forloop.parentloop.first %}
+                    <td rowspan="{{ secteur_data.total_lignes }}" style="text-align: center; vertical-align: middle; background-color: #f5f5f5;">
+                        {{ secteur_data.nom }}
+                    </td>
+                    {% endif %}
+
+                    <!-- Colonnes Étudiant et Matricule -->
+                    {% if forloop.first %}
+                    <td rowspan="{{ etudiant_data.absences|length }}">
+                        {{ etudiant_data.nom_complet }}
+                    </td>
+                    <td rowspan="{{ etudiant_data.absences|length }}" style="text-align: center;">
+                        {{ etudiant_data.matricule }}
+                    </td>
+                    {% endif %}
+
+                    <!-- Colonnes Matière, Jour, Date, Séances, Heures -->
+                    <td>{{ absence.matiere }}</td>
+                    <td style="text-align: center;">{{ absence.jour|jour_i18n }}</td>
+                    <td style="text-align: center;">{{ absence.date_cours }}</td>
+                    <td style="text-align: center;">{{ absence.seances }}{% if absence.en_attente %} <span class="label label-warning">{{ absence.en_attente }} {% trans "En attente" %}</span>{% endif %}</td>
+                    <td style="text-align: center;">{{ absence.heures }}</td>
+                </tr>
+                {% endfor %}
+            {% endfor %}
+        {% empty %}
+            <tr>
+                <td colspan="8" style="text-align: center;">
+                    {% if LANGUAGE_CODE == 'ar' %}لا توجد غيابات في الفترة المحددة{% else %}Aucune absence dans la période sélectionnée{% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+    <!-- Nouveau tableau de résumé -->
+<!-- Nouveau tableau de résumé avec secteurs verticaux -->
+<div style="border: 2px solid black;margin: 10px">
+    <h3 align="center">{% trans "Résumé des absences par classe" %}</h3>
+</div>
+<table border="1" style="width: 100%; border-collapse: collapse;">
+    <thead>
+        <tr>
+            <th style="text-align: center;">{% trans "Secteur" %}</th>
+            <th style="text-align: center;">{% trans "Étudiant" %}</th>
+            <th style="text-align: center;">{% trans "Matricule" %}</th>
+            <th style="text-align: center;">{% trans "Totale seances" %}</th>
+            <th style="text-align: center;">{% trans "Total absences" %}</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for secteur_id, secteur_data in resume_par_secteur.items %}
+            {% for etudiant in secteur_data.etudiants %}
+            <tr>
+                <!-- Colonne Secteur -->
+                {% if forloop.first %}
+                <td rowspan="{{ secteur_data.etudiants|length }}" style="text-align: center; vertical-align: middle; background-color: #f5f5f5;">
+                    <strong>{{ secteur_data.nom_secteur }}</strong><br>
+                    <strong>
+                        {% trans "Total absences" %}: {{ secteur_data.total_absences }}
+                    </strong><br>
+                <strong>
+                    {% trans "Totale seances" %} :
+                        {{ secteur_data.total_heures }}
+                </strong>
+                </td>
+                {% endif %}
+
+                <!-- Colonnes Étudiant, Matricule, Totaux -->
+                <td>{{ etudiant.nom_complet }}</td>
+                <td style="text-align: center;">{{ etudiant.matricule }}</td>
+                <td style="text-align: center;">{{ etudiant.total_absences }}</td>
+                <td style="text-align: center;">{{ etudiant.total_heures }}</td>
+            </tr>
+            {% endfor %}
+        {% empty %}
+            <tr>
+                <td colspan="5" style="text-align: center;">
+                    {% if LANGUAGE_CODE == 'ar' %}لا توجد بيانات{% else %}Aucune donnée disponible{% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+<script>
+
+$(document).ready(function() {
+    // Initialize datepickers
+    $('input[type="date"]').datepicker({
+        format: 'yyyy-mm-dd',
+        autoclose: true
+    });
+
+    // Handle form submission
+    $('#filterForm').submit(function(e) {
+        // Validate date range
+        const dateDebut = $('input[name="date_debut"]').val();
+        const dateFin = $('input[name="date_fin"]').val();
+
+        if (dateDebut && dateFin && dateDebut > dateFin) {
+            alert("{% if LANGUAGE_CODE == 'ar' %}تاريخ البداية يجب أن يكون قبل تاريخ النهاية{% else %}La date de début doit être avant la date de fin{% endif %}");
+            e.preventDefault();
+        }
+    });
+});
+    function printDiv(divName) {
+        var printContents = document.getElementById(divName).innerHTML;
+        var originalContents = document.body.innerHTML;
+        document.body.innerHTML = printContents;
+        window.print();
+        document.body.innerHTML = originalContents;
+        location.reload(); // Recharge la page après impression
+    }
+
+</script>
+{% endblock %}

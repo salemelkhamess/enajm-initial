@@ -1,0 +1,463 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+
+{% block title %}{% trans "Teaching Progress Dashboard" %}{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-4">
+    <div class="col-md-12">
+        <div class="nav-tabs-custom">
+            <ul class="nav nav-tabs pull-right">
+                <li class="active"><a href="#tab_1-1" data-toggle="tab">{% trans "Statistique Aujourd'hui" %}</a></li>
+                <li><a href="#tab_2-2" data-toggle="tab">{% trans "Statistique cette semaine" %}</a></li>
+                <li><a href="#tab_3-2" data-toggle="tab">{% trans "Statistique ce mois" %}</a></li>
+            </ul>
+
+            <div class="tab-content">
+                <!-- Onglet Aujourd'hui -->
+                <div class="tab-pane active" id="tab_1-1">
+                    <div class="box">
+                        <div class="box-body">
+                            <div class="d-flex justify-content-between align-items-center mb-4">
+                                <h1 class="mt-4 fw-bold">{% trans "Teaching Progress Dashboard" %}</h1>
+                            </div>
+
+                            <div class="alert alert-info">
+                                <h1 align="center">{% trans "Statistique Aujourd'hui" %}</h1>
+                            </div>
+
+                            <!-- Cartes de statistiques -->
+                            <div class="row mb-4">
+                                <!-- Total Sessions -->
+                                <div class="col-lg-4 col-6">
+                                    <div class="small-box bg-primary">
+                                        <div class="inner">
+                                            <h3>{{ totale_seance_par_jour }}</h3>
+                                            <p>{% trans "Total Sessions" %}</p>
+                                        </div>
+                                        <i class="fa fa-calendar"></i>
+                                    </div>
+                                </div>
+
+                                <!-- Completed Sessions -->
+                                <div class="col-lg-4 col-6">
+                                    <div class="small-box bg-success">
+                                        <div class="inner">
+                                            <h3>{{ total_enseignees_jour }} <small>({{ pct_enseignees_jour }}%)</small></h3>
+                                            <p>{% trans "Completed Sessions" %}</p>
+                                        </div>
+                                        <div class="icon">
+                                            <i class="ion glyphicon-ok"></i>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Canceled Sessions -->
+                                <div class="col-lg-4 col-6">
+                                    <div class="small-box bg-danger">
+                                        <div class="inner">
+                                            <h3>{{ matieres_annulees_jour }} <small>({{ pct_annulees_jour }}%)</small></h3>
+                                            <p>{% trans "Canceled Sessions" %}</p>
+                                        </div>
+                                        <div class="icon">
+                                            <i class="ion fa-ban"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Graphique pour aujourd'hui -->
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="card">
+                                        <div class="card-header">
+                                        </div>
+                                        <div class="card-body">
+                                            <canvas id="chartToday" style="min-height: 300px; height: 300px; max-height: 300px; max-width: 100%;"></canvas>
+                                        </div>
+                                        <div class="card-footer">
+                                            <div class="row">
+                                                <div class="col-sm-6">
+                                                    <div class="description-block">
+                                                        <h5 class="description-header">{{ total_enseignees_jour }}</h5>
+                                                        <span class="description-text">{% trans "Completed Sessions" %}</span>
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-6">
+                                                    <div class="description-block">
+                                                        <h5 class="description-header">{{ matieres_annulees_jour }}</h5>
+                                                        <span class="description-text">{% trans "Canceled Sessions" %}</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Onglet Cette semaine -->
+                <div class="tab-pane" id="tab_2-2">
+                    <div class="box">
+                        <div class="box-body">
+                            <div class="d-flex justify-content-between align-items-center mb-4">
+                                <h1 class="mt-4 fw-bold">{% trans "Teaching Progress Dashboard" %}</h1>
+                            </div>
+
+                            <div class="alert alert-info">
+                                <h1 align="center">{% trans "Statistique cette semaine" %}</h1>
+                            </div>
+
+                            <div class="row mb-4">
+                                <div class="col-lg-4 col-6">
+                                    <div class="small-box bg-primary">
+                                        <div class="inner">
+                                            <h3>{{ totale_seance_par_semaine }}</h3>
+                                            <p>{% trans "Total Sessions" %}</p>
+                                        </div>
+                                        <i class="fa fa-calendar"></i>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-4 col-6">
+                                    <div class="small-box bg-success">
+                                        <div class="inner">
+                                            <h3>{{ total_enseignees_semaine }} <small>({{ pct_enseignees_semaine }}%)</small></h3>
+                                            <p>{% trans "Completed Sessions" %}</p>
+                                        </div>
+                                        <div class="icon">
+                                            <i class="ion glyphicon-ok"></i>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-4 col-6">
+                                    <div class="small-box bg-danger">
+                                        <div class="inner">
+                                            <h3>{{ matieres_annulees_semaine }} <small>({{ pct_annulees_semaine }}%)</small></h3>
+                                            <p>{% trans "Canceled Sessions" %}</p>
+                                        </div>
+                                        <div class="icon">
+                                            <i class="ion fa-ban"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="card">
+                                        <div class="card-header">
+                                        </div>
+                                        <div class="card-body">
+                                            <canvas id="chartWeek" style="min-height: 300px; height: 300px; max-height: 300px; max-width: 100%;"></canvas>
+                                        </div>
+                                        <div class="card-footer">
+                                            <div class="row">
+                                                <div class="col-sm-6">
+                                                    <div class="description-block">
+                                                        <h5 class="description-header">{{ total_enseignees_semaine }}</h5>
+                                                        <span class="description-text">{% trans "Completed Sessions" %}</span>
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-6">
+                                                    <div class="description-block">
+                                                        <h5 class="description-header">{{ matieres_annulees_semaine }}</h5>
+                                                        <span class="description-text">{% trans "Canceled Sessions" %}</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Onglet Ce mois -->
+                <div class="tab-pane" id="tab_3-2">
+                    <div class="box">
+                        <div class="box-body">
+                            <div class="d-flex justify-content-between align-items-center mb-4">
+                                <h1 class="mt-4 fw-bold">{% trans "Teaching Progress Dashboard" %}</h1>
+                            </div>
+
+                            <div class="alert alert-info">
+                                <h1 align="center">{% trans "Statistique ce mois" %}</h1>
+                            </div>
+
+                            <div class="row mb-4">
+                                <div class="col-lg-4 col-6">
+                                    <div class="small-box bg-primary">
+                                        <div class="inner">
+                                            <h3>{{ totale_seance_par_mois }}</h3>
+                                            <p>{% trans "Total Sessions" %}</p>
+                                        </div>
+                                        <i class="fa fa-calendar"></i>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-4 col-6">
+                                    <div class="small-box bg-success">
+                                        <div class="inner">
+                                            <h3>{{ total_enseignees_mois }} <small>({{ pct_enseignees_mois }}%)</small></h3>
+                                            <p>{% trans "Completed Sessions" %}</p>
+                                        </div>
+                                        <div class="icon">
+                                            <i class="ion glyphicon-ok"></i>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-4 col-6">
+                                    <div class="small-box bg-danger">
+                                        <div class="inner">
+                                            <h3>{{ matieres_annulees_mois }} <small>({{ pct_annulees_mois }}%)</small></h3>
+                                            <p>{% trans "Canceled Sessions" %}</p>
+                                        </div>
+                                        <div class="icon">
+                                            <i class="ion fa-ban"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="card">
+                                        <div class="card-header">
+                                        </div>
+                                        <div class="card-body">
+                                            <canvas id="chartMonth" style="min-height: 300px; height: 300px; max-height: 300px; max-width: 100%;"></canvas>
+                                        </div>
+                                        <div class="card-footer">
+                                            <div class="row">
+                                                <div class="col-sm-6">
+                                                    <div class="description-block">
+                                                        <h5 class="description-header">{{ total_enseignees_mois }}</h5>
+                                                        <span class="description-text">{% trans "Completed Sessions" %}</span>
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-6">
+                                                    <div class="description-block">
+                                                        <h5 class="description-header">{{ matieres_annulees_mois }}</h5>
+                                                        <span class="description-text">{% trans "Canceled Sessions" %}</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<!-- ChartJS -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+
+    // Graphique pour aujourd'hui
+    var ctxToday = document.getElementById('chartToday').getContext('2d');
+    var chartToday = new Chart(ctxToday, {
+        type: 'bar',
+        data: {
+            labels: {{ chart_data_jour.labels|safe }},
+            datasets: [{
+                label: '{% trans "Total Sessions" %}',
+                data: {{ chart_data_jour.data }},
+                backgroundColor: {{ chart_data_jour.colors|safe }},
+                borderColor: 'rgba(0, 0, 0, 0.1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            maintainAspectRatio: false,
+            responsive: true,
+            legend: {
+                display: false,
+            },
+            title: {
+                display: true,
+                text: '{% trans "" %}',
+                fontSize: 16
+            },
+            tooltips: {
+                callbacks: {
+                    label: function(tooltipItem, data) {
+                        var label = data.labels[tooltipItem.index] || '';
+                        if (label) {
+                            label += ': ';
+                        }
+                        label += tooltipItem.yLabel;
+                        label += ' (' + Math.round(tooltipItem.yLabel / {{ chart_data_jour.total }} * 100) + '%)';
+                        return label;
+                    }
+                }
+            },
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true,
+                        stepSize: 1,
+                        callback: function(value) {
+                            if (value % 1 === 0) {
+                                return value;
+                            }
+                        }
+                    },
+                    scaleLabel: {
+                        display: true,
+                        labelString: '{% trans "Total Sessions" %}'
+                    }
+                }],
+                xAxes: [{
+                    scaleLabel: {
+                        display: true,
+                        labelString: '{% trans "" %}'
+                    }
+                }]
+            }
+        }
+    });
+
+    // Graphique pour cette semaine
+    var ctxWeek = document.getElementById('chartWeek').getContext('2d');
+    var chartWeek = new Chart(ctxWeek, {
+        type: 'bar',
+        data: {
+            labels: {{ chart_data_semaine.labels|safe }},
+            datasets: [{
+                label: '{% trans "Total Sessions" %}',
+                data: {{ chart_data_semaine.data }},
+                backgroundColor: {{ chart_data_semaine.colors|safe }},
+                borderColor: 'rgba(0, 0, 0, 0.1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            maintainAspectRatio: false,
+            responsive: true,
+            legend: {
+                display: false,
+            },
+            title: {
+                display: true,
+                text: '{% trans "" %}',
+                fontSize: 16
+            },
+            tooltips: {
+                callbacks: {
+                    label: function(tooltipItem, data) {
+                        var label = data.labels[tooltipItem.index] || '';
+                        if (label) {
+                            label += ': ';
+                        }
+                        label += tooltipItem.yLabel;
+                        label += ' (' + Math.round(tooltipItem.yLabel / {{ chart_data_semaine.total }} * 100) + '%)';
+                        return label;
+                    }
+                }
+            },
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true,
+                        stepSize: 1,
+                        callback: function(value) {
+                            if (value % 1 === 0) {
+                                return value;
+                            }
+                        }
+                    },
+                    scaleLabel: {
+                        display: true,
+                        labelString: '{% trans "Total Sessions" %}'
+                    }
+                }],
+                xAxes: [{
+                    scaleLabel: {
+                        display: true,
+                        labelString: '{% trans "" %}'
+                    }
+                }]
+            }
+        }
+    });
+
+    // Graphique pour ce mois
+    var ctxMonth = document.getElementById('chartMonth').getContext('2d');
+    var chartMonth = new Chart(ctxMonth, {
+        type: 'bar',
+        data: {
+            labels: {{ chart_data_mois.labels|safe }},
+            datasets: [{
+                label: '{% trans "Total Sessions" %}',
+                data: {{ chart_data_mois.data }},
+                backgroundColor: {{ chart_data_mois.colors|safe }},
+                borderColor: 'rgba(0, 0, 0, 0.1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            maintainAspectRatio: false,
+            responsive: true,
+            legend: {
+                display: false,
+            },
+            title: {
+                display: true,
+                text: '{% trans "" %}',
+                fontSize: 16
+            },
+            tooltips: {
+                callbacks: {
+                    label: function(tooltipItem, data) {
+                        var label = data.labels[tooltipItem.index] || '';
+                        if (label) {
+                            label += ': ';
+                        }
+                        label += tooltipItem.yLabel;
+                        label += ' (' + Math.round(tooltipItem.yLabel / {{ chart_data_mois.total }} * 100) + '%)';
+                        return label;
+                    }
+                }
+            },
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true,
+                        stepSize: 1,
+                        callback: function(value) {
+                            if (value % 1 === 0) {
+                                return value;
+                            }
+                        }
+                    },
+                    scaleLabel: {
+                        display: true,
+                        labelString: '{% trans "Total Sessions" %}'
+                    }
+                }],
+                xAxes: [{
+                    scaleLabel: {
+                        display: true,
+                        labelString: '{% trans "" %}'
+                    }
+                }]
+            }
+        }
+    });
+
+</script>
+{% endblock %}

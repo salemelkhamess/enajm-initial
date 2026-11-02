@@ -1,0 +1,31 @@
+{% extends 'rapports/_base_rapport.html' %}
+{% block tableau %}
+{% for t in trimestres_data %}
+<h4 style="margin-top:25px;">{{ t.nom }}</h4>
+<table class="rapport-table">
+    <thead>
+        <tr>
+            <th>{{ L.matiere }}</th>
+            <th>{{ L2.effectuees }}</th><th>{{ L2.h_effectuees }}</th>
+            <th>{{ L2.annulees }}</th><th>{{ L2.reportees }}</th><th>{{ L2.prevues }}</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for m in t.matieres %}
+        <tr>
+            <td>{{ m.nom }}</td>
+            <td class="num">{{ m.effectuees }}</td><td class="num">{{ m.heures_effectuees|floatformat:"-2" }}</td>
+            <td class="num">{{ m.annulees }}</td><td class="num">{{ m.reportees }}</td>
+            <td class="num">{{ m.prevues_semaine|floatformat:"-2" }}</td>
+        </tr>
+    {% endfor %}
+        <tr class="total">
+            <td>{{ L.total }}</td>
+            <td class="num">{{ t.total.effectuees|floatformat:"-2" }}</td><td class="num">{{ t.total.heures_effectuees|floatformat:"-2" }}</td>
+            <td class="num">{{ t.total.annulees|floatformat:"-2" }}</td><td class="num">{{ t.total.reportees|floatformat:"-2" }}</td>
+            <td class="num">{{ t.total.prevues_semaine|floatformat:"-2" }}</td>
+        </tr>
+    </tbody>
+</table>
+{% empty %}<p class="text-center">{{ L.aucune }}</p>{% endfor %}
+{% endblock %}

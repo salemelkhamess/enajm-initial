@@ -1,0 +1,151 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block styles %}
+<style>
+    @page {
+        size: A4;
+        margin: 0;
+    }
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 20px;
+    }
+    .header {
+        display: flex;
+        justify-content: space-between;
+        border-bottom: 2px solid #000;
+        padding-bottom: 10px;
+        margin-bottom: 20px;
+    }
+    .header-ar {
+        text-align: right;
+        direction: rtl;
+    }
+    .header-fr {
+        text-align: left;
+    }
+    .title {
+        text-align: center;
+        font-weight: bold;
+        font-size: 18px;
+        margin: 20px 0;
+    }
+    .content {
+        margin: 20px 0;
+        line-height: 1.6;
+    }
+    .signature {
+        margin-top: 50px;
+        text-align: right;
+    }
+    .border-table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+    .border-table td {
+        border: 1px solid #000;
+        padding: 8px;
+    }
+    .photo-placeholder {
+        width: 120px;
+        height: 150px;
+        border: 1px dashed #000;
+        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+<p class="text-right">
+    <a onclick="printDiv('ptintme')" class="btn btn-primary" style="width: 200px">
+        <i class="fa fa-print"></i> {% trans "Print" %}
+    </a>
+</p>
+
+<div class="box">
+    <div class="box-body" id="ptintme">
+        <!-- En-tête avec les logos et informations de l'école -->
+    <table class="border-table" >
+        <tr>
+            <td colspan="3">
+                <div class="header">
+                    <div class="header-ar">
+                        <strong>الوزارة الأولى</strong><br>
+                        <strong>المدرسة الوطنية للإدارة والصحافة والقضاء</strong>
+                    </div>
+                    <div>
+                        <!-- Espace pour le logo -->
+                    </div>
+                    <div class="header-fr">
+                        <strong>Premier Ministère</strong><br>
+                        <strong>Ecole Nationale d'Administration, de Journalisme et de Magistrature</strong>
+                    </div>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="3" style="text-align: center;">
+                <div class="photo-placeholder">
+                    {% if etudiant.photo %}
+                        <img src="{{ etudiant.photo.url }}" alt="Photo étudiant" style="max-width: 100%; max-height: 100%;">
+                    {% else %}
+                        [الصورة]
+                    {% endif %}
+                </div>
+            </td>
+        </tr>
+    </table>
+
+    <!-- Titre du document -->
+    <div class="title" style="text-align: center; direction: rtl;">
+        <strong>إفادة تسجيل</strong><br>
+        السنة الدراسية : {{ annee_scolaire }} الترتيب : {{ ordre }}
+    </div>
+
+    <!-- Contenu de l'attestation -->
+    <div class="content" style="direction: rtl; text-align: right;">
+        <p>أنا الموقع أسفله مدير التكوين الأولي والتدريبات والمسابقات أفيد بأن :</p>
+
+        <p>السيد (ة) : {{ etudiant.nom }} {{ etudiant.prenom }}</p>
+
+        <p>المولود(ة) بتاريخ : {{ etudiant.date_naissance|date:"d/m/Y" }} ب : {{ etudiant.lieu_naissance }}</p>
+
+        <p>الحامل (ة) للرقم الوطني : {{ etudiant.nni }}</p>
+
+        <p>مسجل (ة) في سجلات المدرسة تحت الرقم : {{ etudiant.matricule }}، لمتابعة الدروس في التخصص: {{ etudiant.secteur.nom }} السنة : {{ etudiant.annee.numero_annee }} من التكوين .</p>
+
+        <p>وقد سلمت له هذه الإفادة بناء على طلبه لإستخدامها فيما تخوله قانونا.</p>
+
+        <p>نواكشوط في، {{ date_emission }}</p>
+    </div>
+
+    <!-- Signature -->
+    <div class="signature" style="direction: rtl;">
+        <p>مدير التكوين الأولي والتدريبات والمسابقات</p>
+    </div>
+</div>
+</div>
+
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+function printDiv(divName) {
+    var printContents = document.getElementById(divName).innerHTML;
+    var originalContents = document.body.innerHTML;
+    document.body.innerHTML = printContents;
+    window.print();
+    document.body.innerHTML = originalContents;
+}
+
+
+</script>
+{% endblock %}

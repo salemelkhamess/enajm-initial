@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block styles %}
+<style>
+.clignote {
+    color: red;
+    font-weight: bold;
+    animation: clignoter 2s linear infinite;
+}
+
+@keyframes clignoter {
+    0% { opacity: 1; }
+    50% { opacity: 0; }
+    100% { opacity: 1; }
+}
+
+table th{
+    text-align:right!important;
+}
+</style>
+
+{% endblock %}
+
+{% block content %}
+    <div class="box">
+    <div class="box-body">
+        <form method="get" class="mb-4">
+            <label>{% trans "Du:" %} <input type="date" name="date_debut" class="form-control" value="{{ date_debut }}"></label>
+            <label>{% trans "Au:" %} <input type="date" name="date_fin"  class="form-control" value="{{ date_fin }}"></label>
+            <button type="submit" class="btn btn-success">{% trans "Filtrer" %}</button>
+        </form>
+    </div>
+    </div>
+
+<div class="">
+<p class="text-right">
+    <a onclick="printDiv('printme')" class="btn btn-primary" style="width: 200px">
+        <i class="fa fa-print"></i> {% trans "Imprimer" %}
+    </a>
+</p>
+
+<div class="box" id="printme">
+    {% include "entete/show.html" with entete=entete %}
+
+    <div class="box-header">
+        <h3 align="center">{% trans "Rapport des absences des matières" %}</h3>
+    </div>
+
+    <div class="box-body">
+        <h4 align="center">{% trans "Liste des présences" %}</h4>
+        <table border="1px solid black" style="width: 100%">
+            <thead>
+                <tr>
+                    <th>{% trans "Professeur" %}</th>
+                    <th>{% trans "Matière" %}</th>
+                    <th>{% trans "Classe" %}</th>
+                    <th>{% trans "Nombre d'absences" %}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for a in absences %}
+                <tr class="{% if a.nombre_absences >= 2 %}clignote{% endif %}">
+                    <td>{{ a.professeur__nom }}</td>
+                    <td>{{ a.seance__matiere__nom }}</td>
+                    <td>{{ a.seance__secteur__nom }}</td>
+                    <td>{{ a.nombre_absences }}</td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="4" class="text-center">{% trans "Aucune absence enregistrée." %}</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function printDiv(divName) {
+    var printContents = document.getElementById(divName).innerHTML;
+    var originalContents = document.body.innerHTML;
+    document.body.innerHTML = printContents;
+    window.print();
+    document.body.innerHTML = originalContents;
+}
+</script>
+{% endblock %}

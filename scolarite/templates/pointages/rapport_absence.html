@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block content %}
+<div class="box box-default">
+    <div class="box-header d-flex justify-content-between align-items-center">
+        <h3 class="card-title">{% trans "Liste des Pointages" %}</h3>
+        <p class="text-right">
+            <a href="{% url 'pointage_create' %}" class="btn btn-primary">
+                <i class="fa fa-plus"></i> Ajouter un pointage
+            </a>
+        </p>
+    </div>
+    <div class="box-body">
+        <div class="mb-3">
+            <form method="get" class="form-inline">
+                <div class="form-group mr-2">
+                    <select name="professeur" class="form-control">
+                        <option value="">{% trans "Tous les professeurs" %}</option>
+                        {% for prof in professeurs %}
+                        <option value="{{ prof.id }}" {% if request.GET.professeur == prof.id|stringformat:"s" %}selected{% endif %}>
+                            {{ prof.nom }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-info">
+                    <i class="fa fa-filter"></i> Filtrer
+                </button>
+            </form>
+        </div>
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>{% trans "Matière" %}</th>
+            <th>{% trans "Nombre d'absences" %}</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for a in absences %}
+        <tr>
+            <td>{{ a.seance__matiere__nom }}</td>
+            <td>{{ a.nombre_absences }}</td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="2">Aucune absence enregistrée.</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+
+
+{% endblock %}

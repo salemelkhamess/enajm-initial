@@ -1,0 +1,157 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block content %}
+<div class="box box-default">
+    <div class="box-header d-flex justify-content-between align-items-center">
+        <h3 class="card-title">{% trans "Liste des Pointages" %}</h3>
+        <p class="text-right">
+            <a href="{% url 'pointage_create' %}" class="btn btn-primary">
+                <i class="fa fa-plus"></i> {% trans "Ajouter un pointage" %}
+            </a>
+        </p>
+    </div>
+    <div class="box-body">
+        <table class="table table-bordered table-striped">
+            <thead class="thead-light">
+                <tr>
+                    <th>{% trans "Professeur" %}</th>
+                    <th>{% trans "Date" %}</th>
+                    <th>{% trans "Séance" %}</th>
+                    <th>{% trans "État" %}</th>
+                    <th>{% trans "Actions" %}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for pointage in pointages %}
+                <tr>
+                    <td>{{ pointage.professeur }}</td>
+                    <td>{{ pointage.date|date:"d/m/Y" }}</td>
+                    <td>
+                        {% if pointage.seance %}
+                            {{ pointage.seance.matiere }} ({{ pointage.seance.heure_debut|time:"H:i" }})
+                        {% else %}
+                            -
+                        {% endif %}
+                    </td>
+                    <td>
+                        <span class="badge
+                            {% if pointage.etat == 'present' %}bg-green
+                            {% elif pointage.etat == 'absent' %}bg-red
+                            {% elif pointage.etat == 'retard' %}bg-yellow
+                            {% else %}bg-blue{% endif %}">
+                            {{ pointage.get_etat_display }}
+                        </span>
+                    </td>
+                    <td>
+                        <a href="#" class="btn btn-sm btn-info" title="{% trans 'Détails' %}" data-toggle="modal" data-target="#detailsModal{{ pointage.id }}">
+                            <i class="fa fa-eye"></i>
+                        </a>
+                        <a href="{% url 'pointage_update' pointage.id %}" class="btn btn-sm btn-warning" title="{% trans 'Modifier' %}">
+                            <i class="fa fa-edit"></i>
+                        </a>
+{#                        <button class="btn btn-sm btn-danger btn-delete" data-url="{% url 'pointage_delete' pointage.id %}" title="{% trans 'Supprimer' %}">#}
+{#                            <i class="fa fa-trash"></i>#}
+{#                        </button>#}
+
+                        <!-- Modal pour les détails -->
+                        <div class="modal fade" id="detailsModal{{ pointage.id }}" tabindex="-1" role="dialog">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">{% trans "Détails du pointage" %}</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="{% trans 'Fermer' %}">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p><strong>{% trans "Professeur:" %}</strong> {{ pointage.professeur }}</p>
+                                        <p><strong>{% trans "Date:" %}</strong> {{ pointage.date|date:"l d F Y" }}</p>
+                                        {% if pointage.seance %}
+                                            <p><strong>{% trans "Séance:" %}</strong> {{ pointage.seance.matiere }} ({{ pointage.seance.heure_debut|time:"H:i" }} - {{ pointage.seance.heure_fin|time:"H:i" }})</p>
+                                            <p><strong>{% trans "Salle:" %}</strong> {{ pointage.seance.salle }}</p>
+                                        {% endif %}
+                                        <p><strong>{% trans "État:" %}</strong> {{ pointage.get_etat_display }}</p>
+                                        <p><strong>{% trans "Heure arrivée:" %}</strong> {{ pointage.heure_arrivee|time:"H:i"|default:_("Non renseignée") }}</p>
+                                        <p><strong>{% trans "Heure départ:" %}</strong> {{ pointage.heure_depart|time:"H:i"|default:_("Non renseignée") }}</p>
+                                        <p><strong>{% trans "Remarques:" %}</strong> {{ pointage.remarques|default:_("Aucune remarque") }}</p>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans "Fermer" %}</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="7" class="text-center">{% trans "Aucun pointage trouvé" %}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="box-footer clearfix">
+        {% if is_paginated %}
+        <ul class="pagination pagination-sm m-0 float-right">
+            {% if page_obj.has_previous %}
+                <li class="page-item"><a class="page-link" href="?page=1">&laquo; {% trans "Première" %}</a></li>
+                <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">{% trans "Précédent" %}</a></li>
+            {% endif %}
+            {% for num in page_obj.paginator.page_range %}
+                {% if page_obj.number == num %}
+                    <li class="page-item active"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+                {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                    <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+                {% endif %}
+            {% endfor %}
+            {% if page_obj.has_next %}
+                <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">{% trans "Suivant" %}</a></li>
+                <li class="page-item"><a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">{% trans "Dernière" %} &raquo;</a></li>
+            {% endif %}
+        </ul>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.btn-delete').forEach(button => {
+        button.addEventListener('click', function (e) {
+            e.preventDefault();
+            const url = this.getAttribute('data-url');
+
+            Swal.fire({
+                title: '{% trans "Êtes-vous sûr ?" %}',
+                text: "{% trans "Cette action est irréversible !" %}",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: '{% trans "Oui, supprimer !" %}',
+                cancelButtonText: '{% trans "Annuler" %}'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = url;
+
+                    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+                    const input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = 'csrfmiddlewaretoken';
+                    input.value = csrfToken;
+                    form.appendChild(input);
+
+                    document.body.appendChild(form);
+                    form.submit();
+                }
+            });
+        });
+    });
+});
+</script>
+{% endblock %}

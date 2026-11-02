@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block content %}
+<div class="box">
+    <div class="box-header box-info">
+        <h3 class="box-title">{% trans "Liste des classes" %}</h3>
+        <div class="box-tools pull-right">
+       <p class="text-right">
+                <a href="{% url 'secteur_create' %}" class="btn btn-primary">
+                <i class="fa fa-plus"></i> {% trans "AJ" %}
+            </a>
+       </p>
+        </div>
+    </div>
+
+    <div class="box-body">
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>{% trans "Nom" %}</th>
+                    <th>{% trans "Secteurs" %}</th>
+                    <th>{% trans "Actions" %}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for secteur in secteurs %}
+                <tr>
+                    <td>{{ secteur.nom }}</td>
+                    <td>{{ secteur.formation.nom }}</td>
+                    <td>
+                        <a href="{% url 'secteur_update' secteur.pk %}" class="btn btn-sm btn-warning">
+                            <i class="fa fa-edit"></i> {% trans "Modifier" %}
+                        </a>
+                        <a href="{% url 'secteur_delete' secteur.pk %}" class="btn btn-sm btn-danger">
+                            <i class="fa fa-trash"></i> {% trans "Supprimer" %}
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

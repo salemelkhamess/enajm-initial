@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block content %}
+<div class="box">
+    <div class="box-header">
+        <h3>{% if view.object %}Modifier{% else %}Ajouter{% endif %} une présence</h3>
+    </div>
+    <div class="box-body">
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-success">{% trans "Enregistrer" %}</button>
+            <a href="{% url 'presence_list' %}" class="btn btn-secondary">{% trans "Annuler" %}</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

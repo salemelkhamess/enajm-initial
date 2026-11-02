@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+{% load i18n_jours %}
+{% load emploi_tags %}
+{% load i18n %}  {# Charger les tags de traduction #}
+
+{% block content %}
+<div class="box box-default">
+    <div class="box-header with-border">
+        <h1 class="card-title">{% trans "ch" %} {{ emploi.secteur.nom }}</h1>
+    </div>
+    <div class="box-body">
+        <div class="alert alert-info">
+            <h4>{% trans "Annee" %}:</h4> {{ emploi.annee.numero_annee }} |
+            <h4>{% trans "Trimestre" %}:</h4> {{ emploi.trimestre.nom }} |
+            <h4>{% trans "Classe" %}:</h4> {{ emploi.secteur.nom }}
+        </div>
+
+        <form method="post" id="grille-form">
+            {% csrf_token %}
+            <input type="hidden" name="annee_id" value="{{ emploi.annee.id }}">
+            <input type="hidden" name="trimestre_id" value="{{ emploi.trimestre.id }}">
+            <input type="hidden" name="secteur_id" value="{{ emploi.secteur.id }}">
+
+            <div class="table-responsive">
+                <table class="table table-bordered" id="emploi-table">
+                    <thead>
+                        <tr>
+                            <th>{% trans "Créneau" %}</th>
+                            {% for jour in jours %}
+                                <th>{{ jour|jour_i18n }}</th>  {# Traduction des jours #}
+                            {% endfor %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for creneau in creneaux %}
+                        <tr>
+                            <td>
+                                {{ creneau.debut }} - {{ creneau.fin }}
+                                <input type="hidden" name="creneau_debut[]" value="{{ creneau.debut }}">
+                                <input type="hidden" name="creneau_fin[]" value="{{ creneau.fin }}">
+                            </td>
+                            {% for jour in jours %}
+                                <td>
+                                    {% with creneau_str=creneau.debut|add:"-"|add:creneau.fin %}
+                                    {% with existing=emplois_existants|get_item:jour|get_item:creneau_str %}
+                                    <select name="matiere_{{ jour }}_{{ creneau.debut }}_{{ creneau.fin }}" class="form-control select">
+                                        <option value="">-- {% trans "Matière" %} --</option>
+                                        {% for matiere in matieres %}
+                                            <option value="{{ matiere.id }}"
+                                                {% if existing and existing.matiere_id == matiere.id %}selected{% endif %}>
+                                                {{ matiere.nom }}
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+
+                                    <select name="professeur_{{ jour }}_{{ creneau.debut }}_{{ creneau.fin }}" class="form-control select">
+                                        <option value="">-- {% trans "Professeur" %} --</option>
+                                        {% for professeur in professeurs %}
+                                            <option value="{{ professeur.id }}"
+                                                {% if existing and existing.professeur_id == professeur.id %}selected{% endif %}>
+                                                {{ professeur.nom }} {{ professeur.prenom }}
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+
+                                    <select name="salle_{{ jour }}_{{ creneau.debut }}_{{ creneau.fin }}" class="form-control select">
+                                        <option value="">-- {% trans "Salle" %} --</option>
+                                        {% for salle in salles %}
+                                            <option value="{{ salle.id }}"
+                                                {% if existing and existing.salle_id == salle.id %}selected{% endif %}>
+                                                {{ salle.nom }}
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+                                    {% endwith %}
+                                    {% endwith %}
+                                </td>
+                            {% endfor %}
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="form-group">
+                <button type="submit" class="btn btn-success">
+                    <i class="fa fa-save"></i> {% trans "Enregistrer" %}
+                </button>
+                <a href="{% url 'emploi_liste' %}" class="btn btn-default">
+                    <i class="fa fa-times"></i> {% trans "Annuler" %}
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

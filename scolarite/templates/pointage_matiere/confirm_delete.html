@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block content %}
+<div class="box">
+    <div class="box-header">
+        <h3>{% trans "Supprimer pointage matière" %}</h3>
+    </div>
+    <div class="box-body">
+        <p>{% trans "Êtes-vous sûr de vouloir supprimer ce pointage ?" %}</p>
+        <p>
+            <strong>{% trans "Matière:" %}</strong> {{ object.matiere }}<br>
+            <strong>{% trans "Professeur:" %}</strong> {{ object.professeur }}<br>
+            <strong>{% trans "Date:" %}</strong> {{ object.date_cours|date:"d/m/Y" }}<br>
+            <strong>{% trans "Heures:" %}</strong> {{ object.heure_debut|time:"H:i" }} - {{ object.heure_fin|time:"H:i" }}
+        </p>
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group text-right">
+                <button type="submit" class="btn btn-danger">{% trans "Confirmer la suppression" %}</button>
+                <a href="{% url 'pointage_matiere_list' %}" class="btn btn-default">{% trans "Annuler" %}</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

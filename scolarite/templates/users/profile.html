@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-12 mx-auto">
+            <h2 style="margin-top:0;margin-bottom:20px;">{% trans "Mon Profil" %}</h2>
+
+            {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %}">
+                    {{ message }}
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <!-- Formulaire d'informations personnelles -->
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <h3 class="box-title">{% trans "Informations personnelles" %}</h3>
+                </div>
+                <div class="box-body">
+                    <form method="post" novalidate>
+                        {% csrf_token %}
+
+                        <div class="form-grid-3">
+                        {% for field in profile_form %}
+                        <div class="mb-3{% if field.widget_type == 'textarea' %} full-row{% endif %}">
+                            <label for="{{ field.id_for_label }}" class="form-label">
+                                {{ field.label }}
+                            </label>
+                            {{ field }}
+                            {% if field.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ field.errors|first }}
+                                </div>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                        </div>
+
+                        <button type="submit" name="update_profile" class="btn btn-primary">
+                            {% trans "Mettre à jour" %}
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Formulaire de changement de mot de passe -->
+            <div class="box box-warning">
+                <div class="box-header with-border">
+                    <h3 class="box-title">{% trans "Changement de mot de passe" %}</h3>
+                </div>
+                <div class="box-body">
+                    <form method="post" novalidate>
+                        {% csrf_token %}
+
+                        <div class="form-grid-3">
+                        {% for field in password_form %}
+                        <div class="mb-3{% if field.widget_type == 'textarea' %} full-row{% endif %}">
+                            <label for="{{ field.id_for_label }}" class="form-label">
+                                {{ field.label }}
+                            </label>
+                            {{ field }}
+                            {% if field.help_text %}
+                                <small class="form-text text-muted">{{ field.help_text }}</small>
+                            {% endif %}
+                            {% if field.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ field.errors|first }}
+                                </div>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                        </div>
+
+                        <button type="submit" name="change_password" class="btn btn-warning">
+                            {% trans "Changer le mot de passe" %}
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

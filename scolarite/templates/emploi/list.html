@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% load i18n_jours %}
+{% load i18n %}
+{% block content %}
+<div class="box box-default">
+    <div class="box-header d-flex justify-content-between align-items-center">
+<h3 class="card-title">{% trans "Emploi du temps" %}</h3>
+       <p class="text-right">
+        <a href="{% url 'emploi_grille' %}" class="btn btn-primary">
+    <i class="fa fa-plus"></i> {% trans "Ajouter une séance" %}
+</a>
+        </p>
+    </div>
+    <div class="box-body">
+        {% for secteur in secteurs_emplois %}
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                   <strong>{{ secteur.nom }}</strong>
+<span class="badge">{{ secteur.emploidutemps_set.count }} {% trans "séances" %}</span>
+                </h4>
+            </div>
+            <div class="panel-body">
+                <table class=" table-bordered table-hover" style="width: 100%">
+                    <thead>
+                        <tr>
+                     <th>{% trans "Matière" %}</th>
+<th>{% trans "Professeur" %}</th>
+<th>{% trans "Salle" %}</th>
+<th>{% trans "Jour" %}</th>
+<th>{% trans "Heures" %}</th>
+<th>{% trans "Actions" %}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for emploi in secteur.emploidutemps_set.all %}
+                        <tr>
+                            <td>{{ emploi.matiere.nom }}</td>
+                            <td>{{ emploi.professeur.nom }} {{ emploi.professeur.prenom }}</td>
+                            <td>{{ emploi.salle.nom }}</td>
+                            <td>{{ emploi.jour|jour_i18n }}</td>
+                            <td>{{ emploi.heure_debut|time:"H:i" }} - {{ emploi.heure_fin|time:"H:i" }}</td>
+                            <td>
+                         <a href="{% url 'emploi_grille_edit' emploi.pk %}" class="btn btn-warning btn-xs">
+    <i class="fa fa-edit"></i>
+</a>
+<a href="{% url 'emploi_delete' emploi.pk %}" class="btn btn-danger btn-xs">
+    <i class="fa fa-trash"></i>
+</a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+<td colspan="6">{% trans "Aucun emploi du temps pour ce secteur" %}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {% empty %}
+  <div class="alert alert-info">
+    {% trans "Aucun secteur avec emploi du temps trouvé." %}
+</div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

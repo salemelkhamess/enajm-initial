@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4">{% trans "Gestion des présences" %}</h2>
+           {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %}">
+                    {{ message }}
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+    <form method="post" action="{% url 'presence:enregistrer' %}" id="presenceForm" class="card p-4">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                {{ form.secteur.label_tag }}
+                {{ form.secteur }}
+            </div>
+            <div class="col-md-6 mb-3">
+                {{ form.matiere.label_tag }}
+                {{ form.matiere }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                {{ form.date_cours.label_tag }}
+                {{ form.date_cours }}
+            </div>
+            <div class="col-md-6 mb-3">
+                {{ form.jour.label_tag }}
+                {{ form.jour }}
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary">{% trans "Valider" %}</button>
+    </form>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+$(document).ready(function() {
+    // Debug: Vérifie que le script est chargé
+    console.log("Script chargé");
+
+    $("#id_secteur").change(function() {
+        console.log("Changement de secteur détecté");
+        var secteurId = $(this).val();
+        $.ajax({
+            url: "{% url 'presence:charger_matieres' %}",
+            data: {'secteur_id': secteurId},
+            success: function(data) {
+                console.log("Réponse AJAX reçue:", data);
+                $("#id_matiere").empty();
+                $.each(data, function(index, item) {
+                    $("#id_matiere").append($('<option>', {
+                        value: item.id,
+                        text: item.nom
+                    }));
+                });
+            },
+            error: function(xhr, status, error) {
+                console.error("Erreur AJAX:", error);
+            }
+        });
+    });
+
+    // Debug: Intercepte la soumission du formulaire
+    $("#presenceForm").submit(function(e) {
+        console.log("Formulaire soumis");
+        console.log("Données:", $(this).serialize());
+    });
+});
+</script>
+{% endblock %}

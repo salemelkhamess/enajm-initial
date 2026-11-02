@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% load custom_filters role_tags i18n%}
+{% block content %}
+<div class="box">
+<div class="box-header">
+        <h2>{% trans "Absences non justifiées" %}</h2>
+
+</div>
+<div class="box-body">
+<table class="table">
+    <thead>
+        <tr>
+            <th>{% trans "Étudiant" %}</th>
+            <th>{% trans "Matière" %}</th>
+            <th>{% trans "Date" %}</th>
+            <th>{% trans "Trimestre" %}</th>
+            <th>{% trans "État" %}</th>
+            <th>{% trans "Actions" %}</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for absence in absences %}
+{% with etat=absence.etat_absence %}
+    <tr>
+            <td>{{ absence.etudiant.nom }} {{ absence.etudiant.prenom }}</td>
+            <td>{{ absence.matiere.nom }}</td>
+            <td>{{ absence.date_cours }}</td>
+            <td>{{ absence.trimestre.nom_ar }}</td>
+            <td>
+                {% if etat == 'en_attente' %}
+                <span class="label label-warning">{% trans "En attente" %} — {{ absence.heures_avant_validation }} {% trans "h restantes" %}</span>
+                {% else %}
+                <span class="label label-danger">{% trans "Validée" %}</span>
+                {% endif %}
+            </td>
+            <td>
+                {% if user|has_any_role:"DOCTOR" %}
+
+                <a href="{% url 'modifier_statut_absence' absence.id %}"
+                   class="btn {% if etat == 'validee' %}btn-danger{% else %}btn-primary{% endif %}">
+                    {% trans "justification d'absence" %}
+                </a>
+            {% endif %}
+            {% if etat == 'en_attente' and user|has_any_role:"ADMIN,POINTEUR,SUPER_ADMIN" %}
+
+            <a href="{% url 'valider_absence' absence.id %}" class="btn btn-info" title="{% trans 'Valider maintenant' %}">
+        {% trans "Validation" %}
+    </a>
+            {% endif %}
+            </td>
+        </tr>
+        {% endwith %}
+        {% empty %}
+        <tr>
+            <td colspan="6">{% trans "Aucune absence non justifiée" %}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+</div>
+</div>
+{% endblock %}

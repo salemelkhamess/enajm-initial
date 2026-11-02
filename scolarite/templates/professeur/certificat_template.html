@@ -1,0 +1,140 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block styles %}
+<style>
+    @page {
+        size: A4;
+        margin: 1cm;
+    }
+    body {
+        font-family: 'Traditional Arabic', Arial, sans-serif;
+        direction: rtl;
+        line-height: 1.6;
+        font-size: 14pt;
+    }
+    .header {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+    .title {
+        text-align: center;
+        font-weight: bold;
+        margin: 20px 0;
+        font-size: 16pt;
+    }
+    .content {
+        margin: 0 50px;
+    }
+    .signature {
+        text-align: left;
+        margin-top: 50px;
+        margin-right: 100px;
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 20px 0;
+    }
+    th, td {
+        border: 1px solid #000;
+        padding: 8px;
+        text-align: center;
+    }
+    th {
+        background-color: #f2f2f2;
+        font-weight: bold;
+    }
+    .underline {
+        border-bottom: 1px solid #000;
+        display: inline-block;
+        min-width: 200px;
+        text-align: center;
+        padding: 0 10px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+    <p class="text-right" style="margin-top: 20px">
+    <a onclick="printDiv('printme')" class="btn btn-primary" style="width: 200px">
+        <i class="fa fa-print"></i>
+        {% if LANGUAGE_CODE == 'ar' or LANGUAGE_CODE == 'ar-ma' %}
+            طباعة
+        {% else %}
+            {% trans "Imprimer" %}
+        {% endif %}
+    </a>
+</p>
+
+<div class="box" id="printme">
+        {% include "entete/show.html" with entete=entete %}
+
+
+<div class="title">إفادة التدريس</div>
+<div class="">
+</div>
+
+<div class="content">
+      <p>رقم الإفادة: {{ cert_number }}</p>
+
+    <p>يفيد مدير التكوين الأولي والتدريبات والمسابقات بالمدرسة الوطنية للإدارة والصحافة والقضاء، أن:</p>
+
+    <p><strong>الأستاذ</strong>: <span class="underline">{{ professor.nom }} {{ professor.prenom }}</span></p>
+    <p><strong>المولود سنة</strong>: <span class="underline">.................</span>، في <span class="underline">.................</span></p>
+    <p><strong>الحامل للرقم الوطني للتعريف</strong>: <span class="underline">.................................</span></p>
+
+    <p>قد تعاون مع المدرسة في مجال التدريس وذلك طبقاً للجدول التالي:</p>
+
+<table>
+    <thead>
+        <tr>
+            <th>السنة الدراسية</th>
+            <th>المستوى</th>
+            <th>القسم</th>
+            <th>المادة</th>
+            <th> عدد الساعات النظرية</th>
+
+        </tr>
+    </thead>
+    <tbody>
+        {% for enseignement in enseignements %}
+        <tr>
+            <td>{{ enseignement.annee }} - {{ enseignement.annee|add:1 }} </td>
+            <td>{{ enseignement.trimestre_nom }}</td>
+            <td>{{ enseignement.secteur }}</td>
+            <td>{{ enseignement.matiere }}</td>
+            <td>{{ enseignement.total_seances|add:enseignement.total_seances }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="5">لا توجد بيانات</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+    <p>وقد سُلّمت له هذه الإفادة بناء على طلبه لاستخدامها فيما تخوله قانوناً.</p>
+
+    <div class="signature">
+        <p>مدير التكوين الأولي والتدريبات والمسابقات</p>
+        <p>د. محمد إبراهيم أبو مدين</p>
+    </div>
+
+    <p>نواكشوط في: <span class="underline">{{ today|date:"d/m/Y" }}</span></p>
+</div>
+</div>
+</div>
+{% endblock %}
+
+
+{% block scripts %}
+<script>
+function printDiv(divName) {
+    var printContents = document.getElementById(divName).innerHTML;
+    var originalContents = document.body.innerHTML;
+    document.body.innerHTML = printContents;
+    window.print();
+    document.body.innerHTML = originalContents;
+}
+</script>
+{% endblock %}

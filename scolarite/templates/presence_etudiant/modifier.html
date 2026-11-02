@@ -1,0 +1,70 @@
+<!-- presence_etudiant/modifier.html -->
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block content %}
+<div class="mt-4">
+    <div class="box">
+        <div class="box-header bg-primary text-white">
+            <h3>{% trans "Modifier une présence" %}</h3>
+        </div>
+        <div class="box-body">
+            <form method="post">
+                {% csrf_token %}
+
+                <div class="form-group">
+                    <label>{% trans "Étudiant" %}</label>
+                    <input type="text" class="form-control" value="{{ object.etudiant }}" disabled>
+                </div>
+
+                <div class="form-group">
+                    <label>{% trans "Matière" %}</label>
+                    <input type="text" class="form-control" value="{{ object.matiere }}" disabled>
+                </div>
+
+                <div class="form-group">
+                    <label>{% trans "Date" %}</label>
+                    <input type="text" class="form-control" value="{{ object.date_justification|default:'-' }}" disabled>
+                </div>
+
+                <div class="form-group">
+                    {{ form.present.label_tag }}
+                    {{ form.present }}
+                </div>
+
+                <div class="form-group" id="justification-group" style="display: {% if object.present %}none{% else %}block{% endif %};">
+                    {{ form.justification.label_tag }}
+                    {{ form.justification }}
+
+                    {{ form.date_justification.label_tag }}
+                    {{ form.date_justification }}
+                </div>
+
+                <button type="submit" class="btn btn-success">
+                    {% trans "Enregistrer les modifications" %}
+                </button>
+                <a href="{% url 'presence_liste' %}" class="btn btn-secondary">
+                    {% trans "Annuler" %}
+                </a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+$(document).ready(function() {
+    // Afficher/masquer les champs de justification en fonction de l'état de présence
+    $('input[name="present"]').change(function() {
+        if ($(this).is(':checked')) {
+            $('#justification-group').hide();
+            $('#id_justification').val('');
+            $('#id_date_justification').val('');
+        } else {
+            $('#justification-group').show();
+        }
+    });
+});
+</script>
+{% endblock %}

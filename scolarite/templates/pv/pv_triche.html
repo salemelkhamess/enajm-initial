@@ -1,0 +1,177 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block styles %}
+<style>
+    @page {
+        size: A4;
+        margin: 0;
+    }
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 20px;
+    }
+    .header {
+        display: flex;
+        justify-content: space-between;
+        border-bottom: 2px solid #000;
+        padding-bottom: 10px;
+        margin-bottom: 20px;
+    }
+    .header-ar {
+        text-align: right;
+        direction: rtl;
+    }
+    .header-fr {
+        text-align: left;
+    }
+    .title {
+        text-align: center;
+        font-weight: bold;
+        font-size: 18px;
+        margin: 20px 0;
+        text-decoration: underline;
+    }
+    .content {
+        margin: 20px 0;
+        line-height: 1.6;
+    }
+    .signature {
+        margin-top: 50px;
+        text-align: right;
+    }
+    .border-table {
+        border-collapse: collapse;
+        width: 100%;
+        margin: 20px 0;
+    }
+    .border-table td, .border-table th {
+        border: 1px solid #000;
+        padding: 8px;
+        text-align: center;
+    }
+    .info-table {
+        width: 100%;
+        margin: 20px 0;
+    }
+    .info-table td {
+        padding: 5px;
+        vertical-align: top;
+    }
+    .underline {
+        text-decoration: underline;
+    }
+    .info-label {
+        font-weight: bold;
+        width: 30%;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <p class="text-right">
+        <a onclick="printDiv('printme')" class="btn btn-primary" style="width: 200px">
+            <i class="fa fa-print"></i> {% trans "Print" %}
+        </a>
+    </p>
+
+    <div class="box" id="printme">
+        <div class="box-body">
+            <!-- En-tête avec les logos et informations de l'école -->
+            <table class="border-table">
+                <tr>
+                    <td style="width: 40%; text-align: right; direction: rtl;">
+                        <strong>الوزارة الأولى</strong><br>
+                        <strong>المدرسة الوطنية للإدارة والصحافة والقضاء</strong>
+                    </td>
+                    <td style="width: 20%;">
+                        <!-- Espace pour le logo -->
+                    </td>
+                    <td style="width: 40%; text-align: left;">
+                        <strong>Premier Ministère</strong><br>
+                        <strong>Ecole Nationale d'Administration, de Journalisme et de Magistrature</strong>
+                    </td>
+                </tr>
+            </table>
+
+            <!-- Informations sur l'examen -->
+            <div style="text-align: center; direction: rtl; margin: 20px 0;">
+                <p>امتحان الفصل الدراسي {{ pv.trimestre.nom_ar }}, السنة {{ pv.annee.numero_annee }}, العام الدراسي {{ pv.annee.numero_annee }}</p>
+            </div>
+
+            <!-- Titre du document -->
+            <div class="title" style="text-align: center; direction: rtl;">
+                <strong>محضر غش</strong>
+            </div>
+
+            <!-- Informations académiques -->
+            <table class="info-table">
+                <tr>
+                    <td class="info-label" style="direction: rtl;">{% trans "Annee" %}:</td>
+                    <td style="direction: rtl;">{{ pv.annee.numero_annee }}</td>
+                    <td class="info-label" style="direction: rtl;">{% trans "Trimestre" %}:</td>
+                    <td style="direction: rtl;">{{ pv.trimestre.nom_ar }}</td>
+                </tr>
+                <tr>
+                    <td class="info-label" style="direction: rtl;">{% trans "Jour" %}:</td>
+                    <td style="direction: rtl;">{{ pv.get_jour_semaine_display }}</td>
+                    <td class="info-label" style="direction: rtl;">{% trans "Date" %}:</td>
+                    <td style="direction: rtl;">{{ pv.date_incident|date:"d/m/Y" }}</td>
+                </tr>
+            </table>
+            <!-- Tableau des informations de l'étudiant -->
+            <table class="border-table">
+                <thead>
+                    <tr>
+                        <th style="text-align: center; direction: rtl;">الملاحظات</th>
+                        <th style="text-align: center; direction: rtl;">القسم</th>
+                        <th style="text-align: center; direction: rtl;">الاسم</th>
+                        <th style="text-align: center; direction: rtl;">الرقم</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>{{ pv.get_type_display }}</td>
+                        <td>{{ pv.etudiant.secteur.nom }}</td>
+                        <td>{{ pv.etudiant.nom }} {{ pv.etudiant.prenom }}</td>
+                        <td>{{ pv.etudiant.matricule }}</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- Contenu du PV -->
+            <div class="content" style="direction: rtl; text-align: right;">
+                <p>إنه في يوم {{ pv.get_jour_semaine_display }} الموافق {{ pv.date_incident|date:"d/m/Y" }}، وجد التلميذ الموظف الموضح اسمه وبياناته</p>
+
+                <p>أعلاه في حالة غش في مادة <strong>{{ pv.matiere.nom }}</strong>، وكان بحوزته</p>
+
+                <p>{{ pv.contenu }}</p>
+
+                <p>وقد تم ضبطه بمعرفتنا وتم تحرير هذا المحضر في ساعته وتاريخه.</p>
+            </div>
+
+            <!-- Signatures -->
+            <div class="signature" style="direction: rtl;">
+                <p><strong>توقيع المراقب الرئيسي</strong></p>
+                <p><strong>توقيع المراقب</strong></p>
+                <p><strong>رئيس لجنة الامتحانات</strong></p>
+                <p><strong>أعضاء لجنة الامتحانات</strong></p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function printDiv(divName) {
+    var printContents = document.getElementById(divName).innerHTML;
+    var originalContents = document.body.innerHTML;
+    document.body.innerHTML = printContents;
+    window.print();
+    document.body.innerHTML = originalContents;
+}
+</script>
+{% endblock %}

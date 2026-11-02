@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block content %}
+<div class="box">
+<div class="box-header">
+     <h3>{% trans "Liste des présences des professeurs" %}</h3>
+    <p class="text-right">
+<a href="{% url 'presence_create' %}" class="btn btn-success mb-3">
+    <i class="fa fa-plus"></i> {% trans "Ajouter une présence" %}
+</a>
+    </p>
+</div>
+<div class="box-body">
+<table class="table table-bordered">
+    <thead>
+        <tr>
+   <th>{% trans "Professeur" %}</th>
+<th>{% trans "Matière" %}</th>
+<th>{% trans "Présent" %}</th>
+<th>{% trans "Justification" %}</th>
+<th>{% trans "Date justification" %}</th>
+<th>{% trans "Actions" %}</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for presence in presences %}
+        <tr>
+            <td>{{ presence.professeur.nom }} {{ presence.professeur.prenom }}</td>
+            <td>{{ presence.matiere.nom }}</td>
+            <td>{{ presence.present|yesno:"Oui,Non" }}</td>
+            <td>{{ presence.justification|default:"-" }}</td>
+            <td>{{ presence.date_justification|date:"d/m/Y" }}</td>
+            <td>
+    <a href="{% url 'presence_update' presence.pk %}" class="btn btn-primary btn-sm">{% trans "Modifier" %}</a>
+<a href="{% url 'presence_delete' presence.pk %}" class="btn btn-danger btn-sm">{% trans "Supprimer" %}</a>
+
+            </td>
+        </tr>
+        {% empty %}
+<tr><td colspan="6">{% trans "Aucune présence trouvée." %}</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+</div>
+</div>
+{% endblock %}

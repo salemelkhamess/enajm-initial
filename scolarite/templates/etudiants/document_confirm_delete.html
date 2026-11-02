@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">{% trans "Confirmer la suppression" %}</h3>
+    </div>
+    <div class="card-body">
+        <p>{% trans "Êtes-vous sûr de vouloir supprimer ce document ?" %}</p>
+        <p><strong>{{ object.get_type_document_display }}</strong> - {{ object.fichier.name }}</p>
+    </div>
+    <div class="card-footer">
+        <form method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">{% trans "Supprimer" %}</button>
+            <a href="{% url 'document_list' object.etudiant.id %}" class="btn btn-default">{% trans "Annuler" %}</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

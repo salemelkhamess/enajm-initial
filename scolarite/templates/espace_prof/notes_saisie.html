@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block content %}
+<div class="box box-primary">
+    <div class="box-header with-border">
+        <h3 class="box-title">{{ ev.get_type_display }} — {{ ev.matiere.nom }} ({{ ev.secteur.nom }}) — {{ ev.date|date:"d/m/Y" }}</h3>
+    </div>
+    <div class="box-body">
+        <p class="text-muted">{% trans "Note sur 20. Laissez vide pour ne pas saisir de note. Les notes sont soumises à validation par l'administration." %}</p>
+        <form method="post">
+            {% csrf_token %}
+            <table class="table table-bordered table-hover" style="max-width:800px;">
+                <thead><tr><th style="width:50px">#</th><th>{% trans "Élève fonctionnaire" %}</th><th style="width:140px">{% trans "Note /20" %}</th><th>{% trans "État" %}</th></tr></thead>
+                <tbody>
+                {% for l in lignes %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ l.etudiant.nom }} {{ l.etudiant.prenom }} <small class="text-muted">{{ l.etudiant.matricule }}</small></td>
+                        <td><input type="text" inputmode="decimal" name="note_{{ l.etudiant.id }}" value="{% if l.note %}{{ l.note.note_sur_20 }}{% endif %}" class="form-control"></td>
+                        <td>{% if l.note %}{% if l.note.status %}<span class="label label-success">{% trans "Validée" %}</span>{% else %}<span class="label label-warning">{% trans "En attente de validation" %}</span>{% endif %}{% endif %}</td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="4">{% trans "Aucun élève dans ce secteur." %}</td></tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            <button type="submit" class="btn btn-success"><i class="fa fa-save"></i> {% trans "Enregistrer" %}</button>
+            <a href="{% url 'espace_prof_notes' %}" class="btn btn-link">{% trans "Retour" %}</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

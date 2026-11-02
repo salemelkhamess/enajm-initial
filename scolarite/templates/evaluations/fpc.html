@@ -1,0 +1,280 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block styles %}
+<style>
+.rtl-lang {
+    direction: rtl;
+    text-align: right;
+}
+.header {
+    text-align: center;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #000;
+    padding-bottom: 10px;
+}
+.form-title {
+    font-weight: bold;
+    text-align: center;
+    margin: 20px 0;
+    text-decoration: underline;
+}
+.info-table {
+    width: 100%;
+    margin-bottom: 20px;
+    border-collapse: collapse;
+}
+.info-table td {
+    padding: 8px;
+    border: 1px solid #000;
+}
+.student-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+.student-table th, .student-table td {
+    border: 1px solid #000;
+    padding: 8px;
+    text-align: center;
+}
+.student-table th {
+    background-color: #f2f2f2;
+}
+.signature-box {
+    height: 30px;
+    border-bottom: 1px solid #000;
+    margin-top: 40px;
+}
+.filter-form .form-group {
+    margin-bottom: 15px;
+}
+
+    #filterForm.rtl-lang .row > div.col-md-4 {
+  float: right;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="box">
+
+
+  <!-- Formulaire de filtrage -->
+        <form method="get" id="filterForm" class="filter-form {% if langue == 'ar' %}rtl-lang{% endif %} mb-4">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="annee">{% trans "Annee" %}</label>
+                        <select name="annee" id="annee" class="form-control">
+                            <option value="">{% trans "-- Sélectionner --" %}</option>
+                            {% for annee in annees %}
+                            <option value="{{ annee.id }}" {% if selected_annee == annee.id %}selected{% endif %}>
+                                {{ annee }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+        <!-- Trimestre -->
+        <div class="col-md-4">
+            <div class="form-group">
+                <label for="trimestre">{% trans "Trimestre" %}</label>
+                <select name="trimestre" id="trimestre" class="form-control" {% if not selected_annee %}disabled{% endif %}>
+                    <option value="">{% trans "-- Sélectionner --" %}</option>
+                    {% for trimestre in trimestres %}
+                    <option value="{{ trimestre.id }}" {% if selected_trimestre == trimestre.id %}selected{% endif %}>
+                        {{ trimestre.nom_fr }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+
+        <!-- Secteur -->
+        <div class="col-md-4">
+            <div class="form-group">
+                <label for="secteur">{% trans "Secteur" %}</label>
+                <select name="secteur" id="secteur" class="form-control">
+                    <option value="">{% trans "-- Sélectionner --" %}</option>
+                    {% for secteur in secteurs %}
+                    <option value="{{ secteur.id }}" {% if selected_secteur == secteur.id %}selected{% endif %}>
+                        {{ secteur.nom }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <!-- Ligne supplémentaire pour matière, date et heure -->
+    <div class="row mt-3">
+        <!-- Matière -->
+        <div class="col-md-4">
+            <div class="form-group">
+                <label for="matiere">{% trans "Matière" %}</label>
+                <select name="matiere" id="matiere" class="form-control">
+                    <option value="">{% trans "-- Sélectionner --" %}</option>
+                    {% for matiere in matieres %}
+                    <option value="{{ matiere.id }}" {% if selected_matiere == matiere.id %}selected{% endif %}>
+                        {{ matiere.nom }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+
+        <!-- Date -->
+        <div class="col-md-4">
+            <div class="form-group">
+                <label for="date">{% trans "Date" %}</label>
+                <input type="date" id="date" name="date" class="form-control" value="{{ selected_date|default:'' }}">
+            </div>
+        </div>
+
+        <!-- Heure -->
+        <div class="col-md-4">
+            <div class="form-group">
+                <label for="heure">{% trans "Heure" %}</label>
+                <input type="time" id="heure" name="heure" class="form-control" value="{{ selected_heure|default:'' }}">
+            </div>
+        </div>
+    </div>
+
+    <!-- Bouton de soumission -->
+    <div class="text-center mt-2">
+        <button type="submit" id="button" class="btn btn-primary">{% trans "Afficher la liste" %}</button>
+    </div>
+</form>
+
+
+
+    <div class="box" >
+            <button class="btn btn-primary" onclick="printDiv('printme')">{% trans "Imprimer" %}</button>
+
+    <div class="box-body" id="printme">
+            <!-- En-tête institutionnel -->
+        <div class="header">
+            <h4>المرسسة الوطنية للإدارة والصحافة والقضاء</h4>
+            <h5>مصلحة الشؤون الطلابية</h5>
+        </div>
+                <!-- Titre du formulaire -->
+        <h5 class="form-title">{% trans "Formulaire de présence aux Contrôles" %}</h5>
+
+        <!-- Informations de contrôle -->
+<!-- Informations de contrôle -->
+<table class="info-table">
+    <tr>
+        <td>القسم</td>
+        <td>{{ selected_secteur }}</td>
+        <td>{% trans "Classe" %}</td>
+    </tr>
+    <tr>
+        <td>التاريخ والتوقيت</td>
+        <td>
+            {{ selected_date }}{% if selected_heure %} - {{ selected_heure }}{% endif %}
+        </td>
+        <td>{% trans "Date et Horaire" %}</td>
+    </tr>
+    <tr>
+        <td>المادة</td>
+        <td>{{ selected_matiere }}</td>
+        <td>{% trans "Matière" %}</td>
+    </tr>
+    <tr>
+        <td>المراقبين</td>
+        <td>{{ selected_surveillants }}</td>
+        <td>{% trans "Surveillants" %}</td>
+    </tr>
+</table>
+
+
+        <!-- Titre examen -->
+        <h6 class="text-center mb-3">Examen du 2ème trimestre de la Deuxième année</h6>
+
+        <!-- Liste des étudiants -->
+        {% if etudiants %}
+        <table class="student-table">
+            <thead>
+                <tr>
+                    <th width="10%">الرقم</th>
+                    <th width="50%">الاسم الكامل</th>
+                    <th width="20%">التوقيع</th>
+                    <th width="20%">الملاحظات</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for etudiant in etudiants %}
+                <tr>
+                    <td>{{ etudiant.matricule }}</td>
+                    <td>{{ etudiant.nom }} {{ etudiant.prenom }}</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% endif %}
+
+        <!-- Pied de page -->
+        <div class="text-center mt-4">
+            <div class="signature-box" style="width: 200px; display: inline-block; margin-right: 50px;">
+                <small>{% trans "Signature du responsable" %}</small>
+            </div>
+            <div class="signature-box" style="width: 200px; display: inline-block;">
+                <small>{% trans "Signature du chef de département" %}</small>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+   $('#annee').change(function() {
+        const anneeId = $(this).val();
+        if (anneeId) {
+            $.ajax({
+                url: '{% url "load_trimestres" %}',
+                data: {
+                    'annee_id': anneeId
+                },
+                success: function(data) {
+                    $('#trimestre').empty();
+                    $('#trimestre').append('<option value="">{% trans "-- Sélectionner --" %}</option>');
+                    $.each(data, function(key, value) {
+                        $('#trimestre').append($('<option></option>').attr('value', value.id).text(value.nom_fr));
+                    });
+                    $('#trimestre').prop('disabled', false);
+                }
+            });
+        } else {
+            $('#trimestre').empty();
+            $('#trimestre').prop('disabled', true);
+        }
+    });
+
+    // Formatage de la date pour l'affichage
+    $('input[type="date"]').on('change', function() {
+        const date = new Date($(this).val());
+        if (!isNaN(date.getTime())) {
+            const formattedDate = date.toLocaleDateString('fr-FR');
+            $(this).parent().find('.date-display').text(formattedDate);
+        }
+    });
+
+    function printDiv(divName){
+        var printContents = document.getElementById(divName).innerHTML;
+        var originalContents = document.body.innerHTML;
+        document.body.innerHTML = printContents;
+        window.print();
+        document.body.innerHTML = originalContents;
+    }
+</script>
+{% endblock %}

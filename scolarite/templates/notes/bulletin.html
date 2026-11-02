@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block styles %}
+<style>
+    @media print {
+        a[href]:after {
+            content: none !important;
+        }
+        @page {
+            margin-top: 0;
+            margin-bottom: 0;
+        }
+        body {
+            padding-top: 72px;
+            padding-bottom: 72px;
+        }
+    }
+    .bulletin-page {
+        page-break-after: always;
+        margin-bottom: 50px;
+    }
+    .bulletin-page:last-child {
+        page-break-after: auto;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="box">
+    <div class="box-body">
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-info">{% trans "Afficher les bulletins" %}</button>
+        </form>
+    </div>
+</div>
+        {% if messages %}
+    <div class="messages">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+{% if bulletins %}
+    <p class="text-right">
+    <a onclick="printDiv('printme')" class="btn btn-primary" style="width: 200px">
+        <i class="fa fa-print"></i> {% trans "Print" %}
+    </a>
+</p>
+
+{% for bulletin in bulletins %}
+<div class="box" id="printme">
+    <div class="box-body" style="font-family: 'Traditional Arabic', Arial, sans-serif; direction: rtl; unicode-bidi: bidi-override; text-align: right;">
+        {% include "entete/show.html" with entete=entete %}
+        <h2 style="text-align: center; margin: 20px 0; font-weight: bold; text-decoration: underline;">كشف الدرجات</h2>
+        <h3 style="text-align: center; margin: 30px 0; font-size: 1.5em;font-weight: bold; ">
+            اِمْتِحَان {{ bulletin.trimestre.nom_ar }}
+        </h3>
+
+        <div style="margin-bottom: 30px; line-height: 2;">
+            <p style="margin: 0;"><strong>الاسم والنقي:</strong> {{ bulletin.etudiant }}</p>
+            <p style="margin: 0;"><strong>تاريخ ومحل الميلاد:</strong> {{ bulletin.etudiant.date_naissance }} {{ bulletin.etudiant.lieu_naissance }}</p>
+            <p style="margin: 0;"><strong>الرقم:</strong> {{ bulletin.etudiant.matricule }} <strong>السلك العالي الشعبية:</strong> {{ bulletin.etudiant.secteur }}</p>
+        </div>
+
+        <table border="1" style="width: 100%; border-collapse: collapse; margin-bottom: 30px; border: 1px solid black;">
+            <tr>
+                <th style="padding: 10px; text-align: center; border: 1px solid black; background-color: #f2f2f2;">المواد</th>
+                <th style="padding: 10px; text-align: center; border: 1px solid black; background-color: #f2f2f2;">الدرجات</th>
+            </tr>
+            {% for note in bulletin.notes %}
+            <tr>
+                <td style="padding: 8px; text-align: right; border: 1px solid black;">{{ note.evaluation.matiere.nom }}</td>
+                <td style="padding: 8px; text-align: center; border: 1px solid black;">{{ note.note_sur_20 }}</td>
+            </tr>
+            {% endfor %}
+            <tr style="font-weight: bold;">
+                <td style="padding: 8px; text-align: right; border: 1px solid black;">مجموع النقاط</td>
+                <td style="padding: 8px; text-align: center; border: 1px solid black;">{{ bulletin.total }}</td>
+            </tr>
+            <tr style="font-weight: bold;">
+                <td style="padding: 8px; text-align: right; border: 1px solid black;">معدل الاختبارات</td>
+                <td style="padding: 8px; text-align: center; border: 1px solid black;">{{ bulletin.moyenne }}</td>
+            </tr>
+        </table>
+
+        <div style="margin-top: 50px; text-align: left; direction: ltr; unicode-bidi: bidi-override;">
+            <div style="float: right; text-align: right; direction: rtl;">
+                <p style="margin: 5px 0;">أدواكشوط بتاريخ {{ bulletin.date|date:"d F Y" }}</p>
+                <p style="margin: 40px 0 5px 0;">مدير التكوين الأولي والتدريبيات والمسابقات</p>
+                <p style="margin: 5px 0;">  د. محمد إبراهيم أبو مدين</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+{% endif %}
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+function printDiv(divName) {
+    var printContents = document.getElementById(divName).innerHTML;
+    var originalContents = document.body.innerHTML;
+    document.body.innerHTML = printContents;
+    window.print();
+    document.body.innerHTML = originalContents;
+}
+</script>
+{% endblock %}
