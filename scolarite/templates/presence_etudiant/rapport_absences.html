@@ -48,7 +48,7 @@ Recherche des absences des employés
         <option value="all">{% if LANGUAGE_CODE == 'ar' %}الكل{% else %}{% trans "Tous" %}{% endif %}</option>
         {% for secteur in secteurs %}
         <option value="{{ secteur.id }}" {% if secteur.id|stringformat:"s" == secteur_id %}selected{% endif %}>
-            {{ secteur.nom }}
+            {{ secteur.nom_affiche }}
         </option>
         {% endfor %}
     </select>
@@ -113,9 +113,9 @@ Recherche des absences des employés
 {% if secteur %}
     <h2 align="center">
         {% if LANGUAGE_CODE == 'ar' %}
-            {{ secteur.nom }}
+            {{ secteur.nom_affiche }}
         {% else %}
-            {{ secteur.nom }}
+            {{ secteur.nom_affiche }}
         {% endif %}
     </h2>
 {% endif %}

@@ -1,3 +1,4 @@
+{% load etudiant_extras %}
 {% load static i18n %}
 
 <header class="main-header">
@@ -64,7 +65,7 @@
                                         <li>
                                             <a href="{% url 'rapport_absences' %}">
                                                 <i class="fa fa-warning text-red"></i>
-                                                {{ absence.etudiant__nom }} {{ absence.etudiant__prenom }} ({{ absence.matiere__nom }}) - {{ absence.total }} {% trans "absences" %}
+                                                {{ absence.etudiant__prenom|fusion:absence.etudiant__nom }} ({{ absence.matiere__nom }}) - {{ absence.total }} {% trans "absences" %}
                                             </a>
                                         </li>
                                     {% endfor %}

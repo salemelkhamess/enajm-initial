@@ -20,3 +20,10 @@ def diplomes_ordonnes(codes):
     """Diplômes triés dans l'ordre officiel (Brevet … Doctorat)."""
     ordre = [c for c, _ar, _fr in Etudiant.DIPLOMES]
     return sorted(codes or [], key=lambda c: ordre.index(c) if c in ordre else len(ordre))
+
+
+@register.filter
+def fusion(nom, prenom):
+    """{{ x.nom|fusion:x.prenom }} : nom + prénom sans doublon (le prénom contient souvent déjà le nom)."""
+    from etudiant.noms import fusionner_noms
+    return fusionner_noms(nom, prenom)

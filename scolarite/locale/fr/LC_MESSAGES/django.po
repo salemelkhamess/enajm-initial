@@ -3304,3 +3304,28 @@ msgstr ""
 
 msgid "Nom affiché en français (à défaut : le code)."
 msgstr "Nom affiché en français (à défaut : le code)."
+
+msgid "Nom et prénom"
+msgstr "Nom et prénom"
+
+msgid "Classe de l'emploi du temps"
+msgstr "Classe de l'emploi du temps"
+
+msgid ""
+"Si renseignée, l'appel et les listes de pointage de cette classe utilisent "
+"les élèves de ce groupe."
+msgstr ""
+"Si renseignée, l'appel et les listes de pointage de cette classe utilisent "
+"les élèves de ce groupe."
+
+msgid "Nom en français"
+msgstr "Nom en français"
+
+msgid "Filière"
+msgstr "Filière"
+
+msgid "arabe"
+msgstr "arabe"
+
+msgid "Affiché dans les listes et les écrans en français."
+msgstr "Affiché dans les listes et les écrans en français."

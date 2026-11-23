@@ -1,5 +1,6 @@
 <!-- templates/stats/student_stats.html -->
 {% extends 'base.html' %}
+{% load etudiant_extras %}
 {% load i18n %}
 
 {% block title %}{% trans "Statistiques Étudiants" %}{% endblock %}
@@ -188,7 +189,7 @@
                                             <tbody id="studentTableBody">
                                                 {% for stat in today_student_stats %}
                                                 <tr>
-                                                    <td>{{ stat.etudiant__prenom }} {{ stat.etudiant__nom }}</td>
+                                                    <td>{{ stat.etudiant__prenom|fusion:stat.etudiant__nom }}</td>
                                                     <td>{{ stat.etudiant__classe }}</td>
                                                     <td>
                                                         <span class="badge bg-danger">{{ stat.absences }}</span>
@@ -378,7 +379,7 @@
                                             <tbody id="studentTableBody">
                                                 {% for stat in week_student_stats %}
                                                 <tr>
-                                                    <td>{{ stat.etudiant__prenom }} {{ stat.etudiant__nom }}</td>
+                                                    <td>{{ stat.etudiant__prenom|fusion:stat.etudiant__nom }}</td>
                                                     <td>{{ stat.etudiant__classe }}</td>
                                                     <td>
                                                         <span class="badge bg-danger">{{ stat.absences }}</span>
@@ -569,7 +570,7 @@
                                             <tbody id="studentTableBody">
                                                 {% for stat in month_student_stats %}
                                                 <tr>
-                                                    <td>{{ stat.etudiant__prenom }} {{ stat.etudiant__nom }}</td>
+                                                    <td>{{ stat.etudiant__prenom|fusion:stat.etudiant__nom }}</td>
                                                     <td>{{ stat.etudiant__classe }}</td>
                                                     <td>
                                                         <span class="badge bg-danger">{{ stat.absences }}</span>

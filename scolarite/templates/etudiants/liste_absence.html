@@ -34,9 +34,6 @@
     </table>
 </div>
 {% endif %}
-{% if messages %}{% for message in messages %}
-<div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %}">{{ message }}</div>
-{% endfor %}{% endif %}
 <table class="table">
     <thead>
         <tr>
@@ -52,7 +49,7 @@
         {% for absence in absences %}
 {% with etat=absence.etat_absence %}
     <tr>
-            <td>{{ absence.etudiant.nom }} {{ absence.etudiant.prenom }}</td>
+            <td>{{ absence.etudiant.nom_prenom }}</td>
             <td>{{ absence.matiere.nom }}</td>
             <td>{{ absence.date_cours }}</td>
             <td>{{ absence.trimestre.nom_ar }}</td>

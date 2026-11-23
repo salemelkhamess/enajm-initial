@@ -18,8 +18,13 @@ class Professeur(models.Model):
         help_text="Compte avec lequel ce professeur se connecte (rôle Professeur)."
     )
 
+    @property
+    def nom_prenom(self):
+        from etudiant.noms import fusionner_noms
+        return fusionner_noms(self.nom, self.prenom)
+
     def __str__(self):
-        return  f"{self.nom} {self.prenom}"
+        return self.nom_prenom
 
 
 class AttestationCounter(models.Model):

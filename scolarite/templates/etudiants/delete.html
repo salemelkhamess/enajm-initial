@@ -7,7 +7,7 @@
         <h3 class="box-title">{% trans "Supprimer l'étudiant" %}</h3>
     </div>
     <div class="box-body">
-        <p>Voulez-vous vraiment supprimer l'étudiant : <strong>{{ object.nom }} {{ object.prenom }}</strong> ?</p>
+        <p>Voulez-vous vraiment supprimer l'étudiant : <strong>{{ object.nom_prenom }}</strong> ?</p>
         <form method="post">
             {% csrf_token %}
             <button type="submit" class="btn btn-danger"><i class="fa fa-trash"></i> Supprimer</button>

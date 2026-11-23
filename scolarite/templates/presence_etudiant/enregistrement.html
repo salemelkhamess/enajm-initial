@@ -85,6 +85,11 @@ function chargerGroupes(secteurId, choisi) {
     var $bloc = $('#blocGroupe'), $sel = $('#id_groupe');
     if (!secteurId) { $bloc.hide(); $sel.html(''); return; }
     $.getJSON('{% url "groupes_classe_api" %}', { secteur_id: secteurId }, function (data) {
+        if (data.lie) {   // classe représentée par un groupe : affichage seulement, le groupe est appliqué automatiquement
+            $sel.html('<option value="' + data.lie.id + '">' + data.lie.label + ' (' + data.lie.effectif + ' {% trans "élèves" %})</option>').val(data.lie.id).prop('disabled', true);
+            $bloc.show(); return;
+        }
+        $sel.prop('disabled', false);
         if (!data.groupes.length) { $bloc.hide(); $sel.html('<option value=""></option>'); return; }
         var o = '<option value="">' + (data.sections ? '{% trans "— Choisir un groupe —" %}' : '{% trans "— Toute la classe —" %}') + '</option>';
         o += '<option value="all">{% trans "Toute la classe" %}</option>';

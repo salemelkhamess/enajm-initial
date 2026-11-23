@@ -77,7 +77,7 @@ class EtudiantForm(forms.ModelForm):
             raise forms.ValidationError(
                 _("Ce matricule (%(matricule)s) est déjà attribué à un autre élève : %(nom)s (année %(annee)s)."),
                 code='matricule_unique',
-                params={'matricule': matricule, 'nom': f"{autre.nom} {autre.prenom or ''}".strip(), 'annee': autre.annee})
+                params={'matricule': matricule, 'nom': autre.nom_prenom, 'annee': autre.annee})
         return matricule
 
     def clean_nni(self):
@@ -89,7 +89,7 @@ class EtudiantForm(forms.ModelForm):
             raise forms.ValidationError(
                 _("Ce NNI (%(nni)s) est déjà attribué à un autre élève : %(nom)s (matricule %(matricule)s)."),
                 code='nni_unique',
-                params={'nni': nni, 'nom': f"{autre.nom} {autre.prenom or ''}".strip(), 'matricule': autre.matricule})
+                params={'nni': nni, 'nom': autre.nom_prenom, 'matricule': autre.matricule})
         return nni
 
     def __init__(self, *args, **kwargs):

@@ -32,6 +32,9 @@ class Groupe(models.Model):
                               help_text=_("Nom affiché en arabe à la place du code (ex. : المجموعة 4 - الفرنسية (المالية))."))
     nom_fr = models.CharField(_("Nom (français)"), max_length=150, blank=True,
                               help_text=_("Nom affiché en français (à défaut : le code)."))
+    classe = models.ForeignKey(Secteur, on_delete=models.SET_NULL, null=True, blank=True, related_name='groupes_lies',
+                               verbose_name=_("Classe de l'emploi du temps"),
+                               help_text=_("Si renseignée, l'appel et les listes de pointage de cette classe utilisent les élèves de ce groupe."))
     professeur = models.ForeignKey(Professeur, on_delete=models.SET_NULL, null=True, blank=True,
                                    related_name='groupes_langue', verbose_name=_("Professeur"))
     professeur_texte = models.CharField(_("Professeur (nom libre)"), max_length=150, blank=True,
@@ -95,3 +98,17 @@ class Affectation(models.Model):
 
     def __str__(self):
         return f"{self.etudiant} → {self.groupe}"
+
+
+def groupes_lies(secteur):
+    """Groupes actifs qui représentent cette classe de l'emploi du temps (ex. GB pour « قانونيون م ب »)."""
+    return Groupe.objects.filter(actif=True, classe=secteur).order_by('code')
+
+
+def eleves_de_la_classe(secteur):
+    """Élèves d'une classe de l'emploi du temps : ceux du (des) groupe(s) qui la représentent, sinon ceux de la classe."""
+    from etudiant.models import ordre_matricule_croissant
+    lies = groupes_lies(secteur)
+    if lies.exists():
+        return Etudiant.objects.filter(affectations__groupe__in=lies).distinct().order_by(*ordre_matricule_croissant())
+    return Etudiant.objects.filter(secteur=secteur).order_by(*ordre_matricule_croissant())

@@ -4,10 +4,7 @@
 <div class="box box-primary">
     <div class="box-header with-border"><h3 class="box-title">{% trans "Justifier une période d'absence" %}</h3></div>
     <div class="box-body">
-        {% if messages %}{% for message in messages %}
-        <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %}">{{ message }}</div>
-        {% endfor %}{% endif %}
-        {% for e in erreurs %}<div class="alert alert-danger">{{ e }}</div>{% endfor %}
+                {% for e in erreurs %}<div class="alert alert-danger">{{ e }}</div>{% endfor %}
 
         <p><a href="{% url 'liste_absences_non_justifiees' %}" class="btn btn-link" style="padding-left:0;"><i class="fa fa-arrow-left"></i> {% trans "Retour" %}</a></p>
         <p class="text-muted">{% trans "Les absences de l'élève pendant toute la période sont justifiées avec un seul dossier. Les absences déjà validées (72 h écoulées) ne peuvent plus être justifiées." %}</p>
@@ -22,7 +19,7 @@
                         <tr {% if selection and g.etudiant.id == selection.id %}class="info"{% endif %}>
                             <td>{{ g.etudiant.matricule }}</td>
                             <td>{{ g.etudiant.nom_complet_langue }}</td>
-                            <td>{{ g.etudiant.secteur.nom }}</td>
+                            <td>{{ g.etudiant.secteur.nom_affiche }}</td>
                             <td class="text-center">{{ g.absences|length }}</td>
                             <td><small>{{ g.du|date:"d/m" }}{% if g.du != g.au %} → {{ g.au|date:"d/m" }}{% endif %}</small></td>
                             <td><a href="?etudiant={{ g.etudiant.id }}" class="btn btn-xs btn-primary">{% trans "Justifier" %}</a></td>
@@ -46,7 +43,7 @@
                 {% if selection %}
                 <div class="box box-solid" style="border:1px solid #ddd;">
                     <div class="box-header with-border">
-                        <h4 class="box-title">{{ selection.nom_complet_langue }} <a href="{% url 'historique_justifications' selection.id %}" class="btn btn-xs btn-default" title="{% trans 'Historique des justifications' %}"><i class="fa fa-history"></i></a> <small>{{ selection.matricule }} — {{ selection.secteur.nom }}</small>
+                        <h4 class="box-title">{{ selection.nom_complet_langue }} <a href="{% url 'historique_justifications' selection.id %}" class="btn btn-xs btn-default" title="{% trans 'Historique des justifications' %}"><i class="fa fa-history"></i></a> <small>{{ selection.matricule }} — {{ selection.secteur.nom_affiche }}</small>
                             {% if position %}<span class="label label-info">{{ position }} / {{ total_file }}</span>{% endif %}</h4>
                     </div>
                     <div class="box-body">

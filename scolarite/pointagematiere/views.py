@@ -7,7 +7,7 @@ from django.db.models import Count
 
 from annee.models import Annee
 from branches.models import Secteur
-from matiers.models import Matiere
+from matiers.models import Matiere, matieres_de_classe
 from trimestre.models import Trimestre
 from .models import PointageMatiere
 from .forms import PointageMatiereForm
@@ -138,5 +138,5 @@ def get_trimestres(request):
 
 def get_matieres(request):
     secteur_id = request.GET.get('secteur_id')
-    matieres = Matiere.objects.filter(secteur_id=secteur_id).values('id', 'nom')
+    matieres = matieres_de_classe(secteur_id).values('id', 'nom')
     return JsonResponse(list(matieres), safe=False)

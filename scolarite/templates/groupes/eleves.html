@@ -16,17 +16,14 @@
     </div>
     <form method="post">{% csrf_token %}
     <div class="box-body">
-        {% if messages %}{% for message in messages %}
-        <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %}">{{ message }}</div>
-        {% endfor %}{% endif %}
-        <p class="text-muted"><i class="fa fa-info-circle"></i>
+                <p class="text-muted"><i class="fa fa-info-circle"></i>
             {% trans "Un élève n'est que dans un groupe par type (français, arabe ou section) : s'il est déjà dans un autre groupe de ce type (indiqué entre crochets), il sera déplacé ici." %}</p>
         <div class="row" style="margin-bottom:10px;">
             <div class="col-md-8">
                 <label for="eleves">{% trans "Élèves du groupe" %} (<span id="compteur">0</span>)</label>
                 <select name="etudiants" id="eleves" multiple="multiple" style="width:100%">
                     {% for o in options %}
-                    <option value="{{ o.e.id }}" data-classe="{{ o.e.secteur_id }}" {% if o.choisi %}selected{% endif %}>{{ o.e.matricule }} — {{ o.e.nom_complet_ar }}{% if o.e.nom_complet_fr %} / {{ o.e.nom_complet_fr }}{% endif %} — {{ o.e.secteur.nom }}{% if o.autre %} [{{ o.autre }}]{% endif %}</option>
+                    <option value="{{ o.e.id }}" data-classe="{{ o.e.secteur_id }}" {% if o.choisi %}selected{% endif %}>{{ o.e.matricule }} — {{ o.e.nom_complet_ar }}{% if o.e.nom_complet_fr %} / {{ o.e.nom_complet_fr }}{% endif %} — {{ o.e.secteur.nom_affiche }}{% if o.autre %} [{{ o.autre }}]{% endif %}</option>
                     {% endfor %}
                 </select>
             </div>
@@ -50,7 +47,7 @@
             <tbody>
             {% for m in membres %}
                 <tr><td>{{ m.e.matricule }}</td><td>{{ m.e.nom_complet_ar }}{% if m.e.nom_complet_fr %} <small class="text-muted">/ {{ m.e.nom_complet_fr }}</small>{% endif %}</td>
-                    <td>{{ m.e.secteur.nom }}</td>
+                    <td>{{ m.e.secteur.nom_affiche }}</td>
                     <td><input type="text" name="niveau_{{ m.e.id }}" value="{{ m.niveau }}" maxlength="20" class="form-control input-sm"></td></tr>
             {% endfor %}
             </tbody>

@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load etudiant_extras %}
 {% load i18n %}
 
 {% block styles %}
@@ -137,7 +138,7 @@
                                 <td class="secteur-row" rowspan="{{ secteur.list|length }}">{{ secteur.grouper }}</td>
                                 {% endif %}
                                 <td>{{ absence.etudiant__matricule }}</td>
-                                <td>{{ absence.etudiant__nom }} {{ absence.etudiant__prenom }}</td>
+                                <td>{{ absence.etudiant__prenom|fusion:absence.etudiant__nom }}</td>
                                 <td>{{ absence.nombre_absences }}</td>
                                 <td>{{ absence.nombre_heures }}</td>
                             </tr>

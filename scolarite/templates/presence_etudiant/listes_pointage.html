@@ -15,6 +15,10 @@
                 <label>{% trans "Date" %}</label>
                 <input type="date" name="date" value="{{ date|date:'Y-m-d' }}" class="form-control" onchange="this.form.submit()">
             </div></div>
+            {% if secteur and lie %}
+            <div class="col-md-3"><div class="form-group"><label>{% trans "Groupe" %}</label>
+                <p class="form-control-static"><span class="label label-info">{% for g in lie %}{{ g.nom_affiche }} ({{ g.affectations.count }}){% if not forloop.last %}، {% endif %}{% endfor %}</span></p></div></div>
+            {% endif %}
             {% if secteur and groupes %}
             <div class="col-md-3"><div class="form-group">
                 <label>{% trans "Groupe" %}</label>
@@ -33,7 +37,7 @@
         </form>
 
         {% if secteur %}
-            <h4>{{ secteur.nom }} — {% trans jour %} {{ date|date:"d/m/Y" }}</h4>
+            <h4>{{ secteur.nom_affiche }} — {% trans jour %} {{ date|date:"d/m/Y" }}</h4>
             {% if listes_apercu %}
             <p class="text-muted">
                 {% for g, eleves in listes_apercu %}

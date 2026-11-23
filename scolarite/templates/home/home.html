@@ -245,7 +245,7 @@
         data.student_stats.forEach(student => {
             studentTbody.innerHTML += `
                 <tr>
-                    <td>${student.etudiant__prenom} ${student.etudiant__nom}</td>
+                    <td>${fusionNoms(student.etudiant__prenom, student.etudiant__nom)}</td>
                     <td>${student.secteur_nom}</td>
                     <td><span class="badge bg-danger">${student.absences}</span></td>
                 </tr>
@@ -438,5 +438,16 @@
     document.addEventListener('DOMContentLoaded', function() {
         updateAllStats();
     });
+</script>
+<script>
+// nom + prénom sans doublon : si l'un est déjà contenu (mot à mot) dans l'autre, on ne garde que le plus complet
+function fusionNoms(a, b) {
+    a = (a || '').trim(); b = (b || '').trim(); if (!a) return b; if (!b) return a;
+    var norm = function (t) { return t.normalize('NFKD').replace(/[\u0610-\u061A\u064B-\u065F\u0670\u0640\u0300-\u036f]/g, '')
+        .replace(/[أإآ]/g, 'ا').replace(/ى/g, 'ي').replace(/ة/g, 'ه').toLowerCase().split(/[\s\-'’]+/).filter(Boolean); };
+    var ma = norm(a), mb = norm(b);
+    var contient = function (g, p) { for (var i = 0; i + p.length <= g.length; i++) { if (g.slice(i, i + p.length).join(' ') === p.join(' ')) return true; } return false; };
+    if (mb.length && contient(mb, ma)) return b; if (ma.length && contient(ma, mb)) return a; return a + ' ' + b;
+}
 </script>
 {% endblock %}

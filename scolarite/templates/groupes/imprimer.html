@@ -23,19 +23,21 @@
 <body>
   <div class="no-print">
     <button class="btn btn-primary" onclick="window.print()"><i class="fa fa-print"></i> {% trans "Imprimer" %}</button>
-    {% if emargement %}<a class="btn btn-default" href="?emargement=0">{% trans "Sans émargement" %}</a>{% else %}<a class="btn btn-default" href="?">{% trans "Avec émargement" %}</a>{% endif %}
+    {% if emargement %}<a class="btn btn-default" href="?emargement=0&langue={{ langue }}">{% trans "Sans émargement" %}</a>{% else %}<a class="btn btn-default" href="?langue={{ langue }}">{% trans "Avec émargement" %}</a>{% endif %}
+    <a class="btn btn-default {% if langue == 'fr' %}active{% endif %}" href="?langue=fr{% if not emargement %}&emargement=0{% endif %}">Français</a>
+    <a class="btn btn-default {% if langue == 'ar' %}active{% endif %}" href="?langue=ar{% if not emargement %}&emargement=0{% endif %}">العربية</a>
   </div>
   <div class="entete">
     {% if ar %}
       <p>المدرسة الوطنية للإدارة والصحافة والقضاء</p><p>مركز تدريس اللغات</p>
       <p>التكوين الأولي{% if groupe.bloc %} — {{ groupe.bloc.nom }}{% endif %}</p><p>السنة الجامعية {{ groupe.annee }}</p>
     {% else %}
-      <p>ENAJM / Service de la scolarité</p><p>Formation initiale{% if groupe.bloc %} / {{ groupe.bloc.nom }}{% endif %}</p>
+      <p>ENAJM / Service de la scolarité</p><p>Formation initiale{% if groupe.bloc %} / {{ groupe.bloc.nom_francais }}{% endif %}</p>
       <p>Année universitaire {{ groupe.annee }}</p>
     {% endif %}
   </div>
   <div class="titre">
-    {% if groupe.langue == 'ar' %}مجموعة اللغة العربية{% elif groupe.langue == 'fr' %}Français{% else %}{% if ar %}مجموعة{% else %}Groupe{% endif %}{% endif %} / {% if ar %}{{ groupe.nom_ar|default:groupe.code }}{% else %}{{ groupe.nom_fr|default:groupe.code }} ({{ groupe.code }}){% endif %}{% if groupe.niveau_langue %} – {% if ar %}المستوى{% else %}Niveau{% endif %} {{ groupe.niveau_langue }}{% endif %}
+    {% if groupe.langue == 'ar' %}{% if ar %}مجموعة اللغة العربية{% else %}Arabe{% endif %}{% elif groupe.langue == 'fr' %}{% if ar %}مجموعة اللغة الفرنسية{% else %}Français{% endif %}{% else %}{% if ar %}مجموعة{% else %}Groupe{% endif %}{% endif %} / {% if ar %}{{ groupe.nom_ar|default:groupe.code }}{% elif groupe.langue %}{{ groupe.intitule|default:groupe.code }} ({{ groupe.code }}){% else %}{{ groupe.nom_fr|default:groupe.code }} ({{ groupe.code }}){% endif %}{% if groupe.niveau_langue %} – {% if ar %}المستوى{% else %}Niveau{% endif %} {{ groupe.niveau_langue }}{% endif %}
   </div>
   <div class="infos">
     {% if groupe.horaire or groupe.salle %}<p>{% if groupe.horaire %}{% if ar %}التوقيت{% else %}Horaire{% endif %} : {{ groupe.horaire }}{% endif %}{% if groupe.salle %} &nbsp; {% if ar %}القاعة{% else %}Salle{% endif %} : {{ groupe.salle.nom }}{% endif %}</p>{% endif %}
@@ -52,7 +54,7 @@
     </tr></thead>
     <tbody>
     {% for l in lignes %}
-      <tr><td class="num">{{ forloop.counter }}</td><td class="mle">{{ l.e.matricule }}</td><td>{{ l.nom }}</td><td>{{ l.e.secteur.nom }}</td>
+      <tr><td class="num">{{ forloop.counter }}</td><td class="mle">{{ l.e.matricule }}</td><td>{{ l.nom }}</td><td>{% if ar %}{{ l.e.secteur.nom }}{% else %}{{ l.e.secteur.nom_francais }}{% endif %}</td>
           {% if avec_niveau %}<td class="num">{{ l.a.niveau_eleve }}</td>{% endif %}
           {% if emargement %}<td class="signature"></td>{% endif %}</tr>
     {% empty %}

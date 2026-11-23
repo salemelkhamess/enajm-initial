@@ -4,7 +4,7 @@
 {% block content %}
 <div class="box">
     <div class="box-header">
-        <h3 class="box-title">{{ title }} — {{ etudiant.nom_complet_langue }} <small>{{ etudiant.matricule }}{% if etudiant.secteur %} — {{ etudiant.secteur.nom }}{% endif %}</small>
+        <h3 class="box-title">{{ title }} — {{ etudiant.nom_complet_langue }} <small>{{ etudiant.matricule }}{% if etudiant.secteur %} — {{ etudiant.secteur.nom_affiche }}{% endif %}</small>
             {% if position %}<span class="label label-info">{{ position }} / {{ total }}</span>{% endif %}</h3>
     </div>
     <form method="post" enctype="multipart/form-data">

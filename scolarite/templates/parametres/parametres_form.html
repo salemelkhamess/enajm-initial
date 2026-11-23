@@ -16,12 +16,7 @@
     </div>
 
     <div class="box-body">
-        {% if messages %}
-            {% for message in messages %}
-            <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %}">{{ message }}</div>
-            {% endfor %}
-        {% endif %}
-        <form method="post"  id="filterForm" class="{% if LANGUAGE_CODE == 'ar' %}rtl-lang{% endif %}">
+                <form method="post"  id="filterForm" class="{% if LANGUAGE_CODE == 'ar' %}rtl-lang{% endif %}">
             {% csrf_token %}
 
             <div class="row">

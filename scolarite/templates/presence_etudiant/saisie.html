@@ -7,26 +7,14 @@
 
 {% block content %}
 <div class="mt-4">
-    {% if messages %}
-    <div class="messages">
-        {% for message in messages %}
-        <div class="alert alert-{% if message.tags %}{{ message.tags }}{% endif %} alert-dismissible fade show" role="alert">
-            {{ message }}
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
-        {% endfor %}
-    </div>
-    {% endif %}
-
+    
     <div class="box">
         <div class="box-header text-white">
             <h3>{% trans "Saisie des présences" %}</h3>
             <p>
                 {% trans "Date" %}: {{ filter_data.date_cours }} |
                 {% trans "Jour" %}: {{ filter_data.jour|jour_i18n }} |
-                {% trans "Secteur" %}: {{ secteur.nom }}
+                {% trans "Secteur" %}: {{ secteur.nom_affiche }}
             </p>
         </div>
         <div class="box-body">
@@ -59,7 +47,7 @@
                             <tr>
 
                                 <td>
-                                    {{ etudiant.nom }} {{ etudiant.prenom }}<br>
+                                    {{ etudiant.nom_prenom }}<br>
                                     <small>{{ etudiant.matricule }}</small>
                                 </td>
                                 {% for emploi in emplois %}

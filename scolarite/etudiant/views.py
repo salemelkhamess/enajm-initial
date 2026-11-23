@@ -526,7 +526,7 @@ def exporter_liste_simple_excel(request):
         c.alignment = Alignment(horizontal='center')
     with translation.override(langue):
         for e in etudiants:
-            ws.append([e.nom_complet_langue, e.matricule, e.secteur.nom if e.secteur_id else ''])
+            ws.append([e.nom_complet_langue, e.matricule, ((e.secteur.nom if langue == 'ar' else e.secteur.nom_francais) if e.secteur_id else '')])
     for col, largeur in zip('ABC', (40, 14, 34)):
         ws.column_dimensions[col].width = largeur
     ws.freeze_panes = 'A2'

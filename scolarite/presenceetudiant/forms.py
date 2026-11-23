@@ -46,7 +46,7 @@ class PresenceEtudiantForm(forms.ModelForm):
             self.initial['date_justification'] = timezone.now().date()
 
         # Affichage personnalisé des étudiants
-        self.fields['etudiant'].label_from_instance = lambda obj: f"{obj.nom} {obj.prenom} (Matricule: {obj.matricule})"
+        self.fields['etudiant'].label_from_instance = lambda obj: f"{obj.nom_prenom} (Matricule: {obj.matricule})"
 
         # Remplacement du booléen par des choix lisibles
         self.fields['present'] = forms.ChoiceField(
@@ -155,16 +155,24 @@ class PresenceForm(forms.Form):
         if 'secteur' in self.data:
             try:
                 secteur_id = int(self.data.get('secteur'))
-                self.fields['matiere'].queryset = Matiere.objects.filter(secteur_id=secteur_id)
+                from matiers.models import matieres_de_classe
+                self.fields['matiere'].queryset = matieres_de_classe(secteur_id)
             except (ValueError, TypeError):
                 pass
 
     def clean(self):
         from groupes.models import Groupe
+        from groupes.models import groupes_lies
         data = super().clean()
         secteur = data.get('secteur')
         choix = (data.get('groupe') or '').strip()
         data['groupe_obj'] = None
+        # classe représentée par un groupe (ex. « قانونيون م ب » = GB) : l'appel porte sur les élèves de ce groupe
+        if secteur:
+            lie = groupes_lies(secteur).first()
+            if lie:
+                data['groupe_obj'] = lie
+                return data
         if choix == 'all':
             return data
         if choix.isdigit():

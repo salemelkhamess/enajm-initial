@@ -25,6 +25,7 @@ class Command(BaseCommand):
         parser.add_argument('--codes', required=True, help="Codes des groupes, séparés par des virgules (ex. GA,GB,GC)")
         parser.add_argument('--intitules', default='', help="Intitulés des groupes (même ordre), séparés par des virgules")
         parser.add_argument('--noms-ar', default='', help="Noms arabes des groupes (même ordre), séparés par des virgules")
+        parser.add_argument('--classes', default='', help="Classes de l'emploi du temps représentées par chaque groupe (même ordre), séparées par des virgules")
         parser.add_argument('--taille', type=int, default=0, help="Élèves par groupe (défaut : répartition égale)")
         parser.add_argument('--annee-id', type=int, help="Année (défaut : année active)")
         parser.add_argument('--dry-run', action='store_true', help="Simule sans rien écrire")
@@ -37,6 +38,10 @@ class Command(BaseCommand):
         codes = [c.strip() for c in o['codes'].split(',') if c.strip()]
         intitules = [c.strip() for c in o['intitules'].split(',')] if o['intitules'] else []
         noms_ar = [c.strip() for c in o['noms_ar'].split(',')] if o['noms_ar'] else []
+        classes = [c.strip() for c in o['classes'].split(',')] if o['classes'] else []
+        for nom in classes:
+            if not Secteur.objects.filter(nom=nom).exists():
+                raise CommandError(f"Classe liée introuvable : {nom!r}")
         eleves = list(Etudiant._base_manager.filter(annee=annee, secteur=secteur).order_by(*ordre_matricule_croissant()))
         if not eleves:
             raise CommandError(f"Aucun élève dans « {secteur.nom} » pour {annee}")
@@ -53,11 +58,15 @@ class Command(BaseCommand):
                 groupe, _ = Groupe._base_manager.update_or_create(
                     annee=annee, bloc=secteur.formation, code=code,
                     defaults={'langue': '', 'intitule': intitules[i] if i < len(intitules) else code, 'actif': True})
+                if i < len(classes):
+                    groupe.classe = Secteur.objects.get(nom=classes[i])
+                    groupe.save(update_fields=['classe'])
                 if i < len(noms_ar) and not groupe.nom_ar:
                     groupe.nom_ar = noms_ar[i]
                     groupe.save(update_fields=['nom_ar'])
-                if not groupe.nom_fr:
-                    groupe.nom_fr = f"Section {i + 1} — {secteur.nom}"[:150] if False else f"Section {code[-1]} ({groupe.intitule})"
+                # nom français : celui de la classe liée (ex. « Juristes – Groupe B »), sinon « Section X »
+                if not groupe.nom_fr or groupe.nom_fr.startswith('Section '):
+                    groupe.nom_fr = (groupe.classe.nom_francais if groupe.classe_id else f"Section {code[-1]}")[:150]
                     groupe.save(update_fields=['nom_fr'])
                 for e in morceau:
                     Affectation.objects.update_or_create(etudiant=e, langue='', defaults={'groupe': groupe})

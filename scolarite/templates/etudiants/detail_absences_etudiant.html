@@ -34,9 +34,9 @@
 
         <h3 align="center">
                     {% if LANGUAGE_CODE == 'ar' %}
-                        غيابات التلميذ: {{ etudiant.nom }} {{ etudiant.prenom }}
+                        غيابات التلميذ: {{ etudiant.nom_prenom }}
                     {% else %}
-                        {% trans "Absences de" %} {{ etudiant.nom }} {{ etudiant.prenom }}
+                        {% trans "Absences de" %} {{ etudiant.nom_prenom }}
                     {% endif %}
                 </h3>
         <div class="box-body">
@@ -44,7 +44,7 @@
                 <div class="col-md-6">
                     <p><strong>{% trans "Matricule" %}:</strong> {{ etudiant.matricule }}</p>
                     <p><strong>{% if LANGUAGE_CODE == 'ar' %}القسم{% else %}{% trans "Secteur" %}{% endif %}:</strong>
-                       {{ etudiant.secteur.nom }}</p>
+                       {{ etudiant.secteur.nom_affiche }}</p>
                 </div>
                 <div class="col-md-6">
                     <p><strong>{% if LANGUAGE_CODE == 'ar' %}التكوين{% else %}{% trans "Formation" %}{% endif %}:</strong>

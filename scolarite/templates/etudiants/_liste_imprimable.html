@@ -18,7 +18,7 @@
                 {% if LANGUAGE_CODE == 'ar' or LANGUAGE_CODE == 'ar-ma' %}
                     القسم: {{ selected_secteur_obj.nom }}
                 {% else %}
-                    Secteur: {{ selected_secteur_obj.nom }}
+                    Secteur: {{ selected_secteur_obj.nom_francais }}
                 {% endif %}
 
                 {% if selected_annee_obj %}

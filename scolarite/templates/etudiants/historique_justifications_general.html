@@ -19,7 +19,7 @@
             <tbody>
             {% for e in evenements %}
                 <tr>
-                    <td><a href="{% url 'historique_justifications' e.etudiant.id %}">{{ e.etudiant.nom_complet_langue }}</a><br><small class="text-muted">{{ e.etudiant.matricule }} — {{ e.etudiant.secteur.nom }}</small></td>
+                    <td><a href="{% url 'historique_justifications' e.etudiant.id %}">{{ e.etudiant.nom_complet_langue }}</a><br><small class="text-muted">{{ e.etudiant.matricule }} — {{ e.etudiant.secteur.nom_affiche }}</small></td>
                     <td data-order="{{ e.date|date:'U' }}">{{ e.date|date:"d/m/Y H:i" }}<br><small class="text-muted">{% if e.par %}{{ e.par.first_name }} {{ e.par.last_name }}{% endif %}</small></td>
                     <td>
                         {% if e.genre == 'periode' %}<strong>{{ e.debut|date:"d/m/Y" }} → {{ e.fin|date:"d/m/Y" }}</strong> ({{ e.jours }} {% trans "jour(s)" %})

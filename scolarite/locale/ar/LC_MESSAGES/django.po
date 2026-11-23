@@ -3240,3 +3240,28 @@ msgstr ""
 
 msgid "Nom affiché en français (à défaut : le code)."
 msgstr "الاسم المعروض بالفرنسية (وإلا فالرمز)."
+
+msgid "Nom et prénom"
+msgstr "الاسم الكامل"
+
+msgid "Classe de l'emploi du temps"
+msgstr "قسم جدول التوقيت"
+
+msgid ""
+"Si renseignée, l'appel et les listes de pointage de cette classe utilisent "
+"les élèves de ce groupe."
+msgstr ""
+"إذا حُدّد، فإن تسجيل الغياب وقوائم الحضور لهذا القسم تستعمل تلاميذ هذه "
+"المجموعة."
+
+msgid "Nom en français"
+msgstr "الاسم بالفرنسية"
+
+msgid "Filière"
+msgstr "التخصص"
+
+msgid "arabe"
+msgstr "بالعربية"
+
+msgid "Affiché dans les listes et les écrans en français."
+msgstr "يُعرض في القوائم والشاشات بالفرنسية."

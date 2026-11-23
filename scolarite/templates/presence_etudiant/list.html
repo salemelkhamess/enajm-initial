@@ -33,7 +33,7 @@
         <tr>
             <td>{{ forloop.counter }}</td>
             <td>{{ presence.date_cours|date:"d/m/Y" }}</td>
-            <td>{{ presence.etudiant.nom }} {{ presence.etudiant.prenom }} ({{ presence.etudiant.matricule }})</td>
+            <td>{{ presence.etudiant.nom_prenom }} ({{ presence.etudiant.matricule }})</td>
             <td>{{ presence.matiere.nom }}</td>
             <td>{{ presence.justification|default:"-" }}</td>
             <td>{{ presence.date_cours|default:"-" }}</td>

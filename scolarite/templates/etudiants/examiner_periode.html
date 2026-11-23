@@ -4,11 +4,8 @@
 <div class="box box-primary">
     <div class="box-header with-border"><h3 class="box-title">{% trans "Justification par période à valider" %}</h3></div>
     <div class="box-body">
-        {% if messages %}{% for message in messages %}
-        <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %}">{{ message }}</div>
-        {% endfor %}{% endif %}
-        <table class="table table-bordered" style="max-width:760px;">
-            <tr><th style="width:200px">{% trans "Élève fonctionnaire" %}</th><td>{{ periode.etudiant.nom_complet_langue }} ({{ periode.etudiant.matricule }}) — {{ periode.etudiant.secteur.nom }}</td></tr>
+                <table class="table table-bordered" style="max-width:760px;">
+            <tr><th style="width:200px">{% trans "Élève fonctionnaire" %}</th><td>{{ periode.etudiant.nom_complet_langue }} ({{ periode.etudiant.matricule }}) — {{ periode.etudiant.secteur.nom_affiche }}</td></tr>
             <tr><th>{% trans "Période" %}</th><td>{{ periode.date_debut|date:"d/m/Y" }} → {{ periode.date_fin|date:"d/m/Y" }} ({{ periode.nb_jours }} {% trans "jour(s)" %})</td></tr>
             <tr><th>{% trans "Justification" %}</th><td>{{ periode.justification|linebreaksbr }}</td></tr>
             <tr><th>{% trans "Déposée par" %}</th><td>{{ periode.soumise_par.first_name }} {{ periode.soumise_par.last_name }} — {{ periode.soumise_le|date:"d/m/Y H:i" }}</td></tr>

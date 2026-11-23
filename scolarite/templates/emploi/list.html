@@ -32,7 +32,7 @@
                             <td>{{ emploi.niveau.nom }}</td>
                             <td>{{ emploi.get_langue_display }}</td>
                             <td>{{ emploi.matiere.nom }}</td>
-                            <td>{{ emploi.professeur.nom }} {{ emploi.professeur.prenom }}</td>
+                            <td>{{ emploi.professeur.nom_prenom }}</td>
                             <td>{{ emploi.salle.nom }}</td>
                             <td>{{ emploi.jour|jour_i18n }}</td>
                             <td>{{ emploi.heure_debut|time:"H:i" }} - {{ emploi.heure_fin|time:"H:i" }}</td>
@@ -55,7 +55,7 @@
         <div class="panel panel-default">
             <div class="panel-heading">
                 <h4 class="panel-title">
-                   <strong>{{ secteur.nom }}</strong>
+                   <strong>{{ secteur.nom_affiche }}</strong>
 <span class="badge">{{ secteur.emploidutemps_set.count }} {% trans "séances" %}</span>
                 </h4>
             </div>
@@ -75,7 +75,7 @@
                         {% for emploi in secteur.emploidutemps_set.all %}
                         <tr>
                             <td>{{ emploi.matiere.nom }}</td>
-                            <td>{{ emploi.professeur.nom }} {{ emploi.professeur.prenom }}</td>
+                            <td>{{ emploi.professeur.nom_prenom }}</td>
                             <td>{{ emploi.salle.nom }}</td>
                             <td>{{ emploi.jour|jour_i18n }}</td>
                             <td>{{ emploi.heure_debut|time:"H:i" }} - {{ emploi.heure_fin|time:"H:i" }}</td>

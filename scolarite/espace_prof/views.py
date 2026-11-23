@@ -191,10 +191,10 @@ def notes_saisie(request, evaluation_id):
             try:
                 valeur = float(Decimal(brut))
             except InvalidOperation:
-                erreurs.append(f"{e.nom} {e.prenom}")
+                erreurs.append(e.nom_prenom)
                 continue
             if not 0 <= valeur <= 20:
-                erreurs.append(f"{e.nom} {e.prenom}")
+                erreurs.append(e.nom_prenom)
                 continue
             note = existantes.get(e.id)
             if note is None:

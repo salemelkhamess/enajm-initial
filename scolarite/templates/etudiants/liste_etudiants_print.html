@@ -48,7 +48,7 @@
     <tr>
       <td>{{ e.matricule }}</td>
       <td>{{ e.nom_complet_langue }}</td>
-      <td>{{ e.secteur.nom }}</td>
+      <td>{% if lang_impression == 'ar' %}{{ e.secteur.nom }}{% else %}{{ e.secteur.nom_francais }}{% endif %}</td>
       <td>{% if e.date_naissance %}{{ e.date_naissance }}{% endif %}{% if e.lieu_naissance_langue %}{% if e.date_naissance %} - {% endif %}{{ e.lieu_naissance_langue }}{% endif %}{% if not e.date_naissance and not e.lieu_naissance_langue %}-{% endif %}</td>
       <td>{{ e.nni|default:"-" }}</td>
       {% if avec_signature %}<td class="signature"></td>{% endif %}
@@ -72,7 +72,7 @@
   <tbody>
   {% regroup etudiants by secteur as groupes %}
   {% for g in groupes %}
-    <tr class="classe"><td colspan="{% if avec_signature %}5{% else %}4{% endif %}">{% if lang_impression == 'ar' %}القسم{% else %}Classe{% endif %} : {{ g.grouper.nom }} ({{ g.list|length }})</td></tr>
+    <tr class="classe"><td colspan="{% if avec_signature %}5{% else %}4{% endif %}">{% if lang_impression == 'ar' %}القسم{% else %}Classe{% endif %} : {% if lang_impression == 'ar' %}{{ g.grouper.nom }}{% else %}{{ g.grouper.nom_francais }}{% endif %} ({{ g.list|length }})</td></tr>
     {% for e in g.list %}
     <tr>
       <td>{{ e.matricule }}</td>

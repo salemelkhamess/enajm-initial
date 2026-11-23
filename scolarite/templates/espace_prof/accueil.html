@@ -23,7 +23,7 @@
             {% for c in liste %}
                 <tr>
                     <td>{{ c.heure_debut|time:"H:i" }} - {{ c.heure_fin|time:"H:i" }}</td>
-                    <td>{{ c.matiere.nom }}</td><td>{% if c.niveau_id %}{{ c.niveau.nom }} ({{ c.get_langue_display }}){% else %}{{ c.secteur.nom }}{% endif %}</td><td>{{ c.salle }}</td>
+                    <td>{{ c.matiere.nom }}</td><td>{% if c.niveau_id %}{{ c.niveau.nom }} ({{ c.get_langue_display }}){% else %}{{ c.secteur.nom_affiche }}{% endif %}</td><td>{{ c.salle }}</td>
                     <td>
                         <a href="{% url 'espace_prof_absences' c.id %}" class="btn btn-sm btn-primary">{% trans "Absences des élèves" %}</a>
                         <a href="{% url 'espace_prof_seance' c.id %}" class="btn btn-sm btn-info">{% trans "Ma présence et contenu enseigné" %}</a>

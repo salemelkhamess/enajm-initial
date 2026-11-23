@@ -6,13 +6,13 @@
 {% block content %}
 <div class="box box-default">
     <div class="box-header with-border">
-        <h1 class="card-title">{% trans "ch" %} {{ emploi.secteur.nom }}</h1>
+        <h1 class="card-title">{% trans "ch" %} {{ emploi.secteur.nom_affiche }}</h1>
     </div>
     <div class="box-body">
         <div class="alert alert-info">
             <h4>{% trans "Annee" %}:</h4> {{ emploi.annee.numero_annee }} |
             <h4>{% trans "Trimestre" %}:</h4> {{ emploi.trimestre.nom }} |
-            <h4>{% trans "Classe" %}:</h4> {{ emploi.secteur.nom }}
+            <h4>{% trans "Classe" %}:</h4> {{ emploi.secteur.nom_affiche }}
         </div>
 
         <form method="post" id="grille-form">
@@ -58,7 +58,7 @@
                                         {% for professeur in professeurs %}
                                             <option value="{{ professeur.id }}"
                                                 {% if existing and existing.professeur_id == professeur.id %}selected{% endif %}>
-                                                {{ professeur.nom }} {{ professeur.prenom }}
+                                                {{ professeur.nom_prenom }}
                                             </option>
                                         {% endfor %}
                                     </select>

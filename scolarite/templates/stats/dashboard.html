@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load etudiant_extras %}
 {% load i18n %}
 {% load static %}
 
@@ -195,7 +196,7 @@
                             <tbody>
                                 {% for etudiant in top_etudiants_absents %}
                                 <tr>
-                                    <td>{{ etudiant.etudiant__prenom }} {{ etudiant.etudiant__nom }}</td>
+                                    <td>{{ etudiant.etudiant__prenom|fusion:etudiant.etudiant__nom }}</td>
                                     <td>{{ etudiant.total }}</td>
                                 </tr>
                                 {% endfor %}

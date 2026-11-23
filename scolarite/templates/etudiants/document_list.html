@@ -4,7 +4,7 @@
 {% block content %}
 <div class="box">
     <div class="box-header">
-        <h3 class="box-title">{% trans "Documents de" %} {{ etudiant.nom }} {{ etudiant.prenom }}</h3>
+        <h3 class="box-title">{% trans "Documents de" %} {{ etudiant.nom_prenom }}</h3>
         <div class="box-tools">
          <p class="text-right">
                 {% if precedent %}<a href="{% url 'document_create' precedent.id %}" class="btn btn-default btn-sm" title="{{ precedent.nom_complet_langue }}"><i class="fa fa-backward"></i> {% trans "Élève précédent" %}</a>{% endif %}

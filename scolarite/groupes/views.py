@@ -141,8 +141,13 @@ def groupe_imprimer(request, pk):
     groupe = get_object_or_404(Groupe.objects.select_related('bloc', 'professeur', 'salle', 'annee'), pk=pk)
     affectations = list(groupe.affectations.select_related('etudiant__secteur'))
     affectations.sort(key=lambda a: (len(a.etudiant.matricule), a.etudiant.matricule))
-    lignes = [{'a': a, 'e': a.etudiant, 'nom': a.etudiant.nom_complet_fr if groupe.langue == 'fr' and a.etudiant.nom_complet_fr
+    # langue de la liste : choisie (?langue=fr|ar), sinon celle du groupe ; un groupe « section » suit la langue de l'écran
+    from django.utils.translation import get_language
+    langue = request.GET.get('langue')
+    if langue not in ('fr', 'ar'):
+        langue = groupe.langue or ('ar' if (get_language() or '').startswith('ar') else 'fr')
+    lignes = [{'a': a, 'e': a.etudiant, 'nom': a.etudiant.nom_complet_fr if langue == 'fr' and a.etudiant.nom_complet_fr
                else a.etudiant.nom_complet_ar} for a in affectations]
     return render(request, 'groupes/imprimer.html', {
-        'groupe': groupe, 'lignes': lignes, 'ar': groupe.langue != 'fr',
+        'groupe': groupe, 'lignes': lignes, 'ar': langue == 'ar', 'langue': langue,
         'avec_niveau': any(a.niveau_eleve for a in affectations), 'emargement': request.GET.get('emargement', '1') != '0'})
