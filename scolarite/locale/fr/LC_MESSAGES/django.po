@@ -3329,3 +3329,197 @@ msgstr "arabe"
 
 msgid "Affiché dans les listes et les écrans en français."
 msgstr "Affiché dans les listes et les écrans en français."
+
+msgid "Ordre alphabétique"
+msgstr "Ordre alphabétique"
+
+msgid "Par matricule"
+msgstr "Par matricule"
+
+msgid "Ordre"
+msgstr "Ordre"
+
+msgid "Par filière"
+msgstr "Par filière"
+
+msgid "Transférer les élèves cochés vers un autre groupe"
+msgstr "Transférer les élèves cochés vers un autre groupe"
+
+msgid "— Groupe de destination —"
+msgstr "— Groupe de destination —"
+
+msgid "Transférer les élèves cochés ?"
+msgstr "Transférer les élèves cochés ?"
+
+msgid "Transférer"
+msgstr "Transférer"
+
+msgid "Tout cocher"
+msgstr "Tout cocher"
+
+msgid "Groupes de l'élève"
+msgstr "Groupes de l'élève"
+
+msgid ""
+"Un élève est dans au plus un groupe par type. Choisissez un autre groupe "
+"pour le transférer (autre niveau), « Aucun » pour le retirer."
+msgstr ""
+"Un élève est dans au plus un groupe par type. Choisissez un autre groupe "
+"pour le transférer (autre niveau), « Aucun » pour le retirer."
+
+msgid "Groupe actuel"
+msgstr "Groupe actuel"
+
+msgid "Transférer vers"
+msgstr "Transférer vers"
+
+msgid "— Ne pas changer —"
+msgstr "— Ne pas changer —"
+
+msgid "Aucun (retirer du groupe)"
+msgstr "Aucun (retirer du groupe)"
+
+msgid "Historique des transferts"
+msgstr "Historique des transferts"
+
+msgid "De"
+msgstr "De"
+
+msgid "Vers"
+msgstr "Vers"
+
+msgid "Par"
+msgstr "Par"
+
+msgid "Retour à la liste"
+msgstr "Retour à la liste"
+
+msgid "Groupes / transférer"
+msgstr "Groupes / transférer"
+
+msgid "Choisissez le groupe de destination."
+msgstr "Choisissez le groupe de destination."
+
+msgid ""
+"Le transfert se fait vers un groupe du même type (français, arabe ou "
+"section)."
+msgstr ""
+"Le transfert se fait vers un groupe du même type (français, arabe ou "
+"section)."
+
+msgid "Le groupe de destination est le groupe actuel."
+msgstr "Le groupe de destination est le groupe actuel."
+
+msgid "Cochez au moins un élève à transférer."
+msgstr "Cochez au moins un élève à transférer."
+
+#, python-format
+msgid "%(n)d élève(s) transféré(s) de %(a)s vers %(b)s : %(noms)s"
+msgstr "%(n)d élève(s) transféré(s) de %(a)s vers %(b)s : %(noms)s"
+
+#, python-format
+msgid "%(g)s : retiré"
+msgstr "%(g)s : retiré"
+
+#, python-format
+msgid "%(a)s → %(b)s"
+msgstr "%(a)s → %(b)s"
+
+#, python-format
+msgid "niveau de %(g)s : %(n)s"
+msgstr "niveau de %(g)s : %(n)s"
+
+#, python-format
+msgid "Groupes de %(nom)s mis à jour : %(c)s"
+msgstr "Groupes de %(nom)s mis à jour : %(c)s"
+
+#, python-format
+msgid "Aucun changement pour %(nom)s."
+msgstr "Aucun changement pour %(nom)s."
+
+msgid "Membres du groupe"
+msgstr "Membres du groupe"
+
+msgid "Ajouter des élèves"
+msgstr "Ajouter des élèves"
+
+msgid "Rechercher (matricule, nom)…"
+msgstr "Rechercher (matricule, nom)…"
+
+msgid "Cocher les élèves affichés"
+msgstr "Cocher les élèves affichés"
+
+msgid "Niveau individuel"
+msgstr "Niveau individuel"
+
+msgid "Niveau de l’élève dans le groupe (facultatif)"
+msgstr "Niveau de l’élève dans le groupe (facultatif)"
+
+msgid "Retirer du groupe les élèves cochés ?"
+msgstr "Retirer du groupe les élèves cochés ?"
+
+msgid "Retirer les élèves cochés"
+msgstr "Retirer les élèves cochés"
+
+msgid "Enregistrer les niveaux individuels"
+msgstr "Enregistrer les niveaux individuels"
+
+msgid ""
+"Ce groupe n'a pas encore d'élèves : ajoutez-en avec le tableau de droite."
+msgstr ""
+"Ce groupe n'a pas encore d'élèves : ajoutez-en avec le tableau de droite."
+
+msgid "Ajouter les élèves cochés"
+msgstr "Ajouter les élèves cochés"
+
+msgid "coché(s)"
+msgstr "coché(s)"
+
+msgid "Sera déplacé depuis ce groupe"
+msgstr "Sera déplacé depuis ce groupe"
+
+#, python-format
+msgid "%(n)d élève(s) ajouté(s) au groupe %(g)s."
+msgstr "%(n)d élève(s) ajouté(s) au groupe %(g)s."
+
+msgid "Aucun élève coché à ajouter."
+msgstr "Aucun élève coché à ajouter."
+
+#, python-format
+msgid "%(n)d élève(s) retiré(s) du groupe %(g)s."
+msgstr "%(n)d élève(s) retiré(s) du groupe %(g)s."
+
+msgid "Aucun élève coché à retirer."
+msgstr "Aucun élève coché à retirer."
+
+#, python-format
+msgid "Niveaux individuels enregistrés (%(n)d modifié(s))."
+msgstr "Niveaux individuels enregistrés (%(n)d modifié(s))."
+
+msgid "Déplacés depuis un autre groupe du même type : "
+msgstr "Déplacés depuis un autre groupe du même type : "
+
+msgid ""
+"Les sections correspondent aux classes : leur composition ne se modifie pas "
+"ici."
+msgstr ""
+"Les sections correspondent aux classes : leur composition ne se modifie pas "
+"ici."
+
+msgid ""
+"Les sections correspondent aux classes : on ne transfère pas d'élève d'une "
+"classe à une autre ici."
+msgstr ""
+"Les sections correspondent aux classes : on ne transfère pas d'élève d'une "
+"classe à une autre ici."
+
+msgid ""
+"Les sections correspondent aux classes : leur composition est en lecture "
+"seule ici (aucun transfert entre classes)."
+msgstr ""
+"Les sections correspondent aux classes : leur composition est en lecture "
+"seule ici (aucun transfert entre classes)."
+
+msgid "Section = classe : non modifiable ici (pas de transfert entre classes)"
+msgstr ""
+"Section = classe : non modifiable ici (pas de transfert entre classes)"

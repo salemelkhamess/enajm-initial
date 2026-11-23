@@ -2,80 +2,75 @@
 {% load i18n %}
 {% block styles %}
 <style>
-  .tbl-membres { border-collapse: collapse; width: 100%; max-width: 900px; margin-bottom: 15px; }
-  .tbl-membres th, .tbl-membres td { border: 1px solid #ddd; padding: 4px 8px; vertical-align: middle; }
-  .tbl-membres thead th { background: #f4f4f4; }
-  .select2-container--default .select2-selection--multiple { max-height: 260px; overflow-y: auto; }
+  .tbl-membres { border-collapse: collapse; width: 100%; }
+  .tbl-membres th, .tbl-membres td { border: 1px solid #ddd; padding: 5px 9px; vertical-align: middle; }
+  .tbl-membres thead th { background: #f4f4f4; position: sticky; top: 0; z-index: 1; }
+  .defile { max-height: 560px; overflow-y: auto; border: 1px solid #ddd; }
+  .tbl-membres tr:hover td { background: #fafafa; }
 </style>
 {% endblock %}
 {% block content %}
 <div class="box box-primary">
     <div class="box-header with-border">
         <h3 class="box-title">{% trans "Élèves du groupe" %} <strong>{{ groupe.nom_affiche }}</strong>
-            <small>{% if groupe.langue == 'fr' %}{% trans "Français" %}{% elif groupe.langue == 'ar' %}{% trans "Arabe" %}{% else %}{% trans "Section" %}{% endif %}{% if groupe.bloc %} — {{ groupe.bloc.nom }}{% endif %}{% if groupe.niveau_langue %} — {{ groupe.niveau_langue }}{% endif %}</small></h3>
-    </div>
-    <form method="post">{% csrf_token %}
-    <div class="box-body">
-                <p class="text-muted"><i class="fa fa-info-circle"></i>
-            {% trans "Un élève n'est que dans un groupe par type (français, arabe ou section) : s'il est déjà dans un autre groupe de ce type (indiqué entre crochets), il sera déplacé ici." %}</p>
-        <div class="row" style="margin-bottom:10px;">
-            <div class="col-md-8">
-                <label for="eleves">{% trans "Élèves du groupe" %} (<span id="compteur">0</span>)</label>
-                <select name="etudiants" id="eleves" multiple="multiple" style="width:100%">
-                    {% for o in options %}
-                    <option value="{{ o.e.id }}" data-classe="{{ o.e.secteur_id }}" {% if o.choisi %}selected{% endif %}>{{ o.e.matricule }} — {{ o.e.nom_complet_ar }}{% if o.e.nom_complet_fr %} / {{ o.e.nom_complet_fr }}{% endif %} — {{ o.e.secteur.nom_affiche }}{% if o.autre %} [{{ o.autre }}]{% endif %}</option>
-                    {% endfor %}
-                </select>
-            </div>
-            <div class="col-md-4">
-                <label>{% trans "Ajouter toute une classe" %}</label>
-                <div class="input-group">
-                    <select id="classe" class="form-control">
-                        <option value="">{% trans "— Choisir une classe —" %}</option>
-                        {% for id, nom in classes %}<option value="{{ id }}">{{ nom }}</option>{% endfor %}
-                    </select>
-                    <span class="input-group-btn"><button type="button" id="ajouterClasse" class="btn btn-default"><i class="fa fa-plus"></i></button></span>
-                </div>
-                <button type="button" id="toutRetirer" class="btn btn-link" style="padding-left:0;"><i class="fa fa-times"></i> {% trans "Tout retirer" %}</button>
-            </div>
+            <small>{% if groupe.langue == 'fr' %}{% trans "Français" %}{% elif groupe.langue == 'ar' %}{% trans "Arabe" %}{% else %}{% trans "Section" %}{% endif %}{% if groupe.bloc %} — {{ groupe.bloc.nom_affiche }}{% endif %}{% if groupe.niveau_langue %} — {{ groupe.niveau_langue }}{% endif %}</small></h3>
+        <div class="box-tools">
+            <a href="{% url 'groupe_imprimer' groupe.pk %}" target="_blank" class="btn btn-default btn-sm"><i class="fa fa-print"></i> {% trans "Liste de présence" %}</a>
+            <a href="{% url 'groupe_liste' %}" class="btn btn-default btn-sm">{% trans "Retour aux groupes" %}</a>
         </div>
-
-        {% if membres %}
-        <h4>{% trans "Membres actuels" %} <small>{% trans "(niveau individuel facultatif, ex. أ1)" %}</small></h4>
-        <table class="tbl-membres">   {# pas de classe « table » : elle déclenche la pagination automatique, qui retirerait des champs du formulaire #}
-            <thead><tr><th>{% trans "Matricule" %}</th><th>{% trans "Nom" %}</th><th>{% trans "Classe" %}</th><th style="width:120px">{% trans "Niveau" %}</th></tr></thead>
-            <tbody>
-            {% for m in membres %}
-                <tr><td>{{ m.e.matricule }}</td><td>{{ m.e.nom_complet_ar }}{% if m.e.nom_complet_fr %} <small class="text-muted">/ {{ m.e.nom_complet_fr }}</small>{% endif %}</td>
-                    <td>{{ m.e.secteur.nom_affiche }}</td>
-                    <td><input type="text" name="niveau_{{ m.e.id }}" value="{{ m.niveau }}" maxlength="20" class="form-control input-sm"></td></tr>
-            {% endfor %}
-            </tbody>
-        </table>
+    </div>
+    <div class="box-body">
+        {% if section %}
+        <div class="alert alert-info"><i class="fa fa-lock"></i> {% trans "Les sections correspondent aux classes : leur composition est en lecture seule ici (aucun transfert entre classes)." %}</div>
         {% endif %}
+        <form method="post">{% csrf_token %}
+            <h4><i class="fa fa-users"></i> {% trans "Membres du groupe" %} <span class="badge">{{ membres|length }}</span></h4>
+            {% if membres %}
+            <div class="defile">
+            <table class="tbl-membres">
+                <thead><tr>
+                    {% if not section %}<th style="width:34px"><input type="checkbox" id="toutMembres" title="{% trans 'Tout cocher' %}"></th>{% endif %}
+                    <th>{% trans "Matricule" %}</th><th>{% trans "Nom" %}</th><th>{% trans "Classe" %}</th>
+                    <th style="width:120px" title="{% trans 'Niveau de l’élève dans le groupe (facultatif)' %}">{% trans "Niveau individuel" %}</th></tr></thead>
+                <tbody>
+                {% for m in membres %}
+                    <tr>{% if not section %}<td><input type="checkbox" name="transfert" value="{{ m.e.id }}" class="case-membre"></td>{% endif %}
+                        <td>{{ m.e.matricule }}</td><td>{{ m.e.nom_complet_langue }}</td><td><small>{{ m.e.secteur.nom_affiche }}</small></td>
+                        <td>{% if section %}{{ m.niveau }}{% else %}<input type="text" name="niveau_{{ m.e.id }}" value="{{ m.niveau }}" maxlength="20" class="form-control input-sm">{% endif %}</td></tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            </div>
+            {% if not section %}
+            <div style="margin-top:8px;">
+                <button type="submit" name="action" value="niveaux" class="btn btn-default btn-sm"><i class="fa fa-save"></i> {% trans "Enregistrer les niveaux individuels" %}</button>
+            </div>
+            {% if destinations %}
+            <div class="well well-sm" style="margin-top:12px; max-width:760px;">
+                <strong><i class="fa fa-exchange"></i> {% trans "Transférer les élèves cochés vers un autre groupe" %}</strong>
+                <div class="form-inline" style="margin-top:8px;">
+                    <select name="destination" class="form-control input-sm" style="min-width:300px;">
+                        <option value="">{% trans "— Groupe de destination —" %}</option>
+                        {% for d in destinations %}<option value="{{ d.id }}">{{ d.nom_affiche }}{% if d.niveau_langue %} — {{ d.niveau_langue }}{% endif %}</option>{% endfor %}
+                    </select>
+                    <input type="text" name="niveau" maxlength="20" class="form-control input-sm" style="width:130px;" placeholder="{% trans 'Niveau individuel' %}">
+                    <button type="submit" formaction="{% url 'groupe_transferer' groupe.pk %}" class="btn btn-warning btn-sm" onclick="return confirm('{% trans "Transférer les élèves cochés ?" %}');"><i class="fa fa-share"></i> {% trans "Transférer" %}</button>
+                </div>
+            </div>
+            {% endif %}
+            {% endif %}
+            {% else %}
+            <p class="text-muted">{% trans "Ce groupe n'a pas encore d'élèves." %}</p>
+            {% endif %}
+        </form>
     </div>
-    <div class="box-footer">
-        <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i> {% trans "Enregistrer" %}</button>
-        <a href="{% url 'groupe_liste' %}" class="btn btn-default">{% trans "Retour aux groupes" %}</a>
-        <a href="{% url 'groupe_imprimer' groupe.pk %}" target="_blank" class="btn btn-default pull-right"><i class="fa fa-print"></i> {% trans "Liste de présence" %}</a>
-    </div>
-    </form>
 </div>
 {% endblock %}
 {% block scripts %}
 <script>
-(function ($) {   // exécuté tout de suite : une erreur d'un autre script de la page ne doit pas l'empêcher de démarrer
-    var $s = $('#eleves');
-    if ($.fn.select2) { $s.select2({ width: '100%', placeholder: '{% trans "Rechercher un élève (matricule, nom)…" %}', closeOnSelect: false }); }
-    function maj() { $('#compteur').text(($s.val() || []).length); }
-    $s.on('change', maj); maj();
-    $('#ajouterClasse').on('click', function () {
-        var classe = $('#classe').val(); if (!classe) return;
-        var valeurs = $s.val() || [];
-        $s.find('option[data-classe="' + classe + '"]').each(function () { if (valeurs.indexOf(this.value) < 0) valeurs.push(this.value); });
-        $s.val(valeurs).trigger('change');
-    });
-    $('#toutRetirer').on('click', function () { $s.val([]).trigger('change'); });
-})(jQuery);
+(function () {
+    var tm = document.getElementById('toutMembres');
+    if (tm) tm.addEventListener('change', function () { var e = this.checked; document.querySelectorAll('.case-membre').forEach(function (c) { c.checked = e; }); });
+})();
 </script>
 {% endblock %}

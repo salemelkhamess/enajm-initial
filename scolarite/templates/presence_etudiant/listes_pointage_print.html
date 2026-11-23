@@ -45,15 +45,15 @@
     </div>
     <table>
       <thead><tr>
-        <th>{% if ar %}ر.ت{% else %}N°{% endif %}</th><th>{% if ar %}رقم التسجيل{% else %}Matricule{% endif %}</th>
+        <th>{% if ar %}رقم التسجيل{% else %}Matricule{% endif %}</th>
         <th>{% if ar %}الاسم الكامل{% else %}Nom et prénom{% endif %}</th>
         <th>{% if ar %}التوقيع{% else %}Signature{% endif %}</th>
       </tr></thead>
       <tbody>
       {% for l in p.lignes %}
-        <tr><td class="num">{{ forloop.counter }}</td><td class="mle">{{ l.e.matricule }}</td><td>{{ l.nom }}</td><td class="signature"></td></tr>
+        <tr><td class="mle">{{ l.e.matricule }}</td><td>{{ l.nom }}</td><td class="signature"></td></tr>
       {% empty %}
-        <tr><td colspan="4" style="text-align:center;padding:16px;">{% if ar %}لا يوجد تلاميذ{% else %}Aucun élève{% endif %}</td></tr>
+        <tr><td colspan="3" style="text-align:center;padding:16px;">{% if ar %}لا يوجد تلاميذ{% else %}Aucun élève{% endif %}</td></tr>
       {% endfor %}
       </tbody>
     </table>

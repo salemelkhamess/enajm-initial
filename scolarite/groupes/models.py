@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
@@ -112,3 +113,46 @@ def eleves_de_la_classe(secteur):
     if lies.exists():
         return Etudiant.objects.filter(affectations__groupe__in=lies).distinct().order_by(*ordre_matricule_croissant())
     return Etudiant.objects.filter(secteur=secteur).order_by(*ordre_matricule_croissant())
+
+
+class TransfertGroupe(models.Model):
+    """Historique : un élève change de groupe (ou quitte / rejoint un groupe)."""
+    etudiant = models.ForeignKey(Etudiant, on_delete=models.CASCADE, related_name='transferts_groupes')
+    de_groupe = models.ForeignKey(Groupe, on_delete=models.SET_NULL, null=True, blank=True, related_name='transferts_sortants')
+    vers_groupe = models.ForeignKey(Groupe, on_delete=models.SET_NULL, null=True, blank=True, related_name='transferts_entrants')
+    langue = models.CharField(max_length=2, blank=True, default='')
+    niveau_eleve = models.CharField(max_length=20, blank=True)
+    date = models.DateTimeField(auto_now_add=True)
+    par = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True, related_name='+')
+
+    class Meta:
+        db_table = 'groupes_transferts'
+        ordering = ['-date', '-id']
+
+
+def transferer_eleve(etudiant, vers, par=None, niveau=''):
+    """Place l'élève dans le groupe `vers`. S'il est déjà dans un autre groupe du même type, il est déplacé.
+    La CLASSE de l'élève n'est jamais modifiée : un transfert ne concerne que les groupes (et leur niveau).
+    Retourne le groupe quitté (ou None) ; lève ValueError si rien n'a changé."""
+    ancienne = Affectation.objects.filter(etudiant=etudiant, langue=vers.langue).select_related('groupe').first()
+    if ancienne and ancienne.groupe_id == vers.id:
+        raise ValueError("déjà dans ce groupe")
+    de = ancienne.groupe if ancienne else None
+    if ancienne:
+        ancienne.groupe, ancienne.niveau_eleve = vers, niveau
+        ancienne.save()
+    else:
+        Affectation.objects.create(groupe=vers, etudiant=etudiant, niveau_eleve=niveau)
+    TransfertGroupe.objects.create(etudiant=etudiant, de_groupe=de, vers_groupe=vers, langue=vers.langue, niveau_eleve=niveau, par=par)
+    return de
+
+
+def retirer_eleve(etudiant, langue, par=None):
+    """Retire l'élève de son groupe de ce type (historique conservé)."""
+    ancienne = Affectation.objects.filter(etudiant=etudiant, langue=langue).select_related('groupe').first()
+    if not ancienne:
+        return None
+    de = ancienne.groupe
+    ancienne.delete()
+    TransfertGroupe.objects.create(etudiant=etudiant, de_groupe=de, vers_groupe=None, langue=langue, par=par)
+    return de

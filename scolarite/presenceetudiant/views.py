@@ -1325,6 +1325,7 @@ def _donnees_pointage(request):
     except ValueError:
         jour_date = timezone.localdate()
     ctx = {'secteurs': secteurs, 'secteur': secteur, 'date': jour_date, 'jour': JOURS_FR[jour_date.weekday()],
+           'tri': 'matricule' if request.GET.get('tri') == 'matricule' else 'nom',
            'choix': request.GET.get('groupe', ''), 'groupes': [], 'seances': [], 'sections': False,
            'langue': request.GET.get('langue') if request.GET.get('langue') in ('ar', 'fr') else ('ar' if (get_language() or '').startswith('ar') else 'fr')}
     if secteur:
@@ -1361,6 +1362,9 @@ def listes_pointage_imprimer(request):
     for seance in seances:
         for groupe, eleves in listes:
             lignes = [{'e': e, 'nom': (e.nom_prenom if ar else (e.nom_prenom_fr or e.nom_prenom))} for e in eleves]
+            if ctx['tri'] == 'nom':   # ordre alphabétique (les listes arrivent triées par matricule)
+                from etudiant.noms import _mots
+                lignes.sort(key=lambda l: (' '.join(_mots(l['nom'])), len(l['e'].matricule), l['e'].matricule))
             pages.append({'seance': seance, 'groupe': groupe, 'lignes': lignes})
     ctx.update({'pages': pages, 'ar': ar, 'annee': get_annee_courante()})
     return render(request, 'presence_etudiant/listes_pointage_print.html', ctx)

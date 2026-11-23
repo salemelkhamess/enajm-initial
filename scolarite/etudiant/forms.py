@@ -124,6 +124,8 @@ class EtudiantForm(forms.ModelForm):
         self.fields['niveau'].label_from_instance = lambda n: n.libelle
         self.fields['niveau'].widget.attrs.pop('required', None)
         self.fields['niveau'].widget.attrs['class'] += ' select'
+        if not niveaux.exists():   # ancienne fonction « niveaux » : pas de niveau créé -> champ inutile, on le masque
+            del self.fields['niveau']
         self.fields['diplomes'].widget.attrs['class'] = ''
         # les diplômes sont stockés sous forme de texte : on les relit en liste pour recocher les cases à l'édition
         if self.instance.pk and not self.is_bound:

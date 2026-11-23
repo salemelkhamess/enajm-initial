@@ -26,6 +26,7 @@ class Command(BaseCommand):
         parser.add_argument('--intitules', default='', help="Intitulés des groupes (même ordre), séparés par des virgules")
         parser.add_argument('--noms-ar', default='', help="Noms arabes des groupes (même ordre), séparés par des virgules")
         parser.add_argument('--classes', default='', help="Classes de l'emploi du temps représentées par chaque groupe (même ordre), séparées par des virgules")
+        parser.add_argument('--deplacer', action='store_true', help="Déplace aussi chaque élève dans la CLASSE liée à son groupe (--classes)")
         parser.add_argument('--taille', type=int, default=0, help="Élèves par groupe (défaut : répartition égale)")
         parser.add_argument('--annee-id', type=int, help="Année (défaut : année active)")
         parser.add_argument('--dry-run', action='store_true', help="Simule sans rien écrire")
@@ -70,6 +71,10 @@ class Command(BaseCommand):
                     groupe.save(update_fields=['nom_fr'])
                 for e in morceau:
                     Affectation.objects.update_or_create(etudiant=e, langue='', defaults={'groupe': groupe})
-                self.stdout.write(f"  {code} ({groupe.intitule}) : {len(morceau)} élèves — matricules {morceau[0].matricule} → {morceau[-1].matricule}")
+                deplaces = 0
+                if o['deplacer'] and groupe.classe_id:
+                    deplaces = Etudiant._base_manager.filter(pk__in=[e.pk for e in morceau]).exclude(secteur_id=groupe.classe_id).update(secteur_id=groupe.classe_id)
+                self.stdout.write(f"  {code} ({groupe.intitule}) : {len(morceau)} élèves — matricules {morceau[0].matricule} → {morceau[-1].matricule}"
+                                  + (f" — classe « {groupe.classe.nom} » ({deplaces} déplacé(s))" if o['deplacer'] and groupe.classe_id else ''))
             if o['dry_run']:
                 transaction.set_rollback(True)

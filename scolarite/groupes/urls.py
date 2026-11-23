@@ -10,4 +10,6 @@ urlpatterns = [
     path('<int:pk>/imprimer/', views.groupe_imprimer, name='groupe_imprimer'),
     path('<int:pk>/basculer/', views.groupe_basculer, name='groupe_basculer'),
     path('<int:pk>/supprimer/', views.groupe_supprimer, name='groupe_supprimer'),
+    path('<int:pk>/transferer/', views.groupe_transferer, name='groupe_transferer'),
+    path('eleve/<int:etudiant_id>/', views.eleve_groupes, name='eleve_groupes'),
 ]

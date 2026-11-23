@@ -130,7 +130,7 @@ class Etudiant(models.Model):
         arabe = (self.nom or '', self.prenom or '')
         francais = (self.nom_fr or '', self.prenom_fr or '')
         prefere, autre = (arabe, francais) if self._langue_arabe() else (francais, arabe)
-        return prefere if prefere[0] else autre
+        return prefere if (prefere[0] or prefere[1]) else autre
 
     @property
     def nom_langue(self):
@@ -149,9 +149,10 @@ class Etudiant(models.Model):
 
     @property
     def nom_prenom_fr(self):
-        """Nom complet en français : nom de la personne (champ « nom ») puis nom du père (champ « prénom »)."""
+        """Nom complet en français : PRÉNOMS d'abord (champ « prénom »), puis nom de famille (champ « nom »),
+        comme dans les listes officielles (ex. « Ikhalihenna Yahya Beida »), sans doublon."""
         from .noms import fusionner_noms
-        return fusionner_noms(self.nom_fr, self.prenom_fr)
+        return fusionner_noms(self.prenom_fr, self.nom_fr)
 
     @property
     def nom_complet_ar(self):
@@ -169,7 +170,7 @@ class Etudiant(models.Model):
         """Nom complet dans la langue active, sans doublon (à défaut de nom dans cette langue : l'autre langue)."""
         from .noms import fusionner_noms
         nom, prenom = self._paire_langue()
-        return fusionner_noms(prenom, nom) if self._langue_arabe() else fusionner_noms(nom, prenom)
+        return fusionner_noms(prenom, nom)   # prénoms (nom de la personne) d'abord, dans les deux langues
 
     @property
     def lieu_naissance_langue(self):

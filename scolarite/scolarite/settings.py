@@ -118,6 +118,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'scolarite.context_processors.critical_absences',
+                'scolarite.context_processors.niveaux_actifs',
                 'django.template.context_processors.i18n',
                 'django.contrib.messages.context_processors.messages',
                 'parametres.context_processors.parametres_context',

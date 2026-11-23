@@ -18,3 +18,11 @@ def critical_absences(request):
     return {
         'critical_absences': critical_absences
     }
+
+def niveaux_actifs(request):
+    """Vrai s'il existe des « niveaux de langue » (ancienne fonction, remplacée par les groupes) : sinon on la masque."""
+    try:
+        from niveaux.models import Niveau
+        return {'a_niveaux_actifs': Niveau.actifs().exists()}
+    except Exception:
+        return {'a_niveaux_actifs': False}
