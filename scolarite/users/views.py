@@ -129,7 +129,7 @@ def profile_view(request):
             profile_form = UserProfileForm(request.POST, instance=user)
             if profile_form.is_valid():
                 profile_form.save()
-                messages.success(request, 'Vos informations ont été mises à jour!')
+                messages.success(request, _("Vos informations ont été mises à jour!"))
                 return redirect('profile_view')
 
         elif 'change_password' in request.POST:
@@ -137,7 +137,7 @@ def profile_view(request):
             if password_form.is_valid():
                 user = password_form.save()
                 update_session_auth_hash(request, user)
-                messages.success(request, 'Votre mot de passe a été changé!')
+                messages.success(request, _("Votre mot de passe a été changé!"))
                 return redirect('profile_view')
             else:
                 for error in password_form.errors.values():

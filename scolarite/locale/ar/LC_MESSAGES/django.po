@@ -60,7 +60,7 @@ msgstr "إضافة"
 
 #: templates/partials/sidebar.html:57
 msgid "Trimestre"
-msgstr "المستوى الدراسي"
+msgstr "الفصل الدراسي"
 
 #: templates/partials/sidebar.html:64
 msgid "Salles"
@@ -270,7 +270,7 @@ msgid "Erreur!"
 msgstr "خطأ!"
 
 msgid "Une erreur est survenue"
-msgstr "حدثت مشكلة"
+msgstr "حدث خطأ"
 
 msgid "OK"
 msgstr "موافق"
@@ -2157,3 +2157,1086 @@ msgstr "اختاروا درسا لتسجيل غيابات التلاميذ وح�
 
 msgid "Compte utilisateur (rôle Professeur)"
 msgstr "حساب المستخدم (دور أستاذ)"
+
+msgid "Nom (arabe)"
+msgstr "الاسم العائلي (بالعربية)"
+
+msgid "Prénom (arabe)"
+msgstr "الاسم الشخصي (بالعربية)"
+
+msgid "Nom (français)"
+msgstr "الاسم العائلي (بالفرنسية)"
+
+msgid "Prénom (français)"
+msgstr "الاسم الشخصي (بالفرنسية)"
+
+msgid "Lieu de naissance (arabe)"
+msgstr "مكان الولادة (بالعربية)"
+
+msgid "Lieu de naissance (français)"
+msgstr "مكان الولادة (بالفرنسية)"
+
+msgid "Langue d'impression"
+msgstr "لغة الطباعة"
+
+msgid "Liste arabe"
+msgstr "القائمة بالعربية"
+
+msgid "Liste français"
+msgstr "القائمة بالفرنسية"
+
+msgid "Toutes les classes"
+msgstr "جميع الأقسام"
+
+msgid "Exporter en Excel"
+msgstr "تصدير إلى Excel"
+
+msgid "Importer depuis Excel"
+msgstr "استيراد من Excel"
+
+msgid "Importer des élèves fonctionnaires depuis Excel"
+msgstr "استيراد التلاميذ الموظفين من Excel"
+
+msgid "Les élèves sont ajoutés à l'année en cours"
+msgstr "تضاف التلاميذ إلى السنة الحالية"
+
+msgid ""
+"Un élève dont le matricule existe déjà est mis à jour ; les cellules vides "
+"ne modifient rien."
+msgstr "التلميذ الذي رقمه موجود يتم تحديثه، والخلايا الفارغة لا تغيّر شيئا."
+
+msgid "Télécharger le modèle Excel"
+msgstr "تحميل نموذج Excel"
+
+msgid ""
+"Le fichier doit avoir les mêmes colonnes que le modèle (1ère ligne : noms "
+"des champs de la base). Si une seule ligne est invalide, rien n'est importé."
+msgstr ""
+"يجب أن يحتوي الملف على نفس أعمدة النموذج (السطر الأول: أسماء حقول قاعدة "
+"البيانات). إذا كان سطر واحد غير صالح فلن يتم استيراد أي شيء."
+
+msgid "Import annulé : corrigez ces erreurs puis réessayez."
+msgstr "تم إلغاء الاستيراد: صححوا هذه الأخطاء ثم أعيدوا المحاولة."
+
+msgid "Ligne"
+msgstr "السطر"
+
+msgid "erreurs au total"
+msgstr "خطأ في المجموع"
+
+msgid "Import terminé"
+msgstr "اكتمل الاستيراد"
+
+msgid "créé(s)"
+msgstr "تم إنشاؤه"
+
+msgid "mis à jour"
+msgstr "تم تحديثه"
+
+msgid "ligne(s)"
+msgstr "سطر"
+
+msgid "Importer"
+msgstr "استيراد"
+
+msgid "Choisissez un fichier .xlsx."
+msgstr "اختاروا ملف .xlsx."
+
+msgid "Fichier .xlsx de 5 Mo maximum attendu."
+msgstr "المطلوب ملف .xlsx بحجم أقصاه 5 ميغابايت."
+
+msgid "%(n)s documents maximum par absence."
+msgstr "الحد الأقصى %(n)s وثائق لكل غياب."
+
+msgid "Accepter la justification"
+msgstr "قبول التبرير"
+
+msgid "Aucun document"
+msgstr "لا توجد وثائق"
+
+msgid "Aucune justification en attente de décision pour cette absence."
+msgstr "لا يوجد تبرير ينتظر القرار لهذا الغياب."
+
+msgid "Cette absence est validée : elle ne peut plus être justifiée."
+msgstr "هذا الغياب مؤكَّد: لم يعد بالإمكان تبريره."
+
+msgid "Cette absence ne peut pas être justifiée."
+msgstr "لا يمكن تبرير هذا الغياب."
+
+msgid "Date de la justification"
+msgstr "تاريخ التبرير"
+
+msgid "Documents déjà joints"
+msgstr "الوثائق المرفقة سابقا"
+
+msgid "Documents joints"
+msgstr "الوثائق المرفقة"
+
+msgid "Déposée par"
+msgstr "أودعه"
+
+msgid "Envoyer la justification"
+msgstr "إرسال التبرير"
+
+msgid "Examiner la justification"
+msgstr "دراسة التبرير"
+
+msgid "Indiquez le motif du refus."
+msgstr "اذكروا سبب الرفض."
+
+msgid "Joindre des documents (certificat médical, etc.)"
+msgstr "إرفاق وثائق (شهادة طبية، إلخ)"
+
+msgid "Justification acceptée : l'absence est justifiée."
+msgstr "تم قبول التبرير: الغياب مبرَّر."
+
+msgid "Justification envoyée : elle doit être validée par l'administration."
+msgstr "تم إرسال التبرير: يجب أن تصادق عليه الإدارة."
+
+msgid "Justification refusée."
+msgstr "تم رفض التبرير."
+
+msgid "Justification soumise (en attente de validation)"
+msgstr "تبرير مقدَّم (في انتظار المصادقة)"
+
+msgid "Justification à valider"
+msgstr "تبرير في انتظار المصادقة"
+
+msgid "Justifier une absence"
+msgstr "تبرير غياب"
+
+msgid ""
+"La justification doit être validée par l'administration. Elle n'est possible"
+" que tant que l'absence n'est pas validée (72 h)."
+msgstr ""
+"يجب أن تصادق الإدارة على التبرير. وهو ممكن ما دام الغياب غير مؤكَّد (72 "
+"ساعة)."
+
+msgid "La justification est obligatoire."
+msgstr "التبرير إلزامي."
+
+msgid "Modifier la justification"
+msgstr "تعديل التبرير"
+
+msgid "Motif du refus"
+msgstr "سبب الرفض"
+
+msgid "PDF, JPG ou PNG — 5 Mo maximum par fichier"
+msgstr "PDF أو JPG أو PNG — 5 ميغابايت كحد أقصى للملف"
+
+msgid "Refuser"
+msgstr "رفض"
+
+msgid ""
+"Une justification est déjà en attente de validation : vous pouvez la "
+"modifier ou ajouter des documents."
+msgstr "يوجد تبرير في انتظار المصادقة: يمكنكم تعديله أو إضافة وثائق."
+
+msgid "Une justification est en attente de décision : examinez-la d'abord."
+msgstr "يوجد تبرير في انتظار القرار: ادرسوه أولا."
+
+msgid ""
+"Vous avez déposé cette justification : elle doit être validée par une autre "
+"personne."
+msgstr "أنتم من أودع هذا التبرير: يجب أن يصادق عليه شخص آخر."
+
+msgid ""
+"Vous ne pouvez pas valider une justification que vous avez vous-même "
+"déposée."
+msgstr "لا يمكنكم المصادقة على تبرير أودعتموه بأنفسكم."
+
+msgid "documents au maximum"
+msgstr "وثائق كحد أقصى"
+
+msgid "ou"
+msgstr "أو"
+
+msgid "« %(nom)s » : formats acceptés : PDF, JPG, PNG."
+msgstr "«%(nom)s»: الصيغ المقبولة: PDF وJPG وPNG."
+
+msgid "« %(nom)s » dépasse 5 Mo."
+msgstr "«%(nom)s» يتجاوز 5 ميغابايت."
+
+msgid "Niveaux"
+msgstr "مستويات اللغة"
+
+msgid "Niveau"
+msgstr "مستوى اللغة"
+
+msgid "Ajouter un niveau"
+msgstr "إضافة مستوى لغة"
+
+msgid "Afficher les inactifs"
+msgstr "عرض غير النشطة"
+
+msgid "Masquer les inactifs"
+msgstr "إخفاء غير النشطة"
+
+msgid "Statut"
+msgstr "الحالة"
+
+msgid "Actif"
+msgstr "نشط"
+
+msgid "Inactif"
+msgstr "غير نشط"
+
+msgid "Désactiver"
+msgstr "تعطيل"
+
+msgid "Activer"
+msgstr "تفعيل"
+
+msgid "Aucun niveau actif."
+msgstr "لا توجد مستويات لغة نشطة."
+
+msgid ""
+"Un niveau inactif n'est plus proposé dans les formulaires. Un niveau ne se "
+"supprime pas."
+msgstr "مستوى اللغة غير النشط لا يُعرض في الاستمارات. ولا يمكن حذف مستوى لغة."
+
+msgid "Nouveau niveau"
+msgstr "مستوى لغة جديد"
+
+msgid "Modifier le niveau"
+msgstr "تعديل مستوى اللغة"
+
+msgid "Niveau créé."
+msgstr "تم إنشاء مستوى اللغة."
+
+msgid "Niveau modifié."
+msgstr "تم تعديل مستوى اللغة."
+
+msgid "Niveau activé."
+msgstr "تم تفعيل مستوى اللغة."
+
+msgid "Niveau désactivé."
+msgstr "تم تعطيل مستوى اللغة."
+
+msgid "Un niveau porte déjà ce nom."
+msgstr "يوجد مستوى لغة بنفس الاسم."
+
+msgid "Un niveau ne se supprime pas : désactivez-le."
+msgstr "لا يمكن حذف مستوى لغة: قوموا بتعطيله."
+
+msgid "Liste des niveaux"
+msgstr "قائمة مستويات اللغة"
+
+msgid "Ajouter un cours par niveau (langue)"
+msgstr "إضافة درس حسب مستوى اللغة"
+
+msgid "Ce champ est obligatoire (sauf pour un cours par niveau)."
+msgstr "هذا الحقل إلزامي (ما عدا الدرس حسب مستوى اللغة)."
+
+msgid "Choisissez la langue du cours (arabe ou français)."
+msgstr "اختاروا لغة الدرس (العربية أو الفرنسية)."
+
+msgid "Cours par niveau (tous secteurs)"
+msgstr "دروس حسب مستوى اللغة (كل الأقسام)"
+
+msgid "Langue du cours"
+msgstr "لغة الدرس"
+
+msgid "Niveau (cours par niveau, ex. langue)"
+msgstr "مستوى اللغة (درس حسب المستوى)"
+
+msgid "Niveau (cours transversal)"
+msgstr "مستوى اللغة (درس مشترك)"
+
+msgid "Tous les niveaux"
+msgstr "جميع مستويات اللغة"
+
+msgid "Élèves"
+msgstr "التلاميذ"
+
+msgid "— Tout le secteur —"
+msgstr "— كل القسم —"
+
+msgid "%(champ)s trop long (%(limite)s caractères max)"
+msgstr "%(champ)s طويل جدا (%(limite)s حرفا كحد أقصى)"
+
+msgid "%(nom)s : %(n)s hors limites (%(minimum)s-%(maximum)s)"
+msgstr "%(nom)s: القيمة %(n)s خارج الحدود (%(minimum)s-%(maximum)s)"
+
+msgid "%(nom)s : « %(brut)s » n'est pas un nombre"
+msgstr "%(nom)s: «%(brut)s» ليس رقما"
+
+msgid "Accès refusé"
+msgstr "الوصول مرفوض"
+
+msgid "Aucun étudiant trouvé pour ce secteur et année"
+msgstr "لا يوجد تلاميذ لهذا القسم وهذه السنة"
+
+msgid "Aucune évaluation trouvée pour les critères sélectionnés"
+msgstr "لا توجد تقييمات للمعايير المحددة"
+
+msgid ""
+"Ce NNI (%(nni)s) est déjà attribué à un autre élève : %(nom)s (matricule "
+"%(matricule)s)."
+msgstr ""
+"الرقم الوطني (%(nni)s) مسند بالفعل لتلميذ آخر: %(nom)s (الرقم "
+"%(matricule)s)."
+
+msgid "Ce NNI est déjà attribué à un autre élève."
+msgstr "هذا الرقم الوطني مسند بالفعل لتلميذ آخر."
+
+msgid ""
+"Ce matricule (%(matricule)s) est déjà attribué à un autre élève : %(nom)s "
+"(année %(annee)s)."
+msgstr ""
+"الرقم (%(matricule)s) مسند بالفعل لتلميذ آخر: %(nom)s (السنة %(annee)s)."
+
+msgid "Ce matricule est déjà attribué à un autre élève."
+msgstr "هذا الرقم مسند بالفعل لتلميذ آخر."
+
+msgid "Ce niveau de langue a déjà un cours pendant cette plage horaire."
+msgstr "لهذا المستوى اللغوي درس بالفعل في هذه الفترة الزمنية."
+
+msgid "Cette année existe déjà."
+msgstr "هذه السنة موجودة بالفعل."
+
+msgid "Choisissez l'année."
+msgstr "اختاروا السنة."
+
+msgid "Choisissez la classe de l'élève."
+msgstr "اختاروا قسم التلميذ."
+
+msgid ""
+"Choisissez la langue du cours (arabe ou français) pour un cours par niveau "
+"de langue."
+msgstr "اختاروا لغة الدرس (العربية أو الفرنسية) للدرس حسب مستوى اللغة."
+
+msgid ""
+"Colonnes obligatoires absentes de la 1ère ligne : %(colonnes)s. Utilisez le "
+"modèle."
+msgstr ""
+"أعمدة إلزامية غير موجودة في السطر الأول: %(colonnes)s. استعملوا النموذج."
+
+msgid "Date de début postérieure à la date de fin"
+msgstr "تاريخ البداية لاحق لتاريخ النهاية"
+
+msgid "Dates manquantes"
+msgstr "التواريخ ناقصة"
+
+msgid "Des pointages existent déjà pour la date %(date)s."
+msgstr "يوجد تسجيل حضور بالفعل بتاريخ %(date)s."
+
+msgid "Email ou mot de passe invalide."
+msgstr "البريد الإلكتروني أو كلمة المرور غير صحيحة."
+
+msgid ""
+"Enregistrement impossible : une valeur déjà utilisée (matricule ou NNI) "
+"existe pour un autre élève."
+msgstr ""
+"تعذر الحفظ: توجد قيمة مستعملة بالفعل (الرقم أو الرقم الوطني) لدى تلميذ آخر."
+
+msgid "Fichier illisible : utilisez un fichier .xlsx"
+msgstr "ملف غير قابل للقراءة: استعملوا ملف .xlsx"
+
+msgid "Fichier vide"
+msgstr "ملف فارغ"
+
+msgid "Format de date invalide"
+msgstr "صيغة التاريخ غير صالحة"
+
+msgid "L'adresse email est obligatoire."
+msgstr "البريد الإلكتروني إلزامي."
+
+msgid "L'heure de fin doit être après l'heure de début."
+msgstr "يجب أن يكون وقت النهاية بعد وقت البداية."
+
+msgid ""
+"La demande envoyée n'est pas valide. Retournez à la page précédente et "
+"réessayez."
+msgstr "الطلب المرسل غير صالح. ارجعوا إلى الصفحة السابقة وأعيدوا المحاولة."
+
+msgid "La page demandée n'existe pas ou a été déplacée."
+msgstr "الصفحة المطلوبة غير موجودة أو تم نقلها."
+
+msgid "La salle est déjà occupée pendant cette plage horaire."
+msgstr "القاعة مشغولة في هذه الفترة الزمنية."
+
+msgid "Le matricule est obligatoire."
+msgstr "الرقم إلزامي."
+
+msgid "Le nom en arabe est obligatoire."
+msgstr "الاسم بالعربية إلزامي."
+
+msgid "Le nom est obligatoire."
+msgstr "الاسم العائلي إلزامي."
+
+msgid "Le professeur a déjà un cours pendant cette plage horaire."
+msgstr "لدى الأستاذ درس بالفعل في هذه الفترة الزمنية."
+
+msgid "Le prénom est obligatoire."
+msgstr "الاسم الشخصي إلزامي."
+
+msgid "Le trimestre doit appartenir à la même année."
+msgstr "يجب أن ينتمي الفصل إلى نفس السنة."
+
+msgid "Le trimestre sélectionné n'appartient pas à l'année choisie."
+msgstr "الفصل المحدد لا ينتمي إلى السنة المختارة."
+
+msgid "Les mots de passe ne correspondent pas."
+msgstr "كلمتا المرور غير متطابقتين."
+
+msgid "NNI %(d_nni)s déjà utilisé par un autre élève"
+msgstr "الرقم الوطني %(d_nni)s مستعمل من طرف تلميذ آخر"
+
+msgid "Notes spéciales enregistrées avec succès"
+msgstr "تم حفظ النقاط الخاصة بنجاح"
+
+msgid "Page introuvable"
+msgstr "الصفحة غير موجودة"
+
+msgid "Page précédente"
+msgstr "الصفحة السابقة"
+
+msgid "Paramètre annee_id manquant"
+msgstr "المعلمة annee_id ناقصة"
+
+msgid "Paramètre manquant"
+msgstr "معلمة ناقصة"
+
+msgid "Requête invalide"
+msgstr "طلب غير صالح"
+
+msgid "Retour à l'accueil"
+msgstr "العودة إلى الصفحة الرئيسية"
+
+msgid "Saisissez une adresse email valide."
+msgstr "أدخلوا عنوان بريد إلكتروني صالحا."
+
+msgid "Saisissez une année de naissance valide (ex. 1990)."
+msgstr "أدخلوا سنة ولادة صالحة (مثال 1990)."
+
+msgid "Session expirée"
+msgstr "انتهت الجلسة"
+
+msgid "Session expirée, veuillez recommencer"
+msgstr "انتهت الجلسة، يرجى البدء من جديد"
+
+msgid ""
+"Un problème technique est survenu. Veuillez réessayer. Si le problème "
+"persiste, contactez l'administration."
+msgstr ""
+"حدثت مشكلة تقنية. يرجى إعادة المحاولة، وإن استمرت المشكلة فاتصلوا بالإدارة."
+
+msgid "Un utilisateur avec cet email existe déjà."
+msgstr "يوجد مستخدم بنفس البريد الإلكتروني."
+
+msgid ""
+"Une erreur est survenue. Veuillez réessayer ou contacter l'administration."
+msgstr "حدث خطأ. يرجى إعادة المحاولة أو الاتصال بالإدارة."
+
+msgid "Vos informations ont été mises à jour!"
+msgstr "تم تحديث معلوماتكم!"
+
+msgid "Votre mot de passe a été changé!"
+msgstr "تم تغيير كلمة المرور!"
+
+msgid ""
+"Votre session a expiré ou le formulaire n'est plus valide. Rechargez la page"
+" puis réessayez."
+msgstr ""
+"انتهت جلستكم أو لم تعد الاستمارة صالحة. أعيدوا تحميل الصفحة ثم حاولوا مجددا."
+
+msgid "Vous n'avez pas l'autorisation d'accéder à cette page."
+msgstr "ليس لديكم إذن للدخول إلى هذه الصفحة."
+
+msgid "année inconnue : %(annee)s"
+msgstr "سنة غير معروفة: %(annee)s"
+
+msgid "classe ambiguë (plusieurs secteurs nommés « %(secteur)s »)"
+msgstr "قسم ملتبس (عدة أقسام تحمل الاسم «%(secteur)s»)"
+
+msgid "classe inconnue : « %(secteur)s »"
+msgstr "قسم غير معروف: «%(secteur)s»"
+
+msgid "classe obligatoire pour un nouvel élève"
+msgstr "القسم إلزامي للتلميذ الجديد"
+
+msgid "diplôme inconnu : « %(jeton)s »"
+msgstr "شهادة غير معروفة: «%(jeton)s»"
+
+msgid "email invalide : %(email)s"
+msgstr "بريد إلكتروني غير صالح: %(email)s"
+
+msgid "matricule %(d_matricule)s en double dans le fichier"
+msgstr "الرقم %(d_matricule)s مكرر في الملف"
+
+msgid "matricule manquant"
+msgstr "الرقم ناقص"
+
+msgid "matricule trop long (20 caractères max)"
+msgstr "الرقم طويل جدا (20 حرفا كحد أقصى)"
+
+msgid "niveau de langue inactif : « %(niveau)s »"
+msgstr "مستوى اللغة «%(niveau)s» غير نشط"
+
+msgid "niveau de langue inconnu : « %(niveau)s »"
+msgstr "مستوى لغة غير معروف: «%(niveau)s»"
+
+msgid "nom manquant"
+msgstr "الاسم ناقص"
+
+msgid "sexe invalide : « %(sexe)s » (H ou F)"
+msgstr "جنس غير صالح: «%(sexe)s» (H أو F)"
+
+msgid "situation familiale invalide : « %(situation)s » (C, M ou D)"
+msgstr "حالة مدنية غير صالحة: «%(situation)s» (C أو M أو D)"
+
+msgid "tous les départements"
+msgstr "جميع الأقسام"
+
+msgid "This field is required."
+msgstr "هذا الحقل إلزامي."
+
+msgid "Enter a valid email address."
+msgstr "أدخلوا عنوان بريد إلكتروني صالحا."
+
+msgid "Enter a whole number."
+msgstr "أدخلوا عددا صحيحا."
+
+msgid "Enter a number."
+msgstr "أدخلوا رقما."
+
+msgid "Enter a valid date."
+msgstr "أدخلوا تاريخا صالحا."
+
+msgid "Enter a valid time."
+msgstr "أدخلوا وقتا صالحا."
+
+msgid "Enter a valid date/time."
+msgstr "أدخلوا تاريخا ووقتا صالحين."
+
+msgid "Enter a valid URL."
+msgstr "أدخلوا رابطا صالحا."
+
+msgid "Enter a valid value."
+msgstr "القيمة المدخلة غير صالحة."
+
+msgid "Enter a list of values."
+msgstr "أدخلوا قائمة من القيم."
+
+msgid "Select a valid choice. %(value)s is not one of the available choices."
+msgstr "اختيار غير صالح: «%(value)s» ليس من الخيارات المتاحة."
+
+msgid ""
+"Select a valid choice. That choice is not one of the available choices."
+msgstr "اختيار غير صالح: هذه القيمة ليست من الخيارات المتاحة."
+
+msgid "Ensure this value is less than or equal to %(limit_value)s."
+msgstr "يجب أن تكون القيمة أقل من أو تساوي %(limit_value)s."
+
+msgid "Ensure this value is greater than or equal to %(limit_value)s."
+msgstr "يجب أن تكون القيمة أكبر من أو تساوي %(limit_value)s."
+
+msgid "%(model_name)s with this %(field_label)s already exists."
+msgstr "يوجد سجل بنفس قيمة «%(field_label)s»."
+
+msgid ""
+"Upload a valid image. The file you uploaded was either not an image or a "
+"corrupted image."
+msgstr "أرسلوا صورة صالحة: الملف المختار ليس صورة أو تالف."
+
+msgid "The submitted file is empty."
+msgstr "الملف المرسل فارغ."
+
+msgid "Avec signature"
+msgstr "مع التوقيع"
+
+msgid "Absences concernées"
+msgstr "الغيابات المعنية"
+
+msgid "Au"
+msgstr "إلى"
+
+msgid "Du"
+msgstr "من"
+
+msgid ""
+"Aucune absence en attente sur cette période : la justification s'appliquera "
+"aux absences enregistrées pendant la période."
+msgstr ""
+"لا توجد غيابات قيد الانتظار في هذه الفترة: سيطبَّق التبرير على الغيابات "
+"المسجلة خلال الفترة."
+
+msgid ""
+"Aucune absence enregistrée pour l'instant : la justification s'appliquera "
+"aux absences enregistrées pendant la période."
+msgstr ""
+"لا يوجد غياب مسجل حاليا: سيطبَّق التبرير على الغيابات المسجلة خلال الفترة."
+
+msgid "Aucune absence à justifier sur cette période."
+msgstr "لا توجد غيابات للتبرير في هذه الفترة."
+
+msgid "Autre élève (autorisation à l'avance)"
+msgstr "تلميذ آخر (رخصة مسبقة)"
+
+msgid ""
+"Cette absence fait partie d'une justification par période : modifiez-la "
+"depuis « Justifier par période »."
+msgstr "هذا الغياب جزء من تبرير حسب الفترة: عدّلوه من «تبرير حسب الفترة»."
+
+msgid "Choisir"
+msgstr "اختيار"
+
+msgid "Choisissez un élève dans la liste pour lui joindre son document."
+msgstr "اختاروا تلميذا من القائمة لإرفاق وثيقته."
+
+msgid "Enregistrer et passer à l'élève suivant"
+msgstr "حفظ والانتقال إلى التلميذ التالي"
+
+msgid ""
+"Justification enregistrée pour %(nom)s (%(n)s absence(s)) : elle doit être "
+"validée par l'administration."
+msgstr ""
+"تم حفظ التبرير للتلميذ %(nom)s (%(n)s غياب): يجب أن تصادق عليه الإدارة."
+
+msgid "Justification par période à valider"
+msgstr "تبرير حسب الفترة في انتظار المصادقة"
+
+msgid "Justifications par période en attente de validation"
+msgstr "تبريرات حسب الفترة في انتظار المصادقة"
+
+msgid "Justifier"
+msgstr "تبرير"
+
+msgid "Justifier par période"
+msgstr "تبرير حسب الفترة"
+
+msgid "Justifier une période d'absence"
+msgstr "تبرير فترة غياب"
+
+msgid "La date de fin est antérieure à la date de début."
+msgstr "تاريخ النهاية سابق لتاريخ البداية."
+
+msgid "La période ne peut pas dépasser 90 jours."
+msgstr "لا يمكن أن تتجاوز الفترة 90 يوما."
+
+msgid ""
+"Les absences de l'élève pendant toute la période sont justifiées avec un "
+"seul dossier. Les absences déjà validées (72 h écoulées) ne peuvent plus "
+"être justifiées."
+msgstr ""
+"تُبرَّر غيابات التلميذ طوال الفترة بملف واحد. الغيابات المؤكَّدة (انقضاء 72 "
+"ساعة) لا يمكن تبريرها."
+
+msgid "Passer sans enregistrer"
+msgstr "تجاوز دون حفظ"
+
+msgid "Période"
+msgstr "الفترة"
+
+msgid "Tous les élèves de cette période ont une justification."
+msgstr "جميع تلاميذ هذه الفترة لديهم تبرير."
+
+msgid ""
+"Une justification est déjà en attente de validation pour cette période : "
+"vous pouvez la modifier ou ajouter des documents."
+msgstr ""
+"يوجد تبرير في انتظار المصادقة لهذه الفترة: يمكنكم تعديله أو إضافة وثائق."
+
+msgid "jour(s)"
+msgstr "يوم"
+
+msgid "Élèves avec des absences à justifier"
+msgstr "تلاميذ لديهم غيابات للتبرير"
+
+msgid "Il n'y a plus d'élève à justifier dans la liste."
+msgstr "لا يوجد المزيد من التلاميذ للتبرير في القائمة."
+
+msgid "puis élève suivant"
+msgstr "ثم التلميذ التالي"
+
+msgid "Élève précédent"
+msgstr "التلميذ السابق"
+
+msgid "Élève suivant"
+msgstr "التلميذ التالي"
+
+msgid "Période de la justification"
+msgstr "فترة التبرير"
+
+msgid ""
+"Modifiez les dates pour justifier plusieurs jours (ex. autorisation de 3 "
+"jours)."
+msgstr "عدّلوا التواريخ لتبرير عدة أيام (مثال: رخصة لمدة 3 أيام)."
+
+msgid "Dates"
+msgstr "التواريخ"
+
+msgid "Aucune absence à justifier pour le moment."
+msgstr "لا توجد غيابات للتبرير حاليا."
+
+msgid "Documents"
+msgstr "الوثائق"
+
+msgid "Voir les documents"
+msgstr "عرض الوثائق"
+
+msgid "déjà enregistré"
+msgstr "مسجل مسبقا"
+
+msgid "Documents déjà enregistrés"
+msgstr "الوثائق المسجلة مسبقا"
+
+msgid "Aucun document enregistré pour cet élève."
+msgstr "لا توجد وثائق مسجلة لهذا التلميذ."
+
+msgid "Historique des justifications"
+msgstr "سجل التبريرات"
+
+msgid "Déposée le"
+msgstr "أودع بتاريخ"
+
+msgid "Décision"
+msgstr "القرار"
+
+msgid "Aucune justification enregistrée pour cet élève."
+msgstr "لا يوجد تبرير مسجل لهذا التلميذ."
+
+msgid "Acceptée"
+msgstr "مقبول"
+
+msgid "Refusée"
+msgstr "مرفوض"
+
+msgid "Historique"
+msgstr "السجل"
+
+msgid "Excel arabe"
+msgstr "Excel بالعربية"
+
+msgid "Excel français"
+msgstr "Excel بالفرنسية"
+
+msgid "Nom, numéro et classe"
+msgstr "الاسم والرقم والقسم"
+
+#, python-format
+msgid "Déjà occupé par : %(detail)s"
+msgstr "محجوز مسبقًا من طرف : %(detail)s"
+
+#, python-format
+msgid ""
+"%(classe)s — %(matiere)s, %(prof)s, salle %(salle)s (%(debut)s-%(fin)s)"
+msgstr ""
+"%(classe)s — %(matiere)s، %(prof)s، القاعة %(salle)s (%(debut)s-%(fin)s)"
+
+#, python-format
+msgid "%(jour)s %(debut)s-%(fin)s : %(erreur)s"
+msgstr "%(jour)s %(debut)s-%(fin)s : %(erreur)s"
+
+msgid "72 h non dépassées"
+msgstr "لم تتجاوز 72 ساعة"
+
+msgid ""
+"Absence non encore définitive : le délai de 72 h pour la justifier n'est pas"
+" dépassé"
+msgstr "غياب غير نهائي بعد : لم تنقضِ مهلة 72 ساعة لتبريره"
+
+msgid "Total heures"
+msgstr "مجموع الساعات"
+
+#, python-format
+msgid ""
+"Des pointages existent déjà pour la classe %(classe)s à la date %(date)s."
+msgstr "يوجد تسجيل حضور بالفعل لهذا الفصل بتاريخ %(date)s (%(classe)s)."
+
+msgid "Imprimer les cartes"
+msgstr "طباعة البطاقات"
+
+msgid "Imprimer les cartes de tous les élèves (ou de la classe choisie)"
+msgstr "طباعة بطاقات كل التلاميذ (أو القسم المختار)"
+
+msgid "Cartes des élèves fonctionnaires"
+msgstr "بطاقات التلاميذ الموظفين"
+
+msgid "carte(s)"
+msgstr "بطاقة"
+
+msgid "sans photo"
+msgstr "بدون صورة"
+
+msgid "Papier"
+msgstr "الورق"
+
+msgid "Carte réelle (une carte par page, 85,6 × 54 mm)"
+msgstr "بطاقة حقيقية (بطاقة في كل صفحة، 85.6 × 54 مم)"
+
+msgid "Feuille A4 (cartes à découper)"
+msgstr "ورقة A4 (بطاقات للقص)"
+
+msgid "Face"
+msgstr "الوجه"
+
+msgid "Recto + verso"
+msgstr "الوجه + الظهر"
+
+msgid "Recto seulement"
+msgstr "الوجه فقط"
+
+msgid "Verso seulement"
+msgstr "الظهر فقط"
+
+msgid "Aucun élève à imprimer."
+msgstr "لا يوجد تلاميذ للطباعة."
+
+msgid "Aucune séance de ce professeur pour cette classe et ce jour."
+msgstr "لا توجد حصة لهذا الأستاذ في هذا القسم وهذا اليوم."
+
+msgid "Un pointage existe déjà pour cette séance à cette date."
+msgstr "يوجد تسجيل حضور لهذه الحصة بهذا التاريخ بالفعل."
+
+msgid "Dernier élève de la liste"
+msgstr "آخر تلميذ في القائمة"
+
+msgid "Modifications enregistrées. Élève suivant : %(nom)s"
+msgstr "تم حفظ التعديلات. التلميذ التالي : %(nom)s"
+
+msgid "Modifications enregistrées. C'était le dernier élève de la liste."
+msgstr "تم حفظ التعديلات. كان هذا آخر تلميذ في القائمة."
+
+msgid "Bloc (formation)"
+msgstr "الكتلة (التكوين)"
+
+msgid "Code du groupe"
+msgstr "رمز المجموعة"
+
+msgid "Ex. : G1Ad, G2F, GAar, GBar"
+msgstr "مثال : G1Ad, G2F, GAar, GBar"
+
+msgid "Niveau de langue"
+msgstr "مستوى اللغة"
+
+msgid "Ex. : A1.1, A2.2 / A2.3, ب1"
+msgstr "مثال : A1.1، A2.2 / A2.3، ب1"
+
+msgid "Intitulé"
+msgstr "العنوان"
+
+msgid "Ex. : Groupe 1"
+msgstr "مثال : المجموعة 1"
+
+msgid "Professeur (nom libre)"
+msgstr "الأستاذ (اسم حر)"
+
+msgid "Utilisé si le professeur n'est pas dans la liste."
+msgstr "يُستعمل إذا لم يكن الأستاذ في القائمة."
+
+msgid "Coordinateur"
+msgstr "المنسق"
+
+msgid "Horaire"
+msgstr "التوقيت"
+
+msgid "Ex. : 10-12"
+msgstr "مثال : 10-12"
+
+msgid "— Aucun —"
+msgstr "— لا شيء —"
+
+msgid "— Aucune —"
+msgstr "— لا شيء —"
+
+msgid "La langue ne peut plus être modifiée : le groupe contient des élèves."
+msgstr "لا يمكن تغيير اللغة : المجموعة تحتوي على تلاميذ."
+
+msgid "Ce code existe déjà pour ce bloc et cette année."
+msgstr "هذا الرمز موجود مسبقًا لهذه الكتلة وهذه السنة."
+
+msgid "Français"
+msgstr "الفرنسية"
+
+msgid "Arabe"
+msgstr "العربية"
+
+msgid "Groupe créé. Ajoutez maintenant les élèves."
+msgstr "تم إنشاء المجموعة. أضف الآن التلاميذ."
+
+msgid "Groupe modifié."
+msgstr "تم تعديل المجموعة."
+
+msgid "Groupe activé."
+msgstr "تم تفعيل المجموعة."
+
+msgid "Groupe désactivé."
+msgstr "تم إلغاء تفعيل المجموعة."
+
+msgid ""
+"Ce groupe contient des élèves : retirez-les d'abord, ou désactivez le "
+"groupe."
+msgstr "هذه المجموعة تحتوي على تلاميذ : أزلهم أولًا أو ألغِ تفعيل المجموعة."
+
+msgid "Groupe supprimé."
+msgstr "تم حذف المجموعة."
+
+#, python-format
+msgid ""
+"Groupe %(code)s enregistré : %(n)d élève(s) — %(a)d ajouté(s), %(r)d "
+"retiré(s), %(d)d déplacé(s)."
+msgstr ""
+"تم حفظ المجموعة %(code)s : %(n)d تلميذ — %(a)d مضاف، %(r)d محذوف، %(d)d "
+"منقول."
+
+msgid "Déplacés depuis un autre groupe de la même langue : "
+msgstr "منقولون من مجموعة أخرى من نفس النوع : "
+
+msgid "Groupes"
+msgstr "المجموعات"
+
+msgid "Tous les blocs"
+msgstr "كل الكتل"
+
+msgid "Toutes les langues"
+msgstr "كل اللغات"
+
+msgid "Élèves sans groupe de français"
+msgstr "تلاميذ بدون مجموعة فرنسية"
+
+msgid "sans groupe d'arabe"
+msgstr "بدون مجموعة عربية"
+
+msgid "Bloc"
+msgstr "الكتلة"
+
+msgid "Code"
+msgstr "الرمز"
+
+msgid "Liste de présence"
+msgstr "قائمة الحضور"
+
+msgid "Supprimer ce groupe ?"
+msgstr "حذف هذه المجموعة ؟"
+
+msgid "Aucun groupe."
+msgstr "لا توجد مجموعات."
+
+msgid "Nouveau groupe"
+msgstr "مجموعة جديدة"
+
+msgid "Modifier le groupe"
+msgstr "تعديل المجموعة"
+
+msgid "Élèves du groupe"
+msgstr "تلاميذ المجموعة"
+
+msgid ""
+"Un élève n'est que dans un groupe par langue : s'il est déjà dans un autre "
+"groupe de cette langue (indiqué entre crochets), il sera déplacé ici."
+msgstr ""
+"التلميذ ينتمي إلى مجموعة واحدة فقط لكل لغة : إذا كان في مجموعة أخرى لهذه "
+"اللغة (بين قوسين مربعين) فسيتم نقله إلى هنا."
+
+msgid "Ajouter toute une classe"
+msgstr "إضافة قسم كامل"
+
+msgid "— Choisir une classe —"
+msgstr "— اختر قسمًا —"
+
+msgid "Tout retirer"
+msgstr "إزالة الكل"
+
+msgid "Membres actuels"
+msgstr "الأعضاء الحاليون"
+
+msgid "(niveau individuel facultatif, ex. أ1)"
+msgstr "(المستوى الفردي اختياري، مثال أ1)"
+
+msgid "Rechercher un élève (matricule, nom)…"
+msgstr "البحث عن تلميذ (رقم التسجيل، الاسم)…"
+
+msgid "Retour aux groupes"
+msgstr "العودة إلى المجموعات"
+
+msgid "Sans émargement"
+msgstr "بدون توقيع"
+
+msgid "Avec émargement"
+msgstr "مع التوقيع"
+
+msgid "Section (hors langue)"
+msgstr "قسم فرعي (بدون لغة)"
+
+msgid "Section"
+msgstr "قسم فرعي"
+
+msgid "Type de groupe"
+msgstr "نوع المجموعة"
+
+msgid "Tous les types"
+msgstr "كل الأنواع"
+
+msgid ""
+"Un élève n'est que dans un groupe par type (français, arabe ou section) : "
+"s'il est déjà dans un autre groupe de ce type (indiqué entre crochets), il "
+"sera déplacé ici."
+msgstr ""
+"التلميذ ينتمي إلى مجموعة واحدة فقط لكل نوع (فرنسية أو عربية أو قسم فرعي) : "
+"إذا كان في مجموعة أخرى من هذا النوع (بين قوسين مربعين) فسيتم نقله إلى هنا."
+
+msgid "Le type ne peut plus être modifié : le groupe contient des élèves."
+msgstr "لا يمكن تغيير النوع : المجموعة تحتوي على تلاميذ."
+
+msgid "Listes de pointage"
+msgstr "قوائم الحضور"
+
+msgid "Listes de pointage des élèves"
+msgstr "قوائم حضور التلاميذ"
+
+msgid "— Choisir un groupe —"
+msgstr "— اختر مجموعة —"
+
+msgid "Toute la classe"
+msgstr "القسم كاملًا"
+
+msgid "Une liste par groupe"
+msgstr "قائمة لكل مجموعة"
+
+msgid "Toute la classe (une seule liste)"
+msgstr "القسم كاملًا (قائمة واحدة)"
+
+msgid "Noms en"
+msgstr "الأسماء بـ"
+
+msgid "Imprimer la liste"
+msgstr "طباعة القائمة"
+
+msgid "Imprimer toutes les séances du jour"
+msgstr "طباعة كل حصص اليوم"
+
+msgid ""
+"Aucune séance prévue dans l'emploi du temps pour cette classe ce jour-là."
+msgstr "لا توجد حصص في جدول التوقيت لهذا القسم في هذا اليوم."
+
+msgid ""
+"Choisissez une classe et une date : les séances de l'emploi du temps du jour"
+" s'affichent, avec la liste de pointage à imprimer pour chacune."
+msgstr ""
+"اختر قسمًا وتاريخًا : تظهر حصص جدول التوقيت لذلك اليوم، مع قائمة الحضور "
+"القابلة للطباعة لكل حصة."
+
+msgid "page(s) de liste"
+msgstr "صفحة (صفحات) قوائم"
+
+msgid "— Toute la classe —"
+msgstr "— القسم كاملًا —"
+
+msgid ""
+"Cette classe est divisée en groupes : choisissez un groupe, ou « Toute la "
+"classe »."
+msgstr "هذا القسم مقسم إلى مجموعات : اختر مجموعة أو « القسم كاملًا »."
+
+msgid "Groupe introuvable."
+msgstr "المجموعة غير موجودة."
+
+msgid ""
+"Nom affiché en arabe à la place du code (ex. : المجموعة 4 - الفرنسية "
+"(المالية))."
+msgstr ""
+"الاسم المعروض بالعربية بدل الرمز (مثال : المجموعة 4 - الفرنسية (المالية))."
+
+msgid "Nom affiché en français (à défaut : le code)."
+msgstr "الاسم المعروض بالفرنسية (وإلا فالرمز)."

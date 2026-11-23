@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block content %}
+<div class="box box-primary">
+    <div class="box-header with-border">
+        <h3 class="box-title">{% trans "Historique des justifications" %} — {{ etudiant.nom_complet_langue }}
+            <small>{{ etudiant.matricule }} — {{ etudiant.secteur.nom }}</small></h3>
+    </div>
+    <div class="box-body">
+        <p>
+            <a href="{% url 'etudiant_list' %}" class="btn btn-link" style="padding-left:0;"><i class="fa fa-arrow-left"></i> {% trans "Retour" %}</a>
+            <a href="{% url 'justification_periode' %}?etudiant={{ etudiant.id }}" class="btn btn-default btn-sm"><i class="fa fa-calendar"></i> {% trans "Justifier par période" %}</a>
+            <a href="{% url 'document_list' etudiant.id %}" class="btn btn-default btn-sm"><i class="fa fa-paperclip"></i> {% trans "Documents" %}</a>
+        </p>
+
+        <div class="row" style="margin-bottom:15px;">
+            <div class="col-sm-2 col-xs-6"><div class="small-box bg-gray" style="margin-bottom:0;"><div class="inner"><h3>{{ resume.total }}</h3><p>{% trans "Absences" %}</p></div></div></div>
+            <div class="col-sm-2 col-xs-6"><div class="small-box bg-green" style="margin-bottom:0;"><div class="inner"><h3>{{ resume.justifiees }}</h3><p>{% trans "Justifiées" %}</p></div></div></div>
+            <div class="col-sm-2 col-xs-6"><div class="small-box bg-aqua" style="margin-bottom:0;"><div class="inner"><h3>{{ resume.soumises }}</h3><p>{% trans "Justification soumise (en attente de validation)" %}</p></div></div></div>
+            <div class="col-sm-2 col-xs-6"><div class="small-box bg-yellow" style="margin-bottom:0;"><div class="inner"><h3>{{ resume.en_attente }}</h3><p>{% trans "En attente" %}</p></div></div></div>
+            <div class="col-sm-2 col-xs-6"><div class="small-box bg-red" style="margin-bottom:0;"><div class="inner"><h3>{{ resume.validees }}</h3><p>{% trans "Validée" %}</p></div></div></div>
+            <div class="col-sm-2 col-xs-6"><div class="small-box bg-maroon" style="margin-bottom:0;"><div class="inner"><h3>{{ resume.refusees }}</h3><p>{% trans "Refusée" %}</p></div></div></div>
+        </div>
+
+        <table class="table table-bordered table-hover">
+            <thead><tr>
+                <th>{% trans "Déposée le" %}</th><th>{% trans "Période" %} / {% trans "Absences concernées" %}</th><th>{% trans "Justification" %}</th>
+                <th>{% trans "Documents joints" %}</th><th>{% trans "État" %}</th><th>{% trans "Décision" %}</th>
+            </tr></thead>
+            <tbody>
+            {% for e in evenements %}
+                <tr>
+                    <td>{{ e.date|date:"d/m/Y H:i" }}<br><small class="text-muted">{% if e.par %}{{ e.par.first_name }} {{ e.par.last_name }}{% endif %}</small></td>
+                    <td>
+                        {% if e.genre == 'periode' %}
+                            <strong>{{ e.debut|date:"d/m/Y" }} → {{ e.fin|date:"d/m/Y" }}</strong> ({{ e.jours }} {% trans "jour(s)" %})
+                        {% else %}
+                            <strong>{{ e.debut|date:"d/m/Y" }}</strong>
+                        {% endif %}
+                        {% for a in e.absences %}<br><small>{{ a.date_cours|date:"d/m" }} — {{ a.matiere.nom }}</small>{% endfor %}
+                    </td>
+                    <td>{{ e.texte|default_if_none:""|linebreaksbr }}</td>
+                    <td>{% for d in e.documents %}<a href="{% url 'justificatif_document' d.id %}" target="_blank"><i class="fa fa-paperclip"></i> {{ d.nom }}</a><br>{% empty %}<span class="text-muted">—</span>{% endfor %}</td>
+                    <td>
+                        {% if e.etat == 'acceptee' %}<span class="label label-success">{% trans "Acceptée" %}</span>
+                        {% elif e.etat == 'refusee' %}<span class="label label-danger">{% trans "Refusée" %}</span>
+                        {% else %}<span class="label label-info">{% trans "Justification soumise (en attente de validation)" %}</span>{% endif %}
+                    </td>
+                    <td>
+                        {% if e.decide_par %}{{ e.decide_par.first_name }} {{ e.decide_par.last_name }}<br><small class="text-muted">{{ e.decide_le|date:"d/m/Y H:i" }}</small>{% endif %}
+                        {% if e.motif %}<br><small class="text-danger">{% trans "Motif du refus" %} : {{ e.motif }}</small>{% endif %}
+                        {% if e.lien_examen %}
+                            <a href="{% if e.genre == 'periode' %}{% url 'examiner_periode' e.periode_id %}{% else %}{% url 'examiner_justification' e.absence_id %}{% endif %}" class="btn btn-warning btn-xs">{% trans "Examiner la justification" %}</a>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% empty %}
+                <tr><td colspan="6">{% trans "Aucune justification enregistrée pour cet élève." %}</td></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

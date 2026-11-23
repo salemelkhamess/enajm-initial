@@ -30,7 +30,7 @@ class UserForm(forms.ModelForm):
         password = self.cleaned_data.get('password')
         password_confirm = self.cleaned_data.get('password_confirm')
         if password and password_confirm and password != password_confirm:
-            raise ValidationError("Les mots de passe ne correspondent pas.")
+            raise ValidationError(_("Les mots de passe ne correspondent pas."))
         return password_confirm
 
     def save(self, commit=True):

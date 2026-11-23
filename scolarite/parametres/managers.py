@@ -13,9 +13,18 @@ class AnneeFilteredManager(models.Manager):
     Les accès par clé étrangère (obj.etudiant) ne sont pas filtrés.
     """
 
-    def __init__(self, lookup='annee'):
+    lookup_defaut = 'annee'
+
+    def __new__(cls, lookup=None):
+        # Django recrée le manager pour les relations inverses (etudiant.documents, evaluation.note_set…) sans
+        # repasser `lookup` : on le mémorise dans une sous-classe pour que ces relations gardent le bon chemin.
+        if lookup and cls is AnneeFilteredManager:
+            cls = type(f'AnneeFilteredManager_{lookup}', (AnneeFilteredManager,), {'lookup_defaut': lookup})
+        return super().__new__(cls)
+
+    def __init__(self, lookup=None):
         super().__init__()
-        self.lookup = lookup
+        self.lookup = lookup or self.lookup_defaut
 
     def get_queryset(self):
         qs = super().get_queryset()

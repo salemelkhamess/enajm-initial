@@ -106,7 +106,8 @@ def note_par_evaluation(request):
             messages.success(request, _("Notes enregistrées avec succès"))
             return redirect(request.get_full_path())
         except Exception as e:
-            messages.error(request, f"Erreur: {str(e)}")
+            logger.exception("Erreur inattendue")
+            messages.error(request, _("Une erreur est survenue. Veuillez réessayer ou contacter l'administration."))
 
     return render(request, 'notes/note_par_evaluation.html', {
         'formations': formations,
@@ -181,7 +182,8 @@ def note_par_evaluation_edit(request):
             return redirect(request.get_full_path())
 
         except Exception as e:
-            messages.error(request, f"Erreur: {str(e)}")
+            logger.exception("Erreur inattendue")
+            messages.error(request, _("Une erreur est survenue. Veuillez réessayer ou contacter l'administration."))
 
     context = {
         'formations': formations,
@@ -209,7 +211,7 @@ def afficher_bulletin(request):
             # Récupérer tous les étudiants du secteur
             etudiants = Etudiant.objects.filter(secteur=secteur, annee=annee)
             if not etudiants.exists():
-                messages.warning(request, "Aucun étudiant trouvé pour ce secteur et année")
+                messages.warning(request, _("Aucun étudiant trouvé pour ce secteur et année"))
                 return render(request, 'notes/bulletin.html', {'form': form})
 
             # Récupérer toutes les évaluations
@@ -220,7 +222,7 @@ def afficher_bulletin(request):
             )
 
             if not evaluations.exists():
-                messages.warning(request, "Aucune évaluation trouvée pour les critères sélectionnés")
+                messages.warning(request, _("Aucune évaluation trouvée pour les critères sélectionnés"))
                 return render(request, 'notes/bulletin.html', {'form': form})
 
             bulletins = []
@@ -333,11 +335,12 @@ def gestion_notes_speciales(request):
                             type=note_type
                         ).delete()
 
-            messages.success(request, "Notes spéciales enregistrées avec succès")
+            messages.success(request, _("Notes spéciales enregistrées avec succès"))
             return redirect(request.get_full_path())
 
         except Exception as e:
-            messages.error(request, f"Erreur: {str(e)}")
+            logger.exception("Erreur inattendue")
+            messages.error(request, _("Une erreur est survenue. Veuillez réessayer ou contacter l'administration."))
 
     return render(request, 'notes/gestion_notes_speciales.html', {
         'formations': formations,

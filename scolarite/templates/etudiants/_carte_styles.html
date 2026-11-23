@@ -1,0 +1,36 @@
+{% load static %}
+<style>
+/* Carte d'élève au format réel carte d'identité (ISO ID-1 : 85,6 x 54 mm).
+   Aucun fond CSS n'est utilisé pour les couleurs et le logo : les navigateurs les retirent à l'impression
+   (« graphiques d'arrière-plan »). Les fonds sont des SVG, le logo une image, les cadres des bordures. */
+.carte { width: 85.6mm; height: 54mm; box-sizing: border-box; position: relative; overflow: hidden; direction: rtl;
+         border-radius: 3mm; border: .2mm solid #b8b8b8;
+         font-family: "Segoe UI", Tahoma, "Noto Naskh Arabic", Arial, sans-serif; color: #222;
+         -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+.carte .fond { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: block; }
+.carte .logo-box { position: relative; width: 25mm; height: 9.4mm; overflow: hidden; flex: none; }
+.carte .logo-box img { position: absolute; width: 41.6mm; height: auto; left: -8.4mm; top: -2.6mm; max-width: none !important; /* Bootstrap impose max-width:100% aux images à l'impression */ }
+.carte .entete { position: absolute; top: 0; left: 0; right: 3mm; height: 13mm; display: flex; align-items: center; gap: 1.5mm; padding: 0 2mm; direction: ltr; }
+.carte .entete .textes { flex: 1; text-align: center; direction: rtl; line-height: 1.15; }
+.carte .entete .t1 { font-size: 7pt; font-weight: 700; }
+.carte .entete .t2 { font-size: 6pt; font-weight: 600; }
+.carte .entete .t3 { font-size: 4.4pt; color: #555; direction: ltr; }
+.carte .titre { position: absolute; top: 13.35mm; left: 0; right: 3mm; height: 5mm; line-height: 5mm; text-align: center; color: #fff; font-size: 7.5pt; font-weight: 700; }
+.carte .corps { position: absolute; top: 19.8mm; left: 3mm; right: 6mm; bottom: 7.5mm; display: flex; gap: 2.5mm; direction: rtl; }
+.carte .photo { width: 21mm; height: 26mm; flex: none; border: .3mm solid #333; border-radius: 1mm; overflow: hidden; position: relative; }
+.carte .photo img, .carte .photo svg { width: 100%; height: 100%; object-fit: cover; display: block; }
+.carte .infos { flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: space-around; }
+.carte .ligne { display: flex; align-items: baseline; gap: 1.2mm; line-height: 1.2; }
+.carte .ligne .lib { font-size: 5.2pt; font-weight: 700; color: #1b5e20; flex: none; min-width: 13mm; }
+.carte .ligne .val { font-size: 6.4pt; font-weight: 700; flex: 1; border-bottom: .15mm dotted #888; padding-bottom: .3mm; min-height: 2.4mm; }
+.carte .ligne .val.fr { direction: ltr; text-align: right; }
+.carte .pied { position: absolute; bottom: 1.8mm; left: 3mm; right: 6mm; display: flex; justify-content: space-between; align-items: center; direction: rtl; }
+.carte .pastille { border: .35mm solid #333; color: #222; font-size: 5.5pt; font-weight: 800; padding: .3mm 3mm; border-radius: 3mm; direction: ltr; }
+/* verso */
+.carte.verso .dos { position: absolute; top: 0; left: 3mm; right: 6mm; bottom: 0; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1.2mm; }
+.carte.verso .fr { font-size: 7.5pt; font-weight: 800; letter-spacing: .2mm; direction: ltr; }
+.carte.verso .ecole { font-size: 6pt; font-weight: 600; }
+.carte.verso .ecole-fr { font-size: 4.6pt; color: #555; direction: ltr; line-height: 1.2; }
+.carte.verso .avis { font-size: 5.6pt; line-height: 1.45; border: .25mm solid #e0b000; border-radius: 1mm; padding: 1mm 2mm; margin-top: .5mm; }
+.carte.verso .avis b { display: block; font-size: 6.2pt; }
+</style>

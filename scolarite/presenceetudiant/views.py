@@ -1,3 +1,5 @@
+import logging
+logger = logging.getLogger(__name__)
 from datetime import datetime
 
 from django.db import transaction
@@ -16,7 +18,10 @@ from entete.models import Entete
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from etudiant.models import Etudiant
-from .models import PresenceEtudiant, q_comptee, q_en_attente
+from niveaux.models import Niveau
+from .models import PresenceEtudiant, DocumentJustification, JustificationPeriode, q_comptee, q_en_attente
+from django.http import HttpResponseForbidden, FileResponse, Http404
+from django.core.exceptions import PermissionDenied
 from django.views.generic import FormView, TemplateView
 from django.urls import reverse
 from django.http import JsonResponse
@@ -142,9 +147,9 @@ def rapport_absences(request):
             'matiere': item['matiere__nom'],
             'jour': _(item['jour']),
             'date_cours': item['date_cours'].strftime('%d/%m/%Y'),  # Formatage de la date
-            # les absences en attente (72 h) sont listées mais ne comptent pas encore
-            'seances': item['total_absences'] - item['en_attente'],
-            'heures': (item['total_absences'] - item['en_attente']) * 2,
+            # toutes les absences sont comptées ; celles qui n'ont pas encore dépassé 72 h sont seulement signalées
+            'seances': item['total_absences'],
+            'heures': item['total_absences'] * 2,
             'en_attente': item['en_attente'],
         })
     # Calculer le nombre total de lignes par secteur pour le rowspan
@@ -422,14 +427,15 @@ class EnregistrerPresenceView(View):
             return redirect('presence_liste')
 
         except Exception as e:
-            messages.error(request, _("Erreur lors de l'enregistrement: ") + str(e))
+            logger.exception("Erreur inattendue")
+            messages.error(request, _("Une erreur est survenue. Veuillez réessayer ou contacter l'administration."))
             return redirect('presence_saisie')
 
 @require_GET
 def load_trimestres(request):
     annee_id = request.GET.get('annee_id')
     if not annee_id:
-        return JsonResponse({'error': 'Paramètre manquant'}, status=400)
+        return JsonResponse({'error': _("Paramètre manquant")}, status=400)
 
     try:
         trimestres = Trimestre.objects.filter(annee_id=annee_id).order_by('numero_trimestre')
@@ -441,7 +447,8 @@ def load_trimestres(request):
             } for t in trimestres]
         })
     except Exception as e:
-        return JsonResponse({'error': str(e)}, status=500)
+        logger.exception("Erreur inattendue")
+        return JsonResponse({'error': _("Une erreur est survenue. Veuillez réessayer ou contacter l'administration.")}, status=500)
 
 
 from django.contrib import messages
@@ -473,7 +480,7 @@ class GestionPresenceView(FormView):
 
         except Exception as e:
             print("ERREUR:", str(e))
-            messages.error(self.request, "Une erreur est survenue")
+            messages.error(self.request, _("Une erreur est survenue"))
             return self.form_invalid(form)
 
 class EnregistrerPresenceViewH(TemplateView):
@@ -522,7 +529,8 @@ class EnregistrerPresenceViewH(TemplateView):
             })
 
         except Exception as e:
-            messages.error(self.request, f"Erreur: {str(e)}")
+            logger.exception("Erreur inattendue")
+            messages.error(self.request, _("Une erreur est survenue. Veuillez réessayer ou contacter l'administration."))
             print("Erreur dans get_context_data:", str(e))  # Debug
 
         return context
@@ -532,7 +540,7 @@ class EnregistrerPresenceViewH(TemplateView):
         session_data = request.session.get('presence_data')
 
         if not session_data:
-            messages.error(request, "Session expirée, veuillez recommencer")
+            messages.error(request, _("Session expirée, veuillez recommencer"))
             return redirect('presence:selection')
 
         try:
@@ -555,11 +563,12 @@ class EnregistrerPresenceViewH(TemplateView):
                     }
                 )
 
-            messages.success(request, "Présences enregistrées avec succès!")
+            messages.success(request, _("Présences enregistrées avec succès!"))
             return redirect('presence:selection')
 
         except Exception as e:
-            messages.error(request, f"Erreur lors de l'enregistrement: {str(e)}")
+            logger.exception("Erreur inattendue")
+            messages.error(request, _("Une erreur est survenue. Veuillez réessayer ou contacter l'administration."))
             print("Erreur dans POST:", str(e))  # Debug
             return self.get(request, *args, **kwargs)
 
@@ -578,6 +587,11 @@ class EnregistrementPresenceView(FormView):
     template_name = 'presence_etudiant/enregistrement.html'
     form_class = PresenceForm  # Assurez-vous que cette classe est importée
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['a_niveaux'] = Niveau.actifs().exists()   # le choix « niveau » n'apparaît que si des niveaux existent
+        return context
+
     def form_valid(self, form):
         try:
             self.request.session['presence_data'] = {
@@ -585,9 +599,10 @@ class EnregistrementPresenceView(FormView):
                 'matiere_id': form.cleaned_data['matiere'].id,
                 'date_cours': form.cleaned_data['date_cours'].isoformat(),
                 'jour': form.cleaned_data['jour'],
+                'niveau_id': form.cleaned_data['niveau'].id if form.cleaned_data.get('niveau') else None,
+                'groupe_id': form.cleaned_data['groupe_obj'].id if form.cleaned_data.get('groupe_obj') else None,
             }
             self.request.session.modified = True
-            print("Session après sauvegarde:", self.request.session['presence_data'])
 
             return redirect('enregistrement_presence_etudiants')
 
@@ -611,7 +626,7 @@ class EnregistrementPresenceEtudiantsView(TemplateView):
         presence_data = request.session.get('presence_data')
 
         if not presence_data:
-            messages.error(request, "Session expirée, veuillez recommencer")
+            messages.error(request, _("Session expirée, veuillez recommencer"))
             return redirect('enregistrement_presence')
 
         try:
@@ -635,11 +650,12 @@ class EnregistrementPresenceEtudiantsView(TemplateView):
                         }
                     )
 
-            messages.success(request, "Présences enregistrées avec succès!")
+            messages.success(request, _("Présences enregistrées avec succès!"))
             return redirect('enregistrement_presence')
 
         except Exception as e:
-            messages.error(request, f"Erreur lors de l'enregistrement: {str(e)}")
+            logger.exception("Erreur inattendue")
+            messages.error(request, _("Une erreur est survenue. Veuillez réessayer ou contacter l'administration."))
             print("Erreur:", str(e))
             return self.get(request, *args, **kwargs)
     def get_context_data(self, **kwargs):
@@ -654,15 +670,21 @@ class EnregistrementPresenceEtudiantsView(TemplateView):
 
             parametres = Parametres.get_instance()
 
-            # Récupérer les étudiants
-            etudiants = Etudiant.objects.filter(
-                secteur_id=secteur_id,
-                annee=parametres.annee_courante
-            )
+            # Récupérer les étudiants : un niveau (cours de langue) ou tout un secteur
+            niveau_id = presence_data.get('niveau_id')
+            groupe_id = presence_data.get('groupe_id')
+            if groupe_id:      # appel d'un groupe : seuls les élèves du groupe
+                filtre_etudiants = {'affectations__groupe_id': groupe_id}
+            else:
+                filtre_etudiants = {'niveau_id': niveau_id} if niveau_id else {'secteur_id': secteur_id}
+            from etudiant.models import ordre_matricule_croissant
+            from groupes.models import Groupe
+            etudiants = (Etudiant.objects.filter(annee=parametres.annee_courante, **filtre_etudiants)
+                         .order_by(*ordre_matricule_croissant()))
 
             # Récupérer les présences existantes
             presences = PresenceEtudiant.objects.filter(
-                etudiant__secteur_id=secteur_id,
+                etudiant__in=etudiants,
                 matiere_id=matiere_id,
                 date_cours=date_cours,
                 jour=jour,
@@ -671,8 +693,11 @@ class EnregistrementPresenceEtudiantsView(TemplateView):
 
             # Préparer la liste des étudiants avec leur statut
             etudiants_list = []
+            presences_par_etudiant = {}
+            for pr in presences.order_by('-id'):
+                presences_par_etudiant[pr.etudiant_id] = pr   # une requête au lieu d'une par élève
             for etudiant in etudiants:
-                presence = presences.filter(etudiant=etudiant).first()
+                presence = presences_par_etudiant.get(etudiant.id)
                 etudiants_list.append({
                     'etudiant': etudiant,
                     'present': presence.present if presence else True,
@@ -682,6 +707,7 @@ class EnregistrementPresenceEtudiantsView(TemplateView):
             context.update({
                 'etudiants': etudiants_list,
                 'matiere': Matiere.objects.get(id=matiere_id),
+                'groupe': Groupe.objects.filter(pk=groupe_id).first() if groupe_id else None,
                 'date_cours': date_cours,
                 'jour': jour,
                 'annee_courante': parametres.annee_courante,
@@ -713,19 +739,35 @@ def liste_absences_non_justifiees(request):
         'matiere',
         'trimestre',
         'annee'
-    )
+    ).prefetch_related('documents').select_related('justif_periode')
 
-    # Convert date_cours to datetime for each absence
-    for absence in absences:
-        absence.date_cours_datetime = timezone.make_aware(
-            datetime.combine(absence.date_cours, datetime.min.time())
-        )
+    periodes = (JustificationPeriode.objects.filter(etat='soumise')
+                .select_related('etudiant', 'soumise_par').prefetch_related('documents', 'absences'))
+    return render(request, 'etudiants/liste_absence.html', {'absences': absences, 'periodes': periodes})
 
-    return render(request, 'etudiants/liste_absence.html', {'absences': absences})
+
+ROLES_DECISION = ('ADMIN', 'POINTEUR', 'SUPER_ADMIN')
+EXTENSIONS_JUSTIFICATIF = ('.pdf', '.jpg', '.jpeg', '.png')
+TAILLE_MAX_JUSTIFICATIF = 5 * 1024 * 1024
+NB_MAX_DOCUMENTS = 5
+
+
+def _peut_decider(user):
+    return user.is_authenticated and any(user.has_role(r) for r in ROLES_DECISION)
+
+
+def _peut_justifier(user):
+    return user.is_authenticated and user.has_role('DOCTOR')
 
 
 def valider_absence(request, absence_id):
+    """Validation immédiate d'une absence (sans attendre les 72 h) : administration / pointeur / super admin."""
     absence = get_object_or_404(PresenceEtudiant, id=absence_id)
+    if not _peut_decider(request.user):
+        raise PermissionDenied
+    if absence.etat_absence == 'justification_soumise':
+        messages.warning(request, _("Une justification est en attente de décision : examinez-la d'abord."))
+        return redirect('examiner_justification', absence_id=absence.id)
 
     if request.method == 'POST':
         absence.valider_maintenant()  # validation sans attendre les 72 h
@@ -734,43 +776,123 @@ def valider_absence(request, absence_id):
 
     return render(request, 'etudiants/confirmation_validation.html', {'absence': absence})
 
+
 def modifier_statut_absence(request, absence_id):
-    absence = get_object_or_404(PresenceEtudiant, pk=absence_id)
+    """
+    Justification d'une absence par le médecin (avec pièces jointes éventuelles).
+    Possible tant que l'absence n'est pas validée ; la justification doit ensuite être acceptée
+    par l'administration, le pointeur ou le super administrateur.
+    """
+    absence = get_object_or_404(PresenceEtudiant.objects.select_related('etudiant', 'matiere'), pk=absence_id)
+    if not _peut_justifier(request.user):
+        raise PermissionDenied
+    if absence.justif_periode_id and absence.justif_etat == 'soumise':
+        messages.info(request, _("Cette absence fait partie d'une justification par période : modifiez-la depuis « Justifier par période »."))
+        return redirect('justification_periode')
+    if absence.present or not absence.justifiable:
+        if absence.etat_absence == 'validee':
+            messages.error(request, _("Cette absence est validée : elle ne peut plus être justifiée."))
+        else:
+            messages.error(request, _("Cette absence ne peut pas être justifiée."))
+        return redirect('liste_absences_non_justifiees')
 
+    erreurs = []
     if request.method == 'POST':
-        form = JustificationForm(request.POST, instance=absence)
-        if form.is_valid():
-            absence = form.save(commit=False)
-
-            # Mettre à jour is_justified en fonction du status choisi
-            selected_status = form.cleaned_data.get('status')
-            if selected_status == '1':  # Justifié
-                absence.is_justified = 1
-                absence.status = 1
-                # S'assurer que justification et date sont présentes
-                if not absence.justification or not absence.date_justification:
-                    messages.error(request, _("Une justification et une date sont requises pour valider l'absence"))
-                    return render(request, 'etudiants/modifier.html', {
-                        'form': form,
-                        'absence': absence
-                    })
-            else:  # Non justifié
-                absence.is_justified = 0
-                absence.status = 0
-                # Réinitialiser justification et date si nécessaire
-                absence.justification = ''
-                absence.date_justification = None
-
+        texte = (request.POST.get('justification') or '').strip()
+        date_just = parse_date(request.POST.get('date_justification') or '') or timezone.now().date()
+        fichiers = request.FILES.getlist('documents')
+        if not texte:
+            erreurs.append(_("La justification est obligatoire."))
+        if absence.documents.count() + len(fichiers) > NB_MAX_DOCUMENTS:
+            erreurs.append(_("%(n)s documents maximum par absence.") % {'n': NB_MAX_DOCUMENTS})
+        for f in fichiers:
+            if not f.name.lower().endswith(EXTENSIONS_JUSTIFICATIF):
+                erreurs.append(_("« %(nom)s » : formats acceptés : PDF, JPG, PNG.") % {'nom': f.name})
+            elif f.size > TAILLE_MAX_JUSTIFICATIF:
+                erreurs.append(_("« %(nom)s » dépasse 5 Mo.") % {'nom': f.name})
+        if not erreurs:
+            absence.justification = texte
+            absence.date_justification = date_just
+            absence.justif_etat = 'soumise'
+            absence.justif_soumise_par = request.user
+            absence.justif_soumise_le = timezone.now()
+            absence.justif_motif_refus = None
             absence.save()
-            messages.success(request, _("Statut de l'absence mis à jour avec succès!"))
+            for f in fichiers:
+                DocumentJustification.objects.create(absence=absence, fichier=f, nom=f.name, ajoute_par=request.user)
+            messages.success(request, _("Justification envoyée : elle doit être validée par l'administration."))
+            # élève suivant : prochaine absence en attente d'un AUTRE élève dans la liste
+            suivante = next((a for a in PresenceEtudiant.objects.filter(
+                present=False, is_justified=False, id__gt=absence.id).exclude(etudiant_id=absence.etudiant_id)
+                .select_related('etudiant').order_by('id') if a.etat_absence == 'en_attente'), None)
+            if suivante:
+                return redirect('modifier_statut_absence', absence_id=suivante.id)
+            messages.info(request, _("Il n'y a plus d'élève à justifier dans la liste."))
             return redirect('liste_absences_non_justifiees')
-    else:
-        form = JustificationForm(instance=absence)
 
     return render(request, 'etudiants/modifier.html', {
-        'form': form,
-        'absence': absence
+        'absence': absence, 'erreurs': erreurs,
+        'texte': request.POST.get('justification', absence.justification or ''),
+        'date_justification': request.POST.get('date_justification') or (absence.date_justification or timezone.now().date()).strftime('%Y-%m-%d'),
+        'documents': absence.documents.all(), 'nb_max': NB_MAX_DOCUMENTS,
     })
+
+
+def examiner_justification(request, absence_id):
+    """Accepter ou refuser la justification déposée par le médecin (administration / pointeur / super admin)."""
+    absence = get_object_or_404(PresenceEtudiant.objects.select_related('etudiant', 'matiere', 'justif_soumise_par'),
+                                pk=absence_id)
+    if not _peut_decider(request.user):
+        raise PermissionDenied
+    if absence.justif_periode_id and absence.justif_etat == 'soumise':
+        return redirect('examiner_periode', periode_id=absence.justif_periode_id)
+    if absence.etat_absence != 'justification_soumise':
+        messages.info(request, _("Aucune justification en attente de décision pour cette absence."))
+        return redirect('liste_absences_non_justifiees')
+
+    propre = absence.justif_soumise_par_id == request.user.id
+    if request.method == 'POST':
+        if propre:
+            messages.error(request, _("Vous ne pouvez pas valider une justification que vous avez vous-même déposée."))
+            return redirect('examiner_justification', absence_id=absence.id)
+        decision = request.POST.get('decision')
+        if decision == 'accepter':
+            absence.is_justified = True
+            absence.status = True
+            absence.justif_etat = 'acceptee'
+            messages.success(request, _("Justification acceptée : l'absence est justifiée."))
+        elif decision == 'refuser':
+            motif = (request.POST.get('motif') or '').strip()
+            if not motif:
+                messages.error(request, _("Indiquez le motif du refus."))
+                return redirect('examiner_justification', absence_id=absence.id)
+            absence.is_justified = False
+            absence.justif_etat = 'refusee'
+            absence.justif_motif_refus = motif
+            messages.success(request, _("Justification refusée."))
+        else:
+            return redirect('examiner_justification', absence_id=absence.id)
+        absence.justif_decidee_par = request.user
+        absence.justif_decidee_le = timezone.now()
+        absence.save()
+        return redirect('liste_absences_non_justifiees')
+
+    return render(request, 'etudiants/examiner_justification.html', {
+        'absence': absence, 'documents': absence.documents.all(), 'propre': propre})
+
+
+def justificatif_document(request, document_id):
+    """Téléchargement d'un justificatif : réservé au médecin et à l'administration (jamais en accès public)."""
+    if not (_peut_justifier(request.user) or _peut_decider(request.user)):
+        raise PermissionDenied
+    doc = get_object_or_404(DocumentJustification, pk=document_id)
+    try:
+        fichier = doc.fichier.open('rb')
+    except FileNotFoundError:
+        raise Http404
+    reponse = FileResponse(fichier, as_attachment=False, filename=doc.nom)
+    reponse['X-Content-Type-Options'] = 'nosniff'
+    return reponse
 
 
 def absences_non_justifiees(request):
@@ -911,3 +1033,323 @@ class AbsenceParMatiereView(ListView):
         context['entete'] = Entete.objects.filter(id=1)
         context['total_seances_validees'] = sum(1 for a in context['absences'] if a.etat_absence == 'validee')
         return context
+
+
+# --- Justification par période (autorisation de plusieurs jours) ----------------------------------------------
+def _dates_periode(request):
+    """(début, fin, erreur) lues dans l'adresse ou le formulaire ; par défaut aujourd'hui."""
+    aujourdhui = timezone.now().date()
+    debut = parse_date(request.POST.get('date_debut') or request.GET.get('date_debut') or '') or aujourdhui
+    fin = parse_date(request.POST.get('date_fin') or request.GET.get('date_fin') or '') or debut
+    if fin < debut:
+        return debut, debut, _("La date de fin est antérieure à la date de début.")
+    if (fin - debut).days > 90:
+        return debut, fin, _("La période ne peut pas dépasser 90 jours.")
+    return debut, fin, None
+
+
+def _file_attente(debut=None, fin=None):
+    """
+    Élèves ayant des absences encore en attente (donc justifiables), du plus petit au plus grand matricule
+    (éventuellement limitées à une période) : [{'etudiant': Etudiant, 'absences': [PresenceEtudiant, ...]}].
+    """
+    absences = (PresenceEtudiant.objects.filter(present=False, is_justified=False)
+                .select_related('etudiant__secteur', 'matiere').order_by('date_cours'))
+    if debut and fin:
+        absences = absences.filter(date_cours__range=(debut, fin))
+    groupes = {}
+    for a in absences:
+        if a.etat_absence == 'en_attente':
+            groupes.setdefault(a.etudiant_id, {'etudiant': a.etudiant, 'absences': []})['absences'].append(a)
+    for g in groupes.values():
+        dates = [a.date_cours for a in g['absences'] if a.date_cours]
+        g['du'], g['au'] = (min(dates), max(dates)) if dates else (None, None)
+    return sorted(groupes.values(), key=lambda g: (len(g['etudiant'].matricule), g['etudiant'].matricule))
+
+
+def justification_periode(request):
+    """
+    Le médecin justifie toutes les absences d'un élève sur une période (ex. du 11/11 au 13/11) avec un seul dossier
+    (texte + documents). Après l'enregistrement, l'élève suivant de la liste s'affiche pour lui joindre son document.
+    """
+    from etudiant.models import Etudiant
+    if not _peut_justifier(request.user):
+        raise PermissionDenied
+    debut, fin, erreur_periode = _dates_periode(request)
+    erreurs = [erreur_periode] if erreur_periode else []
+    # la liste montre tous les élèves ayant des absences encore justifiables ; la période se choisit pour chaque élève
+    file = _file_attente()
+    ids_file = [g['etudiant'].id for g in file]
+
+    brut = request.POST.get('etudiant') or request.GET.get('etudiant')
+    selection = Etudiant.objects.select_related('secteur').filter(pk=int(brut)).first() if brut and brut.isdigit() else None
+    periode_choisie = bool(request.POST.get('date_debut') or request.GET.get('date_debut'))
+    if selection and not periode_choisie:
+        # période proposée par défaut : de la première à la dernière absence encore justifiable de l'élève
+        dates = [a.date_cours for g in file if g['etudiant'].id == selection.id for a in g['absences'] if a.date_cours]
+        if dates:
+            debut, fin = min(dates), max(dates)
+
+    if request.method == 'POST' and selection and not erreur_periode:
+        texte = (request.POST.get('justification') or '').strip()
+        fichiers = request.FILES.getlist('documents')
+        if not texte:
+            erreurs.append(_("La justification est obligatoire."))
+        if len(fichiers) > NB_MAX_DOCUMENTS:
+            erreurs.append(_("%(n)s documents maximum par absence.") % {'n': NB_MAX_DOCUMENTS})
+        for f in fichiers:
+            if not f.name.lower().endswith(EXTENSIONS_JUSTIFICATIF):
+                erreurs.append(_("« %(nom)s » : formats acceptés : PDF, JPG, PNG.") % {'nom': f.name})
+            elif f.size > TAILLE_MAX_JUSTIFICATIF:
+                erreurs.append(_("« %(nom)s » dépasse 5 Mo.") % {'nom': f.name})
+        if not erreurs:
+            from django.db import transaction
+            with transaction.atomic():
+                periode = JustificationPeriode.objects.filter(etudiant=selection, date_debut=debut, date_fin=fin,
+                                                              etat='soumise').first()
+                if periode is None:
+                    periode = JustificationPeriode(etudiant=selection, date_debut=debut, date_fin=fin)
+                periode.justification, periode.etat = texte, 'soumise'
+                periode.soumise_par, periode.soumise_le = request.user, timezone.now()
+                periode.motif_refus = None
+                periode.save()
+                for f in fichiers:
+                    DocumentJustification.objects.create(periode=periode, fichier=f, nom=f.name, ajoute_par=request.user)
+                nb = 0
+                for a in PresenceEtudiant.objects.filter(etudiant=selection, present=False, is_justified=False,
+                                                         date_cours__range=(debut, fin)):
+                    if a.etat_absence == 'en_attente':
+                        a.justif_periode, a.justification, a.date_justification = periode, texte, timezone.now().date()
+                        a.justif_etat, a.justif_soumise_par, a.justif_soumise_le = 'soumise', request.user, timezone.now()
+                        a.justif_motif_refus = None
+                        a.save()
+                        nb += 1
+            messages.success(request, _("Justification enregistrée pour %(nom)s (%(n)s absence(s)) : elle doit être validée par l'administration.")
+                             % {'nom': f"{selection.nom} {selection.prenom or ''}".strip(), 'n': nb})
+            # élève suivant : celui qui vient après dans la liste, sinon le premier restant
+            apres = _file_attente()
+            ids_apres = [g['etudiant'].id for g in apres if g['etudiant'].id != selection.id]
+            position = ids_file.index(selection.id) if selection.id in ids_file else -1
+            suivant = next((i for i in ids_file[position + 1:] if i in ids_apres), ids_apres[0] if ids_apres else None)
+            if suivant:
+                return redirect(f"{request.path}?etudiant={suivant}")
+            messages.info(request, _("Tous les élèves de cette période ont une justification."))
+            return redirect('liste_absences_non_justifiees')
+
+    # lien « passer à l'élève suivant » sans enregistrer
+    suivant_sans_enregistrer = None
+    if selection and selection.id in ids_file:
+        reste = ids_file[ids_file.index(selection.id) + 1:]
+        suivant_sans_enregistrer = reste[0] if reste else None
+    absences_selection = [a for g in file if selection and g['etudiant'].id == selection.id
+                          for a in g['absences'] if debut <= a.date_cours <= fin]
+    existante = (JustificationPeriode.objects.filter(etudiant=selection, date_debut=debut, date_fin=fin, etat='soumise').first()
+                 if selection else None)
+    return render(request, 'etudiants/justification_periode.html', {
+        'debut': debut, 'fin': fin, 'erreurs': erreurs, 'file': file, 'selection': selection,
+        'absences_selection': absences_selection, 'suivant': suivant_sans_enregistrer, 'existante': existante,
+        'tous_etudiants': Etudiant.objects.select_related('secteur').order_by('nom', 'prenom'),
+        'texte': request.POST.get('justification') or request.GET.get('texte') or (existante.justification if existante else ''),
+        'position': (ids_file.index(selection.id) + 1) if selection and selection.id in ids_file else None,
+        'total_file': len(file), 'nb_max': NB_MAX_DOCUMENTS,
+    })
+
+
+def examiner_periode(request, periode_id):
+    """Accepter ou refuser une justification par période : toutes les absences concernées sont décidées ensemble."""
+    periode = get_object_or_404(JustificationPeriode.objects.select_related('etudiant__secteur', 'soumise_par'), pk=periode_id)
+    if not _peut_decider(request.user):
+        raise PermissionDenied
+    if periode.etat != 'soumise':
+        messages.info(request, _("Aucune justification en attente de décision pour cette absence."))
+        return redirect('liste_absences_non_justifiees')
+    propre = periode.soumise_par_id == request.user.id
+    if request.method == 'POST':
+        if propre:
+            messages.error(request, _("Vous ne pouvez pas valider une justification que vous avez vous-même déposée."))
+            return redirect('examiner_periode', periode_id=periode.id)
+        decision = request.POST.get('decision')
+        motif = (request.POST.get('motif') or '').strip()
+        if decision == 'refuser' and not motif:
+            messages.error(request, _("Indiquez le motif du refus."))
+            return redirect('examiner_periode', periode_id=periode.id)
+        if decision not in ('accepter', 'refuser'):
+            return redirect('examiner_periode', periode_id=periode.id)
+        from django.db import transaction
+        maintenant = timezone.now()
+        with transaction.atomic():
+            periode.etat = 'acceptee' if decision == 'accepter' else 'refusee'
+            periode.decidee_par, periode.decidee_le = request.user, maintenant
+            periode.motif_refus = motif if decision == 'refuser' else None
+            periode.save()
+            for a in periode.absences.filter(is_justified=False, justif_etat='soumise'):
+                if decision == 'accepter':
+                    a.is_justified, a.status, a.justif_etat = True, True, 'acceptee'
+                else:
+                    a.justif_etat, a.justif_motif_refus = 'refusee', motif
+                a.justif_decidee_par, a.justif_decidee_le = request.user, maintenant
+                a.save()
+        messages.success(request, _("Justification acceptée : l'absence est justifiée.") if decision == 'accepter'
+                         else _("Justification refusée."))
+        return redirect('liste_absences_non_justifiees')
+    return render(request, 'etudiants/examiner_periode.html', {
+        'periode': periode, 'documents': periode.documents.all(),
+        'absences': periode.absences.select_related('matiere').order_by('date_cours'), 'propre': propre})
+
+
+
+def _evenements_justification(periodes, individuelles, user):
+    """Fusionne les justifications par période et les justifications d'absences isolées, du plus récent au plus ancien."""
+    evenements = []
+    for p in periodes:
+        evenements.append({
+            'genre': 'periode', 'etudiant': p.etudiant, 'date': p.soumise_le, 'etat': p.etat, 'texte': p.justification,
+            'debut': p.date_debut, 'fin': p.date_fin, 'jours': p.nb_jours,
+            'absences': list(p.absences.all()), 'documents': list(p.documents.all()),
+            'par': p.soumise_par, 'decide_par': p.decidee_par, 'decide_le': p.decidee_le, 'motif': p.motif_refus,
+            'lien_examen': p.etat == 'soumise' and _peut_decider(user), 'periode_id': p.id})
+    for a in individuelles:
+        evenements.append({
+            'genre': 'absence', 'etudiant': a.etudiant, 'date': a.justif_soumise_le, 'etat': a.justif_etat,
+            'texte': a.justification, 'debut': a.date_cours, 'fin': a.date_cours, 'jours': 1, 'absences': [a],
+            'documents': list(a.documents.all()), 'par': a.justif_soumise_par, 'decide_par': a.justif_decidee_par,
+            'decide_le': a.justif_decidee_le, 'motif': a.justif_motif_refus,
+            'lien_examen': a.justif_etat == 'soumise' and _peut_decider(user), 'absence_id': a.id})
+    evenements.sort(key=lambda e: e['date'] or timezone.now(), reverse=True)
+    return evenements
+
+
+def _requetes_historique(etudiant=None):
+    periodes = (JustificationPeriode.objects.select_related('etudiant__secteur', 'soumise_par', 'decidee_par')
+                .prefetch_related('documents', 'absences__matiere'))
+    individuelles = (PresenceEtudiant.objects.filter(present=False, justif_periode__isnull=True)
+                     .exclude(justif_etat='aucune')
+                     .select_related('etudiant__secteur', 'matiere', 'justif_soumise_par', 'justif_decidee_par')
+                     .prefetch_related('documents'))
+    if etudiant is not None:
+        periodes = periodes.filter(etudiant=etudiant)
+        individuelles = individuelles.filter(etudiant=etudiant)
+    return periodes, individuelles
+
+
+def historique_justifications(request, etudiant_id):
+    """Historique complet des justifications d'un élève : périodes et absences justifiées une à une."""
+    from etudiant.models import Etudiant
+    if not (_peut_justifier(request.user) or _peut_decider(request.user)):
+        raise PermissionDenied
+    etudiant = get_object_or_404(Etudiant.objects.select_related('secteur'), pk=etudiant_id)
+    periodes, individuelles = _requetes_historique(etudiant)
+    evenements = _evenements_justification(periodes, individuelles, request.user)
+
+    toutes = PresenceEtudiant.objects.filter(etudiant=etudiant, present=False)
+    etats = [a.etat_absence for a in toutes]
+    resume = {
+        'total': len(etats), 'justifiees': etats.count('justifiee'), 'soumises': etats.count('justification_soumise'),
+        'en_attente': etats.count('en_attente'), 'validees': etats.count('validee'),
+        'refusees': sum(1 for a in toutes if a.justif_etat == 'refusee'),
+    }
+    return render(request, 'etudiants/historique_justifications.html', {
+        'etudiant': etudiant, 'evenements': evenements, 'resume': resume})
+
+
+def historique_justifications_general(request):
+    """Historique de toutes les justifications (tous les élèves de l'année affichée)."""
+    if not (_peut_justifier(request.user) or _peut_decider(request.user)):
+        raise PermissionDenied
+    periodes, individuelles = _requetes_historique()
+    evenements = _evenements_justification(periodes, individuelles, request.user)
+    etat = request.GET.get('etat')
+    if etat in ('soumise', 'acceptee', 'refusee'):
+        evenements = [e for e in evenements if e['etat'] == etat]
+    return render(request, 'etudiants/historique_justifications_general.html', {
+        'evenements': evenements, 'etat': etat})
+
+
+def groupes_classe_api(request):
+    """Groupes actifs ayant des élèves dans la classe choisie (pour la saisie des absences et les listes de pointage)."""
+    from groupes.models import Groupe
+    secteur_id = request.GET.get('secteur_id')
+    if not (secteur_id and secteur_id.isdigit()):
+        return JsonResponse({'sections': False, 'groupes': []})
+    groupes = list(Groupe.objects.filter(actif=True, affectations__etudiant__secteur_id=int(secteur_id)).distinct()
+                   .order_by('langue', 'code'))
+    return JsonResponse({
+        'sections': any(g.langue == '' for g in groupes),
+        'groupes': [{'id': g.id, 'label': g.nom_affiche} for g in groupes]})
+
+
+# --- Listes de pointage imprimables (séances de l'emploi du temps) -------------------------------------------
+JOURS_FR = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche']
+
+
+def _eleves_des_listes(secteur, choix):
+    """[(groupe ou None, [élèves])] : une liste pour toute la classe, pour un groupe, ou une liste par section."""
+    from etudiant.models import ordre_matricule_croissant
+    from groupes.models import Groupe
+    tous = Etudiant.objects.filter(secteur=secteur).order_by(*ordre_matricule_croissant())
+    sections = list(Groupe.objects.filter(actif=True, langue='', affectations__etudiant__secteur=secteur).distinct().order_by('code'))
+    if choix.isdigit():
+        g = Groupe.objects.filter(pk=int(choix), actif=True).first()
+        if g:
+            return [(g, list(Etudiant.objects.filter(affectations__groupe=g).order_by(*ordre_matricule_croissant())))]
+    if choix == 'chaque' or (choix == '' and sections):
+        listes, vus = [], set()
+        for g in sections:
+            membres = list(tous.filter(affectations__groupe=g))
+            vus.update(e.id for e in membres)
+            listes.append((g, membres))
+        reste = [e for e in tous if e.id not in vus]
+        if reste:
+            listes.append((None, reste))
+        return listes
+    return [(None, list(tous))]
+
+
+def _donnees_pointage(request):
+    from emploie.models import EmploiDuTemps
+    from groupes.models import Groupe
+    from datetime import date as _date
+    secteurs = Secteur.objects.all().order_by('nom')
+    secteur = Secteur.objects.filter(pk=request.GET['secteur']).first() if request.GET.get('secteur', '').isdigit() else None
+    try:
+        jour_date = _date.fromisoformat(request.GET.get('date', ''))
+    except ValueError:
+        jour_date = timezone.localdate()
+    ctx = {'secteurs': secteurs, 'secteur': secteur, 'date': jour_date, 'jour': JOURS_FR[jour_date.weekday()],
+           'choix': request.GET.get('groupe', ''), 'groupes': [], 'seances': [], 'sections': False,
+           'langue': request.GET.get('langue') if request.GET.get('langue') in ('ar', 'fr') else ('ar' if (get_language() or '').startswith('ar') else 'fr')}
+    if secteur:
+        groupes = list(Groupe.objects.filter(actif=True, affectations__etudiant__secteur=secteur).distinct().order_by('langue', 'code'))
+        ctx['groupes'] = groupes
+        ctx['sections'] = any(g.langue == '' for g in groupes)
+        trimestre = (Trimestre.objects.filter(debut__lte=jour_date, fin__gte=jour_date).first()
+                     or Parametres.get_instance().trimestre_courant)
+        ctx['seances'] = list(EmploiDuTemps.objects.filter(secteur=secteur, jour=ctx['jour'], trimestre=trimestre)
+                              .select_related('matiere', 'professeur', 'salle').order_by('heure_debut'))
+    return ctx
+
+
+def listes_pointage(request):
+    """Choix de la classe, de la date et du groupe ; affiche les séances prévues par l'emploi du temps ce jour-là."""
+    ctx = _donnees_pointage(request)
+    if ctx['secteur']:
+        ctx['listes_apercu'] = _eleves_des_listes(ctx['secteur'], ctx['choix'])
+    return render(request, 'presence_etudiant/listes_pointage.html', ctx)
+
+
+def listes_pointage_imprimer(request):
+    """Une page par séance (et par groupe) : N°, matricule, nom, prénom, signature."""
+    ctx = _donnees_pointage(request)
+    if not ctx['secteur']:
+        raise Http404
+    seance_id = request.GET.get('seance', 'all')
+    seances = ctx['seances'] if seance_id == 'all' else [s for s in ctx['seances'] if str(s.id) == seance_id]
+    listes = _eleves_des_listes(ctx['secteur'], ctx['choix'])
+    ar = ctx['langue'] == 'ar'
+    pages = []
+    for seance in seances:
+        for groupe, eleves in listes:
+            lignes = [{'e': e, 'nom': (e.nom if ar else (e.nom_fr or e.nom)), 'prenom': (e.prenom if ar else (e.prenom_fr or e.prenom))} for e in eleves]
+            pages.append({'seance': seance, 'groupe': groupe, 'lignes': lignes})
+    ctx.update({'pages': pages, 'ar': ar, 'annee': get_annee_courante()})
+    return render(request, 'presence_etudiant/listes_pointage_print.html', ctx)

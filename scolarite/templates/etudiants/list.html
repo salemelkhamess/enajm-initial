@@ -1,19 +1,56 @@
 {% extends 'base.html' %}
-{% load i18n %}
+{% load i18n role_tags %}
 {% block content %}
     <div class="box box-default">
-        <div class="box-header d-flex justify-content-between align-items-center">
+        <div class="box-header">
             <h3 class="box-title">{% trans "Liste des étudiants" %}</h3>
-
-
-            <p class="text-right">
+        </div>
+        {# « Ajouter » au début de la ligne : à gauche en français, à droite en arabe (sens d'écriture de la page) #}
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; padding:0 10px 10px;">
+            <div>
                 <a href="{% url 'etudiant_create' %}" class="btn btn-primary">
                     <i class="fa fa-plus"></i> {% trans "Ajouter un étudiant" %}
                 </a>
-            </p>
+                <a href="#" class="btn btn-default" onclick="return exporterExcel()">
+                    <i class="fa fa-file-excel-o"></i> {% trans "Exporter en Excel" %}
+                </a>
+                {% if user|has_any_role:"ADMIN,SUPER_ADMIN" %}
+                <a href="{% url 'etudiants_importer_excel' %}" class="btn btn-default">
+                    <i class="fa fa-upload"></i> {% trans "Importer depuis Excel" %}
+                </a>
+                {% endif %}
+            </div>
+            <div>
+                <select id="classeImpression" class="form-control" style="width:240px;">
+                    <option value="">{% trans "Toutes les classes" %}</option>
+                    {% for s in secteurs %}<option value="{{ s.id }}">{{ s.nom }}</option>{% endfor %}
+                </select>
+                <select id="niveauImpression" class="form-control" style="width:240px;">
+                    <option value="">{% trans "Tous les niveaux" %}</option>
+                    {% for n in niveaux %}<option value="{{ n.id }}">{{ n.libelle }}</option>{% endfor %}
+                </select>
+                <label class="checkbox-inline" style="margin:0 8px;">
+                    <input type="checkbox" id="avecSignature"> {% if LANGUAGE_CODE == 'ar' %}مع التوقيع{% else %}{% trans "Avec signature" %}{% endif %}
+                </label>
+                <a href="#" class="btn btn-primary" onclick="return imprimerListe('ar')">
+                    <i class="fa fa-print"></i> {% if LANGUAGE_CODE == 'ar' %}القائمة بالعربية{% else %}{% trans "Liste arabe" %}{% endif %}
+                </a>
+                <a href="#" class="btn btn-warning" onclick="return imprimerCartes()" title="{% trans 'Imprimer les cartes de tous les élèves (ou de la classe choisie)' %}">
+                    <i class="fa fa-id-card-o"></i> {% if LANGUAGE_CODE == 'ar' %}طباعة البطاقات{% else %}{% trans "Imprimer les cartes" %}{% endif %}
+                </a>
+                <a href="#" class="btn btn-default" onclick="return exporterListeExcel('ar')" title="{% trans 'Nom, numéro et classe' %}">
+                    <i class="fa fa-file-excel-o"></i> {% if LANGUAGE_CODE == 'ar' %}Excel بالعربية{% else %}{% trans "Excel arabe" %}{% endif %}
+                </a>
+                <a href="#" class="btn btn-default" onclick="return exporterListeExcel('fr')" title="{% trans 'Nom, numéro et classe' %}">
+                    <i class="fa fa-file-excel-o"></i> {% if LANGUAGE_CODE == 'ar' %}Excel بالفرنسية{% else %}{% trans "Excel français" %}{% endif %}
+                </a>
+                <a href="#" class="btn btn-success" onclick="return imprimerListe('fr')">
+                    <i class="fa fa-print"></i> {% if LANGUAGE_CODE == 'ar' %}القائمة بالفرنسية{% else %}{% trans "Liste français" %}{% endif %}
+                </a>
+            </div>
         </div>
         <div class="box-body">
-            <table class="table table-bordered">
+            <table class="table table-bordered" data-order='[]'>
                 <thead>
                 <tr>
                     <th>{% trans "Photo" %}</th>
@@ -21,8 +58,11 @@
 
                     <th>{% trans "Nom" %}</th>
                     <th>{% trans "Prénom" %}</th>
-                    <th>{% trans "Departement" %}</th>
+                    <th>{% trans "Classe" %}</th>
+                    <th>{% trans "Niveau" %}</th>
+                    <th>{% trans "Groupes" %}</th>
                     <th>{% trans "Année" %}</th>
+                    <th>{% trans "Documents" %}</th>
                     <th>{% trans "Actions" %}</th>
                 </tr>
                 </thead>
@@ -41,8 +81,17 @@
 
                         <td>{{ etudiant.nom }}</td>
                         <td>{{ etudiant.prenom }}</td>
-                        <td>{{ etudiant.formation.nom }}</td>
+                        <td>{{ etudiant.secteur.nom }}</td>
+                        <td>{{ etudiant.niveau.nom|default_if_none:"" }}</td>
+                        <td>{% for a in etudiant.affectations.all %}<div style="white-space:nowrap; margin:1px 0;"><small class="text-muted">{% if a.langue == 'fr' %}{% trans "Français" %}{% elif a.langue == 'ar' %}{% trans "Arabe" %}{% else %}{% trans "Section" %}{% endif %} :</small> <span class="label {% if a.langue == 'fr' %}label-primary{% elif a.langue == 'ar' %}label-success{% else %}label-warning{% endif %}" title="{{ a.groupe.code }}">{{ a.groupe.nom_affiche }}</span></div>{% endfor %}</td>
                         <td>{{ etudiant.annee.numero_annee }}</td>
+                        <td class="text-center" data-order="{{ etudiant.types_documents|length }}">
+                            {% for type, nb in etudiant.types_documents %}
+                                <a href="{% url 'document_list' etudiant.id %}" class="label label-success" style="display:inline-block;margin:1px;" title="{% trans 'Voir les documents' %}"><i class="fa fa-paperclip"></i> {{ type }}{% if nb > 1 %} ×{{ nb }}{% endif %}</a>
+                            {% empty %}
+                                <a href="{% url 'document_create' etudiant.id %}" class="label label-default" title="{% trans 'Ajouter un document' %}"><i class="fa fa-times"></i> {% trans "Aucun document" %}</a>
+                            {% endfor %}
+                        </td>
                         <td>
 
                             <div class="btn-group">
@@ -110,11 +159,57 @@
                     </tr>
                 {% empty %}
                     <tr>
-                        <td colspan="7">{% trans "Aucun étudiant trouvé." %}</td>
+                        <td colspan="10">{% trans "Aucun étudiant trouvé." %}</td>
                     </tr>
                 {% endfor %}
                 </tbody>
             </table>
         </div>
     </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Choix de la classe avec recherche (select2), exécuté directement : ne dépend pas du $(document).ready du layout
+if (window.jQuery && jQuery.fn.select2) {
+    jQuery('#classeImpression, #niveauImpression').select2({ width: '240px', dropdownAutoWidth: true });
+}
+
+// Filtres choisis (classe, niveau) sous forme de paramètres d'adresse
+function filtresListe(debut) {
+    var parts = [];
+    var classe = document.getElementById('classeImpression').value;
+    var niveau = document.getElementById('niveauImpression').value;
+    if (classe) parts.push('secteur=' + classe);
+    if (niveau) parts.push('niveau=' + niveau);
+    return parts.length ? debut + parts.join('&') : '';
+}
+
+// Télécharge les élèves (toutes les classes ou la classe choisie) au format Excel
+function exporterExcel() {
+    window.location.href = '{% url "etudiants_exporter_excel" %}' + filtresListe('?');
+    return false;
+}
+
+// Excel simple (nom, numéro, classe) : toute la liste ou la classe choisie, en arabe ou en français
+function exporterListeExcel(langue) {
+    var classe = document.getElementById('classeImpression').value;
+    window.location.href = '{% url "etudiants_exporter_liste_excel" %}?langue=' + langue + (classe ? '&secteur=' + classe : '');
+    return false;
+}
+
+// Cartes d'élève (toutes, ou celles de la classe / du niveau choisi), au format carte réelle
+function imprimerCartes() {
+    window.open('{% url "cartes_etudiants" %}' + filtresListe('?'), '_blank');
+    return false;
+}
+
+// Ouvre la liste imprimable (toutes les classes ou la classe choisie) dans la langue demandée
+function imprimerListe(langue) {
+    var url = '{% url "liste_etudiants_imprimer" %}?langue=' + langue + filtresListe('&')
+        + (document.getElementById('avecSignature').checked ? '&signature=1' : '');
+    window.open(url, '_blank');
+    return false;
+}
+</script>
 {% endblock %}

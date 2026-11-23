@@ -67,6 +67,8 @@ INSTALLED_APPS = [
     'parametres',
     'rapports',
     'espace_prof',
+    'niveaux',
+    'groupes',
     'roles',
     'users',
     'documents'
@@ -78,6 +80,7 @@ MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'parametres.middleware.AnneeConsulteeMiddleware',
     'django.middleware.locale.LocaleMiddleware',  # Important, place-le après SessionMiddleware
+    'scolarite.error_views.ErreursConvivialesMiddleware',
 
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -92,6 +95,10 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'scolarite.urls'
 AUTH_USER_MODEL = 'users.User'
+
+# Pages d'erreur claires pour les utilisateurs (mettre ERREURS_TECHNIQUES=1 pour voir les pages techniques de Django)
+ERREURS_CONVIVIALES = os.environ.get('ERREURS_TECHNIQUES') != '1'
+CSRF_FAILURE_VIEW = 'scolarite.error_views.csrf_failure'
 
 TEMPLATES = [
     {
@@ -197,3 +204,5 @@ LOGOUT_REDIRECT_URL = '/'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+# Fichiers privés (justificatifs d'absence) : jamais servis directement, uniquement par une vue authentifiée
+PRIVATE_MEDIA_ROOT = os.path.join(BASE_DIR, 'private_media')

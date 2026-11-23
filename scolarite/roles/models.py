@@ -16,6 +16,18 @@ class Role(models.Model):
         ('PROFESSEUR', 'Professeur'),
     ]
 
+    # Libellés affichés (arabe / français). Le rôle MANAGER n'est pas proposé dans les écrans (voir ROLES_MASQUES).
+    LIBELLES = {
+        'ADMIN': ('مدير', 'Administrateur'),
+        'SUPER_ADMIN': ('مدير عام', 'Super administrateur'),
+        'DOCTOR': ('طبيب', 'Médecin'),
+        'MANAGER': ('مسؤول', 'Manager'),
+        'POINTEUR': ('مراقب الحضور', 'Pointer'),
+        'POINTER': ('مراقب الحضور', 'Pointer'),
+        'PROFESSEUR': ('أستاذ', 'Professeur'),
+    }
+    ROLES_MASQUES = ('MANAGER',)
+
     code = models.CharField(max_length=20, choices=ROLE_CHOICES, unique=True, verbose_name="Code du rôle")
     name = models.CharField(max_length=50, verbose_name="Nom affiché")
     description = models.TextField(blank=True, verbose_name="Description")
@@ -26,6 +38,21 @@ class Role(models.Model):
 
     def __str__(self):
         return self.name
+
+    @property
+    def libelle(self):
+        """Nom du rôle en arabe et en français."""
+        ar, fr = self.LIBELLES.get(self.code, (self.name, self.name))
+        return f"{ar} / {fr}"
+
+    @property
+    def masque(self):
+        return self.code in self.ROLES_MASQUES
+
+    @classmethod
+    def visibles(cls):
+        """Rôles proposés dans les écrans (hors rôles masqués)."""
+        return cls.objects.exclude(code__in=cls.ROLES_MASQUES)
 
 class Permission(models.Model):
     code = models.CharField(max_length=100, unique=True)

@@ -52,5 +52,10 @@ class User(AbstractUser):
         return role_code in codes
 
     @property
+    def roles_visibles(self):
+        """Rôles actifs à afficher (hors rôles masqués comme MANAGER)."""
+        return [ur.role for ur in self.user_roles.filter(is_active=True).select_related('role') if not ur.role.masque]
+
+    @property
     def roles(self):
         return [ur.role for ur in self.user_roles.filter(is_active=True)]

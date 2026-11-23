@@ -1,0 +1,31 @@
+{% load static i18n %}<!DOCTYPE html>
+<html lang="{{ lang_impression }}" dir="{% if lang_impression == 'ar' %}rtl{% else %}ltr{% endif %}">
+<head>
+  <meta charset="UTF-8">
+  <title>{% if lang_impression == 'ar' %}قائمة التلاميذ الموظفين حسب القسم{% else %}Liste des élèves fonctionnaires par classe{% endif %}</title>
+  <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
+  <style>
+    body { background: #fff; padding: 15px; }
+    table { border-collapse: collapse; width: 100%; }
+    table thead th { background-color: green !important; color: white !important; text-align: center; padding: 10px; border: 1px solid #ddd;
+                     -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    table tbody td { text-align: center; padding: 8px; border: 1px solid #ddd; }
+    .screen-form-line-double { display: flex; margin-bottom: 10px; }
+    .screen-form-line-left { flex: 1; padding: 5px; }
+    .rtl-direction { direction: rtl; text-align: right; }
+    .ltr-direction { direction: ltr; text-align: left; }
+    td.signature { width: 150px; height: 38px; }
+    .no-print { margin-bottom: 15px; }
+    @media print { .no-print { display: none; } }
+  </style>
+</head>
+<body onload="window.print()">
+{% language lang_impression %}{% with LANGUAGE_CODE=lang_impression %}
+<div class="no-print">
+  <button class="btn btn-primary" onclick="window.print()"><i class="fa fa-print"></i> {% if lang_impression == 'ar' %}طباعة{% else %}Imprimer{% endif %}</button>
+  <button class="btn btn-default" onclick="window.close()">{% if lang_impression == 'ar' %}إغلاق{% else %}Fermer{% endif %}</button>
+</div>
+{% include 'etudiants/_liste_imprimable.html' %}
+{% endwith %}{% endlanguage %}
+</body>
+</html>

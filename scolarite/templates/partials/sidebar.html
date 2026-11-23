@@ -52,6 +52,7 @@
                         {% endif %}
                         <li><a href="{% url 'enregistrement_presence' %}"><i
                                 class="fa fa-circle-o"></i> {% trans "Absence" %}</a></li>
+                        <li><a href="{% url 'listes_pointage' %}"><i class="fa fa-circle-o"></i> {% trans "Listes de pointage" %}</a></li>
                         {#                  <li><a href="{% url 'selection' %}"><i class="fa fa-circle-o"></i> {% trans "Absence hors emploie" %}</a></li>#}
 
                         <li><a href="{% url 'pv_list' %}"><i class="fa fa-circle-o"></i> {% trans "pvl" %}</a></li>
@@ -63,7 +64,7 @@
 
             {# Absence #}
 
-            {% if user|has_any_role:"DOCTOR" %}
+            {% if user|has_any_role:"DOCTOR,ADMIN,POINTEUR,SUPER_ADMIN" %}
                 <li class="treeview">
                     <a href="#">
                         <i class="fa fa-users"></i>
@@ -73,6 +74,8 @@
                     <ul class="treeview-menu">
                         <li><a href="{% url 'liste_absences_non_justifiees' %}"><i
                                 class="fa fa-circle-o"></i> {% trans "Justification" %}</a></li>
+                        {% if user|has_any_role:"DOCTOR" %}<li><a href="{% url 'justification_periode' %}"><i class="fa fa-circle-o"></i> {% trans "Justifier par période" %}</a></li>{% endif %}
+                        <li><a href="{% url 'historique_justifications_general' %}"><i class="fa fa-circle-o"></i> {% trans "Historique des justifications" %}</a></li>
                     </ul>
                 </li>
             {% endif %}
@@ -214,6 +217,36 @@ Absences par matiere                                {% endif %}
                     </ul>
                 </li>
 
+            {% endif %}
+
+            {# Niveaux (paramétrage) #}
+            {% if user|has_any_role:"ADMIN,SUPER_ADMIN" %}
+                <li class="treeview">
+                    <a href="#">
+                        <i class="fa fa-sitemap"></i>
+                        <span>{% trans "Niveaux" %}</span>
+                        <i class="fa fa-angle-left pull-right"></i>
+                    </a>
+                    <ul class="treeview-menu">
+                        <li><a href="{% url 'niveau_liste' %}"><i class="fa fa-circle-o"></i> {% trans "Liste des niveaux" %}</a></li>
+                        <li><a href="{% url 'niveau_creer' %}"><i class="fa fa-circle-o"></i> {% trans "Ajouter un niveau" %}</a></li>
+                    </ul>
+                </li>
+            {% endif %}
+
+            {# Groupes (cours de langue) #}
+            {% if user|has_any_role:"ADMIN,SUPER_ADMIN" %}
+                <li class="treeview">
+                    <a href="#">
+                        <i class="fa fa-users"></i>
+                        <span>{% trans "Groupes" %}</span>
+                        <i class="fa fa-angle-left pull-right"></i>
+                    </a>
+                    <ul class="treeview-menu">
+                        <li><a href="{% url 'groupe_liste' %}"><i class="fa fa-circle-o"></i> {% trans "Liste des groupes" %}</a></li>
+                        <li><a href="{% url 'groupe_creer' %}"><i class="fa fa-circle-o"></i> {% trans "Ajouter un groupe" %}</a></li>
+                    </ul>
+                </li>
             {% endif %}
 
             {# Annee #}

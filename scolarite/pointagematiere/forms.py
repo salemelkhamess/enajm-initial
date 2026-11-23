@@ -30,7 +30,8 @@ class PointageMatiereForm(forms.ModelForm):
 
     class Meta:
         model = PointageMatiere
-        fields = '__all__'
+        # l'année et le trimestre ne se choisissent pas : ils viennent des paramètres (année et trimestre actifs)
+        exclude = ('annee', 'trimestre')
         widgets = {
             'annee': forms.Select(attrs={
                 'class': 'form-control select',

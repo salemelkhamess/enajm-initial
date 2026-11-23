@@ -39,6 +39,14 @@
     <button type="submit" class="btn btn-success">
         <i class="fa fa-save"></i> {% trans "Enregistrer" %}
     </button>
+    {% if form.instance.pk %}
+    <button type="submit" name="suivant" value="1" class="btn btn-primary"{% if not suivant %} title="{% trans "Dernier élève de la liste" %}"{% endif %}>
+        <i class="fa fa-forward"></i> {% trans "Enregistrer et passer à l'élève suivant" %}
+    </button>
+    {% if position %}<span class="label label-info" style="margin:0 8px;">{{ position }} / {{ total }}</span>{% endif %}
+    {% if precedent %}<a href="{% url 'etudiant_edit' precedent.pk %}" class="btn btn-default btn-sm" title="{{ precedent.nom_complet_langue }}"><i class="fa fa-backward"></i> {% trans "Élève précédent" %}</a>{% endif %}
+    {% if suivant %}<a href="{% url 'etudiant_edit' suivant.pk %}" class="btn btn-default btn-sm" title="{{ suivant.nom_complet_langue }}">{% trans "Élève suivant" %} <i class="fa fa-forward"></i></a>{% endif %}
+    {% endif %}
     <a href="{% url 'etudiant_list' %}" class="btn btn-secondary">{% trans "Annuler" %}</a>
 </form>
 

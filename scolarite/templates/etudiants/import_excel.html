@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block content %}
+<div class="box box-primary">
+    <div class="box-header with-border"><h3 class="box-title">{% trans "Importer des élèves fonctionnaires depuis Excel" %}</h3></div>
+    <div class="box-body">
+        <p>{% trans "Les élèves sont ajoutés à l'année en cours" %} (<strong>{{ annee }}</strong>). {% trans "Un élève dont le matricule existe déjà est mis à jour ; les cellules vides ne modifient rien." %}</p>
+        <p>
+            <a href="{% url 'etudiants_modele_excel' %}" class="btn btn-default"><i class="fa fa-download"></i> {% trans "Télécharger le modèle Excel" %}</a>
+            <a href="{% url 'etudiants_exporter_excel' %}" class="btn btn-default"><i class="fa fa-file-excel-o"></i> {% trans "Exporter en Excel" %}</a>
+            <a href="{% url 'etudiant_list' %}" class="btn btn-link">{% trans "Retour" %}</a>
+        </p>
+        <p class="text-muted">{% trans "Le fichier doit avoir les mêmes colonnes que le modèle (1ère ligne : noms des champs de la base). Si une seule ligne est invalide, rien n'est importé." %}</p>
+
+        {% if resultat %}
+            {% if resultat.erreurs %}
+                <div class="alert alert-danger">
+                    <strong>{% trans "Import annulé : corrigez ces erreurs puis réessayez." %}</strong>
+                    <ul style="margin-top:8px;max-height:260px;overflow:auto;">
+                        {% for ligne, message in resultat.erreurs|slice:":100" %}
+                            <li>{% if ligne %}{% trans "Ligne" %} {{ ligne }} : {% endif %}{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% if resultat.erreurs|length > 100 %}<em>… {{ resultat.erreurs|length }} {% trans "erreurs au total" %}</em>{% endif %}
+                </div>
+            {% else %}
+                <div class="alert alert-success">
+                    <strong>{% trans "Import terminé" %} :</strong>
+                    {{ resultat.crees }} {% trans "créé(s)" %}, {{ resultat.modifies }} {% trans "mis à jour" %} ({{ resultat.lignes }} {% trans "ligne(s)" %}).
+                </div>
+            {% endif %}
+        {% endif %}
+
+        <form method="post" enctype="multipart/form-data" class="form-inline">
+            {% csrf_token %}
+            <input type="file" name="fichier" accept=".xlsx" class="form-control" required>
+            <button type="submit" class="btn btn-success"><i class="fa fa-upload"></i> {% trans "Importer" %}</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

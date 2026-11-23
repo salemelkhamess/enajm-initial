@@ -27,8 +27,8 @@
         <td>{{ user.first_name }} {{ user.last_name }}</td>
         <td>{{ user.email }}</td>
         <td>
-            {% for role in user.roles %}
-                <span class="badge bg-info text-dark">{{ role.name }}</span>
+            {% for role in user.roles_visibles %}
+                <span class="badge bg-info text-dark">{{ role.libelle }}</span>
             {% empty %}
                 <span class="text-muted">{% trans "Aucun rôle" %}</span>
             {% endfor %}

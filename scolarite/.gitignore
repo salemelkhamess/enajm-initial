@@ -43,3 +43,6 @@ backups/
 *.swp
 .DS_Store
 Thumbs.db
+
+# Justificatifs d'absence (données personnelles)
+private_media/

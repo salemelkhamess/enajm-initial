@@ -3,7 +3,7 @@
 {% block content %}
 <div class="box box-primary">
     <div class="box-header with-border">
-        <h3 class="box-title">{% trans "Ma présence et contenu enseigné" %} — {{ c.matiere.nom }} ({{ c.secteur.nom }})</h3>
+        <h3 class="box-title">{% trans "Ma présence et contenu enseigné" %} — {{ c.matiere.nom }} ({% if c.niveau_id %}{{ c.niveau.nom }} — {{ c.get_langue_display }}{% else %}{{ c.secteur.nom }}{% endif %})</h3>
     </div>
     <div class="box-body">
         <form method="get" class="form-inline" style="margin-bottom:15px;">

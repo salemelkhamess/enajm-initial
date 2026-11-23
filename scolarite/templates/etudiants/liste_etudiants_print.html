@@ -1,0 +1,95 @@
+{% load static i18n %}<!DOCTYPE html>
+<html lang="{{ lang_impression }}" dir="{% if lang_impression == 'ar' %}rtl{% else %}ltr{% endif %}">
+<head>
+  <meta charset="UTF-8">
+  <title>{% if lang_impression == 'ar' %}قائمة التلاميذ الموظفين{% else %}Liste des élèves fonctionnaires{% endif %}</title>
+  <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
+  <style>
+    body { background: #fff; padding: 15px; }
+    table { border-collapse: collapse; width: 100%; }
+    table thead th { background-color: green !important; color: white !important; text-align: center; padding: 10px; border: 1px solid #ddd;
+                     -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    table tbody td { text-align: center; padding: 6px 8px; border: 1px solid #ddd; }
+    table tbody tr.classe td { background: #e7f3fe !important; font-weight: bold; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    tr { page-break-inside: avoid; }
+    td.signature { width: 150px; height: 38px; }
+    .no-print { margin-bottom: 15px; }
+    @media print { .no-print { display: none; } }
+  </style>
+</head>
+<body onload="window.print()">
+{% language lang_impression %}
+<div class="no-print">
+  <button class="btn btn-primary" onclick="window.print()"><i class="fa fa-print"></i> {% if lang_impression == 'ar' %}طباعة{% else %}Imprimer{% endif %}</button>
+  <button class="btn btn-default" onclick="window.close()">{% if lang_impression == 'ar' %}إغلاق{% else %}Fermer{% endif %}</button>
+</div>
+
+{% include "entete/show.html" with entete=entete %}
+
+<h3 align="center">{% if lang_impression == 'ar' %}قائمة التلاميذ الموظفين{% else %}Liste des élèves fonctionnaires{% endif %}</h3>
+<h5 align="center">
+  {{ annee }}{% if niveau_choisi %} — {% if lang_impression == 'ar' %}مستوى اللغة{% else %}Niveau de langue{% endif %} : {{ niveau_choisi.nom }}{% endif %}{% if secteur_choisi %} — {% if lang_impression == 'ar' %}القسم{% else %}Classe{% endif %} : {{ secteur_choisi.nom }}{% endif %}
+</h5>
+
+{% if niveau_choisi %}
+<table border="1">
+  <thead>
+    <tr>
+      <th>{% if lang_impression == 'ar' %}الرقم{% else %}N°{% endif %}</th>
+      <th>{% if lang_impression == 'ar' %}الاسم الكامل{% else %}Nom complet{% endif %}</th>
+      <th>{% if lang_impression == 'ar' %}القسم{% else %}Classe{% endif %}</th>
+      <th>{% if lang_impression == 'ar' %}تاريخ ومحل الميلاد{% else %}Date et lieu de naissance{% endif %}</th>
+      <th>{% if lang_impression == 'ar' %}الرقم الوطني{% else %}N° national{% endif %}</th>
+      {% if avec_signature %}<th style="width:150px">{% if lang_impression == 'ar' %}التوقيع{% else %}Signature{% endif %}</th>{% endif %}
+    </tr>
+  </thead>
+  <tbody>
+  {% for e in etudiants %}
+    <tr>
+      <td>{{ e.matricule }}</td>
+      <td>{{ e.nom_complet_langue }}</td>
+      <td>{{ e.secteur.nom }}</td>
+      <td>{% if e.date_naissance %}{{ e.date_naissance }}{% endif %}{% if e.lieu_naissance_langue %}{% if e.date_naissance %} - {% endif %}{{ e.lieu_naissance_langue }}{% endif %}{% if not e.date_naissance and not e.lieu_naissance_langue %}-{% endif %}</td>
+      <td>{{ e.nni|default:"-" }}</td>
+      {% if avec_signature %}<td class="signature"></td>{% endif %}
+    </tr>
+  {% empty %}
+    <tr><td colspan="{% if avec_signature %}6{% else %}5{% endif %}">{% if lang_impression == 'ar' %}لا يوجد موظفون في مستوى اللغة هذا{% else %}Aucun élève dans ce niveau de langue{% endif %}</td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<table border="1">
+  <thead>
+    <tr>
+      <th>{% if lang_impression == 'ar' %}الرقم{% else %}N°{% endif %}</th>
+      <th>{% if lang_impression == 'ar' %}الاسم الكامل{% else %}Nom complet{% endif %}</th>
+      <th>{% if lang_impression == 'ar' %}تاريخ ومحل الميلاد{% else %}Date et lieu de naissance{% endif %}</th>
+      <th>{% if lang_impression == 'ar' %}الرقم الوطني{% else %}N° national{% endif %}</th>
+      {% if avec_signature %}<th style="width:150px">{% if lang_impression == 'ar' %}التوقيع{% else %}Signature{% endif %}</th>{% endif %}
+    </tr>
+  </thead>
+  <tbody>
+  {% regroup etudiants by secteur as groupes %}
+  {% for g in groupes %}
+    <tr class="classe"><td colspan="{% if avec_signature %}5{% else %}4{% endif %}">{% if lang_impression == 'ar' %}القسم{% else %}Classe{% endif %} : {{ g.grouper.nom }} ({{ g.list|length }})</td></tr>
+    {% for e in g.list %}
+    <tr>
+      <td>{{ e.matricule }}</td>
+      <td>{{ e.nom_complet_langue }}</td>
+      <td>{% if e.date_naissance %}{{ e.date_naissance }}{% endif %}{% if e.lieu_naissance_langue %}{% if e.date_naissance %} - {% endif %}{{ e.lieu_naissance_langue }}{% endif %}{% if not e.date_naissance and not e.lieu_naissance_langue %}-{% endif %}</td>
+      <td>{{ e.nni|default:"-" }}</td>
+      {% if avec_signature %}<td class="signature"></td>{% endif %}
+    </tr>
+    {% endfor %}
+  {% empty %}
+    <tr><td colspan="{% if avec_signature %}5{% else %}4{% endif %}">{% if lang_impression == 'ar' %}لا يوجد موظفون{% else %}Aucun élève fonctionnaire{% endif %}</td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% endif %}
+
+<p style="margin-top:15px;"><strong>{% if lang_impression == 'ar' %}عدد الموظفين:{% else %}Nombre d'élèves fonctionnaires :{% endif %}</strong> {{ total }}</p>
+{% endlanguage %}
+</body>
+</html>

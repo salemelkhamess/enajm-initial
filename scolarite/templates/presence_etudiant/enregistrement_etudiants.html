@@ -14,6 +14,7 @@
         <div class="card-body">
             <h5 class="card-title">{% trans "Informations du cours" %}</h5>
             <p><strong>{% trans "Matière" %}:</strong> {{ matiere.nom }}</p>
+            {% if groupe %}<p><strong>{% trans "Groupe" %}:</strong> {{ groupe.nom_affiche }} <span class="label label-info">{{ etudiants|length }} {% trans "élèves" %}</span></p>{% endif %}
             <p><strong>{% trans "Date" %}:</strong> {{ date_cours }} ({{ jour|jour_i18n }})</p>
 
         </div>
@@ -24,6 +25,7 @@
         <table class="table table-bordered">
             <thead class="thead-light">
                 <tr>
+                    <th>{% trans "Matricule" %}</th>
                     <th>{% trans "Etudiant" %}</th>
                     <th>{% trans "Présences" %}</th>
                 </tr>
@@ -31,6 +33,7 @@
             <tbody>
                 {% for etudiant in etudiants %}
                 <tr>
+                    <td style="white-space: nowrap;"><strong>{{ etudiant.etudiant.matricule }}</strong></td>
                     <td>
                         {{ etudiant.etudiant.nom }} {{ etudiant.etudiant.prenom }}
                         <input type="hidden" name="etudiant_{{ etudiant.etudiant.id }}" value="absent">

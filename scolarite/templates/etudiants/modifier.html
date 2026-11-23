@@ -1,18 +1,43 @@
 {% extends 'base.html' %}
 {% load i18n %}
 {% block content %}
-<div class="box">
-<div class="box-header">
-        <h2>{% trans "Modifier le statut de labsence" %}</h2>
+<div class="box box-primary">
+    <div class="box-header with-border"><h3 class="box-title">{% trans "Justifier une absence" %}</h3></div>
+    <div class="box-body">
+        <p><strong>{{ absence.etudiant.nom }} {{ absence.etudiant.prenom }}</strong> — {{ absence.matiere.nom }} — {{ absence.date_cours|date:"d/m/Y" }}</p>
+        {% if absence.etat_absence == 'justification_soumise' %}
+            <div class="alert alert-warning">{% trans "Une justification est déjà en attente de validation : vous pouvez la modifier ou ajouter des documents." %}</div>
+        {% else %}
+            <div class="alert alert-info">{% trans "La justification doit être validée par l'administration. Elle n'est possible que tant que l'absence n'est pas validée (72 h)." %}
+                {% if absence.heures_avant_validation %} — {{ absence.heures_avant_validation }} {% trans "h restantes" %}{% endif %}</div>
+        {% endif %}
+        {% if messages %}{% for message in messages %}<div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %}">{{ message }}</div>{% endfor %}{% endif %}
+        {% for e in erreurs %}<div class="alert alert-danger">{{ e }}</div>{% endfor %}
 
-</div>
-<div class="box-body">
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit" class="btn btn-success">{% trans "Enregistrer" %}</button>
-    <a href="{% url 'liste_absences_non_justifiees' %}" class="btn btn-secondary">{% trans "Annuler" %}</a>
-</form>
-</div>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="form-group">
+                <label>{% trans "Justification" %}</label>
+                <textarea name="justification" rows="4" class="form-control" required>{{ texte }}</textarea>
+            </div>
+            <div class="form-group">
+                <label>{% trans "Date de la justification" %}</label>
+                <input type="date" name="date_justification" value="{{ date_justification }}" class="form-control" style="max-width:220px;" data-no-default>
+            </div>
+            {% if documents %}
+            <div class="form-group">
+                <label>{% trans "Documents déjà joints" %}</label>
+                <ul>{% for d in documents %}<li><a href="{% url 'justificatif_document' d.id %}" target="_blank">{{ d.nom }}</a></li>{% endfor %}</ul>
+            </div>
+            {% endif %}
+            <div class="form-group">
+                <label>{% trans "Joindre des documents (certificat médical, etc.)" %}</label>
+                <input type="file" name="documents" multiple accept=".pdf,.jpg,.jpeg,.png" class="form-control">
+                <small class="text-muted">{% trans "PDF, JPG ou PNG — 5 Mo maximum par fichier" %} ({{ nb_max }} {% trans "documents au maximum" %})</small>
+            </div>
+            <button type="submit" class="btn btn-success"><i class="fa fa-send"></i> {% trans "Envoyer la justification" %} <small>({% trans "puis élève suivant" %})</small></button>
+            <a href="{% url 'liste_absences_non_justifiees' %}" class="btn btn-link">{% trans "Annuler" %}</a>
+        </form>
+    </div>
 </div>
 {% endblock %}

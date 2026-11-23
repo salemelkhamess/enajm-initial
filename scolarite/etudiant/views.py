@@ -1,6 +1,8 @@
 from django.http import JsonResponse
+from django.core.exceptions import PermissionDenied
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
-from django.urls import reverse_lazy
+from django.urls import reverse, reverse_lazy
+from django.contrib import messages
 
 from annee.models import Annee
 from branches.models import Secteur
@@ -8,7 +10,7 @@ from entete.models import Entete
 from parametres.models import Parametres
 from presenceetudiant.models import PresenceEtudiant
 from trimestre.models import Trimestre
-from .models import Etudiant
+from .models import Etudiant, ordre_matricule_croissant
 from .forms import EtudiantForm
 from django.views.generic import DetailView
 from django.utils import timezone
@@ -31,21 +33,60 @@ class EtudiantListView(ListView):
     template_name = 'etudiants/list.html'
     context_object_name = 'etudiants'
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['secteurs'] = Secteur.objects.all().order_by('nom')
+        from niveaux.models import Niveau
+        context['niveaux'] = Niveau.actifs()
+        return context
+
     def get_queryset(self):
         return (super().get_queryset().filter(annee=get_annee_courante())
-                .select_related('annee', 'secteur__formation'))
+                .select_related('annee', 'secteur__formation', 'niveau')
+                .prefetch_related('documents', 'affectations__groupe')
+                .order_by(*ordre_matricule_croissant()))
 
-class EtudiantCreateView(CreateView):
+class _EnregistrementSecurise:
+    """Affiche un message clair (dans la langue de l'utilisateur) au lieu de la page d'erreur technique."""
+
+    def form_valid(self, form):
+        from django.db import IntegrityError, transaction
+        try:
+            with transaction.atomic():
+                return super().form_valid(form)
+        except IntegrityError:
+            form.add_error(None, _("Enregistrement impossible : une valeur déjà utilisée (matricule ou NNI) existe pour un autre élève."))
+            return self.form_invalid(form)
+
+
+class EtudiantCreateView(_EnregistrementSecurise, CreateView):
     model = Etudiant
     form_class = EtudiantForm
     template_name = 'etudiants/create.html'
     success_url = reverse_lazy('etudiant_list')
 
-class EtudiantUpdateView(UpdateView):
+class EtudiantUpdateView(_EnregistrementSecurise, UpdateView):
     model = Etudiant
     form_class = EtudiantForm
     template_name = 'etudiants/edit.html'
     success_url = reverse_lazy('etudiant_list')
+
+    def get_context_data(self, **kwargs):
+        from documents.views import voisins
+        context = super().get_context_data(**kwargs)
+        context.update(voisins(self.object))   # précédent, suivant, position, total (ordre de la liste)
+        return context
+
+    def get_success_url(self):
+        # « Enregistrer et passer à l'élève suivant » : on ouvre directement la fiche du suivant
+        if self.request.POST.get('suivant'):
+            from documents.views import voisins
+            suivant = voisins(self.object)['suivant']
+            if suivant:
+                messages.success(self.request, _("Modifications enregistrées. Élève suivant : %(nom)s") % {'nom': suivant.nom_complet_langue})
+                return reverse('etudiant_edit', args=[suivant.pk])
+            messages.info(self.request, _("Modifications enregistrées. C'était le dernier élève de la liste."))
+        return super().get_success_url()
 
 class EtudiantDeleteView(DeleteView):
     model = Etudiant
@@ -106,6 +147,10 @@ def liste_etudiants_par_secteur(request):
     selected_annee = request.GET.get('annee')
     selected_trimestre = request.GET.get('trimestre')
     selected_secteur = request.GET.get('secteur')
+    # langue de la liste imprimée : choisie dans le formulaire, sinon langue de l'interface
+    lang_impression = request.GET.get('langue')
+    if lang_impression not in ('ar', 'fr'):
+        lang_impression = 'ar' if (get_language() or '').startswith('ar') else 'fr'
 
     # Récupération de toutes les données pour les formulaires
     annees = Annee.objects.all().order_by('numero_annee')
@@ -130,7 +175,7 @@ def liste_etudiants_par_secteur(request):
             etudiants = Etudiant.objects.filter(
                 annee_id=selected_annee,
                 secteur_id=selected_secteur
-            ).order_by('nom', 'prenom')
+            ).order_by(*ordre_matricule_croissant())
 
             # Calcul des statistiques par sexe
             stats_sexe = etudiants.values('sexe').annotate(count=Count('sexe')).order_by('sexe')
@@ -158,10 +203,46 @@ def liste_etudiants_par_secteur(request):
         'selected_annee_obj': selected_annee_obj,
         'selected_trimestre_obj': selected_trimestre_obj,
         'selected_secteur_obj': selected_secteur_obj,
+        'lang_impression': lang_impression,
+        'avec_signature': request.GET.get('signature') == '1',
         'entete': None,  # Vous pouvez ajouter votre entête ici
     }
 
+    if request.GET.get('imprimer'):
+        # page d'impression autonome, dans la langue demandée (liste arabe / liste française)
+        return render(request, 'etudiants/liste_par_secteur_print.html', context)
     return render(request, 'etudiants/liste_par_secteur.html', context)
+
+
+def liste_etudiants_imprimer(request):
+    """Liste de tous les élèves fonctionnaires (année affichée), imprimable en arabe ou en français."""
+    langue = request.GET.get('langue')
+    if langue not in ('ar', 'fr'):
+        langue = 'ar' if (get_language() or '').startswith('ar') else 'fr'
+    etudiants = (Etudiant.objects.filter(annee=get_annee_courante())
+                 .select_related('secteur', 'annee').order_by('secteur__nom', 'secteur_id', *ordre_matricule_croissant()))
+    secteur = None
+    secteur_id = request.GET.get('secteur')
+    if secteur_id and secteur_id.isdigit():
+        etudiants = etudiants.filter(secteur_id=int(secteur_id))
+        secteur = Secteur.objects.filter(pk=int(secteur_id)).first()
+    # liste d'un niveau (tous secteurs confondus) : un seul tableau, avec la classe de chaque élève
+    niveau = None
+    niveau_id = request.GET.get('niveau')
+    if niveau_id and niveau_id.isdigit():
+        from niveaux.models import Niveau
+        niveau = Niveau.objects.filter(pk=int(niveau_id)).first()
+        if niveau:
+            etudiants = etudiants.filter(niveau=niveau).order_by(*ordre_matricule_croissant())
+    return render(request, 'etudiants/liste_etudiants_print.html', {
+        'etudiants': etudiants,
+        'total': etudiants.count(),
+        'secteur_choisi': secteur,
+        'niveau_choisi': niveau,
+        'annee': get_annee_courante(),
+        'lang_impression': langue,
+        'avec_signature': request.GET.get('signature') == '1',
+    })
 
 
 def get_trimestres(request):
@@ -225,6 +306,65 @@ def carte_etudiant(request, matricule):
     return render(request, 'etudiants/carte_etudiant.html', context)
 
 
+def photo_carte(request, pk):
+    """Miniature de la photo d'un élève (créée une fois, puis servie depuis le cache) : allège l'impression des cartes."""
+    import os
+    from django.conf import settings
+    from django.http import FileResponse
+    from PIL import Image, ImageOps
+
+    etudiant = get_object_or_404(Etudiant, pk=pk)
+    if not etudiant.photo:
+        raise Http404("Pas de photo")
+    try:
+        source = etudiant.photo.path
+        mtime = int(os.path.getmtime(source))
+    except (OSError, ValueError):
+        raise Http404("Photo introuvable")
+    dossier = os.path.join(settings.MEDIA_ROOT, 'cartes_cache')
+    os.makedirs(dossier, exist_ok=True)
+    cible = os.path.join(dossier, f"{etudiant.pk}-{mtime}.jpg")
+    if not os.path.exists(cible):
+        try:
+            with Image.open(source) as img:
+                img = ImageOps.exif_transpose(img).convert('RGB')
+                # 21 x 26 mm à ~300 dpi, cadré sur le haut du visage
+                img = ImageOps.fit(img, (252, 312), Image.LANCZOS, centering=(0.5, 0.3))
+                tmp = cible + '.tmp'
+                img.save(tmp, 'JPEG', quality=85, optimize=True)
+                os.replace(tmp, cible)
+        except Exception:
+            raise Http404("Photo illisible")
+    reponse = FileResponse(open(cible, 'rb'), content_type='image/jpeg')
+    reponse['Cache-Control'] = 'private, max-age=3600'
+    return reponse
+
+
+def cartes_etudiants(request):
+    """Toutes les cartes d'élève (année affichée, ou une classe / un niveau) prêtes à imprimer comme de vraies cartes."""
+    etudiants = (Etudiant.objects.filter(annee=get_annee_courante())
+                 .select_related('secteur', 'annee').order_by('secteur__nom', 'secteur_id', *ordre_matricule_croissant()))
+    filtre = []
+    secteur_id = request.GET.get('secteur')
+    if secteur_id and secteur_id.isdigit():
+        etudiants = etudiants.filter(secteur_id=int(secteur_id))
+        s = Secteur.objects.filter(pk=int(secteur_id)).first()
+        if s:
+            filtre.append(s.nom)
+    niveau_id = request.GET.get('niveau')
+    if niveau_id and niveau_id.isdigit():
+        from niveaux.models import Niveau
+        etudiants = etudiants.filter(niveau_id=int(niveau_id))
+        n = Niveau.objects.filter(pk=int(niveau_id)).first()
+        if n:
+            filtre.append(str(n.libelle))
+    etudiants = list(etudiants)
+    return render(request, 'etudiants/cartes_etudiants.html', {
+        'etudiants': etudiants, 'total': len(etudiants), 'filtre': ' — '.join(filtre),
+        'sans_photo': sum(1 for e in etudiants if not e.photo),
+    })
+
+
 def dashboard_view(request):
     secteurs_etudiants = Secteur.objects.annotate(
         num_etudiants=Count('etudiants', filter=Q(etudiants__annee=get_annee_courante()))
@@ -248,7 +388,7 @@ class EtudiantsParSecteurListView(ListView):
 
     def get_queryset(self):
         secteur_id = self.kwargs['secteur_id']
-        return Etudiant.objects.filter(secteur_id=secteur_id, annee=get_annee_courante()).order_by('nom')
+        return Etudiant.objects.filter(secteur_id=secteur_id, annee=get_annee_courante()).order_by(*ordre_matricule_croissant())
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -331,3 +471,94 @@ class AbsencesEtudiantView(DetailView):
             'trimestre_courant': params.trimestre_courant
         })
         return context
+
+
+# --- Excel : export / import des élèves fonctionnaires -------------------------------------------
+def _gestionnaire(request):
+    u = request.user
+    return u.is_authenticated and (u.is_superuser or u.has_role('ADMIN') or u.has_role('SUPER_ADMIN'))
+
+
+def exporter_etudiants_excel(request):
+    """Télécharge les élèves de l'année affichée (ou d'une classe) au format de l'import."""
+    from . import excel
+    etudiants = (Etudiant.objects.filter(annee=get_annee_courante())
+                 .select_related('secteur', 'annee').order_by('secteur__nom', *ordre_matricule_croissant()))
+    secteur_id = request.GET.get('secteur')
+    if secteur_id and secteur_id.isdigit():
+        etudiants = etudiants.filter(secteur_id=int(secteur_id))
+    niveau_id = request.GET.get('niveau')
+    if niveau_id and niveau_id.isdigit():
+        etudiants = etudiants.filter(niveau_id=int(niveau_id))
+    contenu = excel.exporter(etudiants)
+    nom = f"etudiants_{get_annee_courante()}".replace(' ', '').replace('/', '-') + '.xlsx'
+    reponse = HttpResponse(contenu, content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    reponse['Content-Disposition'] = f'attachment; filename="{nom}"'
+    return reponse
+
+
+def exporter_liste_simple_excel(request):
+    """Excel « nom, numéro, classe » des élèves (une classe ou toutes), en arabe ou en français."""
+    from io import BytesIO
+    from django.utils import translation
+    from openpyxl import Workbook
+    from openpyxl.styles import Alignment, Font, PatternFill
+
+    langue = request.GET.get('langue')
+    if langue not in ('ar', 'fr'):
+        langue = 'ar' if (get_language() or '').startswith('ar') else 'fr'
+    etudiants = (Etudiant.objects.filter(annee=get_annee_courante())
+                 .select_related('secteur').order_by('secteur__nom', 'secteur_id', *ordre_matricule_croissant()))
+    secteur_id = request.GET.get('secteur')
+    secteur = None
+    if secteur_id and secteur_id.isdigit():
+        etudiants = etudiants.filter(secteur_id=int(secteur_id))
+        secteur = Secteur.objects.filter(pk=int(secteur_id)).first()
+    entetes = ['الاسم', 'الرقم', 'القسم'] if langue == 'ar' else ['Nom', 'Numéro', 'Classe']
+    wb = Workbook()
+    ws = wb.active
+    ws.title = ('التلاميذ' if langue == 'ar' else 'Élèves')
+    ws.sheet_view.rightToLeft = (langue == 'ar')
+    ws.append(entetes)
+    for c in ws[1]:
+        c.font = Font(bold=True, color='FFFFFF')
+        c.fill = PatternFill('solid', fgColor='3C8DBC')
+        c.alignment = Alignment(horizontal='center')
+    with translation.override(langue):
+        for e in etudiants:
+            ws.append([e.nom_complet_langue, e.matricule, e.secteur.nom if e.secteur_id else ''])
+    for col, largeur in zip('ABC', (40, 14, 34)):
+        ws.column_dimensions[col].width = largeur
+    ws.freeze_panes = 'A2'
+    tampon = BytesIO()
+    wb.save(tampon)
+    base = 'liste_' + (secteur.nom if secteur else ('eleves' if langue == 'fr' else 'التلاميذ'))
+    nom = f"{base}_{langue}".replace(' ', '_').replace('/', '-')
+    reponse = HttpResponse(tampon.getvalue(), content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    from urllib.parse import quote
+    reponse['Content-Disposition'] = f"attachment; filename=\"liste_{langue}.xlsx\"; filename*=UTF-8''{quote(nom)}.xlsx"
+    return reponse
+
+
+def modele_import_excel(request):
+    from . import excel
+    reponse = HttpResponse(excel.modele(), content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    reponse['Content-Disposition'] = 'attachment; filename="modele_import_etudiants.xlsx"'
+    return reponse
+
+
+def importer_etudiants_excel(request):
+    from django.http import HttpResponseForbidden
+    from . import excel
+    if not _gestionnaire(request):
+        raise PermissionDenied
+    resultat = None
+    if request.method == 'POST':
+        fichier = request.FILES.get('fichier')
+        if not fichier:
+            resultat = {'crees': 0, 'modifies': 0, 'lignes': 0, 'erreurs': [(0, _("Choisissez un fichier .xlsx."))]}
+        elif not fichier.name.lower().endswith('.xlsx') or fichier.size > 5 * 1024 * 1024:
+            resultat = {'crees': 0, 'modifies': 0, 'lignes': 0, 'erreurs': [(0, _("Fichier .xlsx de 5 Mo maximum attendu."))]}
+        else:
+            resultat = excel.importer(fichier)
+    return render(request, 'etudiants/import_excel.html', {'resultat': resultat, 'annee': get_annee_courante()})

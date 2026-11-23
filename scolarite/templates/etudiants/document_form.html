@@ -4,15 +4,31 @@
 {% block content %}
 <div class="box">
     <div class="box-header">
-        <h3 class="box-title">{{ title }}</h3>
+        <h3 class="box-title">{{ title }} — {{ etudiant.nom_complet_langue }} <small>{{ etudiant.matricule }}{% if etudiant.secteur %} — {{ etudiant.secteur.nom }}{% endif %}</small>
+            {% if position %}<span class="label label-info">{{ position }} / {{ total }}</span>{% endif %}</h3>
     </div>
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
         <div class="box-body">
+            {% if documents_existants %}
+            <div class="alert alert-info">
+                <strong>{% trans "Documents déjà enregistrés" %} :</strong>
+                {% for d in documents_existants %}
+                    <a href="{{ d.fichier.url }}" target="_blank" class="label label-success" style="display:inline-block;margin:1px;"><i class="fa fa-paperclip"></i> {{ d.get_type_document_display }} — {{ d.date_upload|date:"d/m/Y" }}</a>
+                {% endfor %}
+            </div>
+            {% elif avec_suivant %}
+            <div class="alert alert-warning">{% trans "Aucun document enregistré pour cet élève." %}</div>
+            {% endif %}
             {{ form.as_p }}
         </div>
         <div class="box-footer">
             <button type="submit" class="btn btn-primary">{% trans "Enregistrer" %}</button>
+            {% if avec_suivant and suivant %}
+            <button type="submit" name="suivant" value="1" class="btn btn-success"><i class="fa fa-forward"></i> {% trans "Enregistrer et passer à l'élève suivant" %}</button>
+            <a href="{% url 'document_create' suivant.id %}" class="btn btn-default">{% trans "Passer sans enregistrer" %} <i class="fa fa-forward"></i>
+                <small>({{ suivant.nom_complet_langue }})</small></a>
+            {% endif %}
             <a href="{% url 'document_list' etudiant.id %}" class="btn btn-default">{% trans "Annuler" %}</a>
         </div>
     </form>

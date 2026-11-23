@@ -168,19 +168,19 @@
 <table class="info-table">
     <tr>
         <td>القسم</td>
-        <td>{{ selected_secteur }}</td>
+        <td>{{ selected_secteur|default_if_none:"" }}</td>
         <td>{% trans "Classe" %}</td>
     </tr>
     <tr>
         <td>التاريخ والتوقيت</td>
         <td>
-            {{ selected_date }}{% if selected_heure %} - {{ selected_heure }}{% endif %}
+            {{ selected_date|default_if_none:"" }}{% if selected_heure %} - {{ selected_heure }}{% endif %}
         </td>
         <td>{% trans "Date et Horaire" %}</td>
     </tr>
     <tr>
         <td>المادة</td>
-        <td>{{ selected_matiere }}</td>
+        <td>{{ selected_matiere|default_if_none:"" }}</td>
         <td>{% trans "Matière" %}</td>
     </tr>
     <tr>

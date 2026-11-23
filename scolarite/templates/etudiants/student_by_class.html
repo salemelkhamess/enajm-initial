@@ -25,10 +25,10 @@
                 {% for etudiant in etudiants %}
                 <tr>
                     <td>{{ etudiant.matricule }}</td>
-                    <td>{{ etudiant.nom }}</td>
-                    <td>{{ etudiant.nni }}</td>
-                    <td>{{ etudiant.date_naissance}}</td>
-                    <td>{{ etudiant.lieu_naissance}}</td>
+                    <td>{{ etudiant.nom_complet_langue }}</td>
+                    <td>{{ etudiant.nni|default_if_none:"" }}</td>
+                    <td>{{ etudiant.date_naissance|default_if_none:"" }}</td>
+                    <td>{{ etudiant.lieu_naissance_langue }}</td>
                 </tr>
                 {% empty %}
                 <tr>

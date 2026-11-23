@@ -120,7 +120,9 @@
                             <td>{{ absence.matiere.nom }}</td>
                             <td class="text-center">2</td>  <!-- 1 absence = 2 heures -->
                             <td class="text-center">
-                                {% if absence.etat_absence == 'en_attente' %}
+                                {% if absence.etat_absence == 'justification_soumise' %}
+                                    <span class="label label-info">{% trans "Justification soumise (en attente de validation)" %}</span>
+                                {% elif absence.etat_absence == 'en_attente' %}
                                     <span class="label label-warning">{% trans "En attente" %} — {{ absence.heures_avant_validation }} {% trans "h restantes" %}</span>
                                 {% else %}
                                     <span class="label label-danger">{% trans "Validée" %}</span>

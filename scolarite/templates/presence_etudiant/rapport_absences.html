@@ -163,7 +163,7 @@ Recherche des absences des employés
                     <td>{{ absence.matiere }}</td>
                     <td style="text-align: center;">{{ absence.jour|jour_i18n }}</td>
                     <td style="text-align: center;">{{ absence.date_cours }}</td>
-                    <td style="text-align: center;">{{ absence.seances }}{% if absence.en_attente %} <span class="label label-warning">{{ absence.en_attente }} {% trans "En attente" %}</span>{% endif %}</td>
+                    <td style="text-align: center;">{{ absence.seances }}{% if absence.en_attente %} <span class="label label-warning" title="{% trans 'Absence non encore définitive : le délai de 72 h pour la justifier n\'est pas dépassé' %}">{% trans "72 h non dépassées" %}</span>{% endif %}</td>
                     <td style="text-align: center;">{{ absence.heures }}</td>
                 </tr>
                 {% endfor %}
@@ -190,7 +190,7 @@ Recherche des absences des employés
             <th style="text-align: center;">{% trans "Étudiant" %}</th>
             <th style="text-align: center;">{% trans "Matricule" %}</th>
             <th style="text-align: center;">{% trans "Totale seances" %}</th>
-            <th style="text-align: center;">{% trans "Total absences" %}</th>
+            <th style="text-align: center;">{% trans "Total heures" %}</th>
         </tr>
     </thead>
     <tbody>
@@ -202,10 +202,10 @@ Recherche des absences des employés
                 <td rowspan="{{ secteur_data.etudiants|length }}" style="text-align: center; vertical-align: middle; background-color: #f5f5f5;">
                     <strong>{{ secteur_data.nom_secteur }}</strong><br>
                     <strong>
-                        {% trans "Total absences" %}: {{ secteur_data.total_absences }}
+                        {% trans "Totale seances" %}: {{ secteur_data.total_absences }}
                     </strong><br>
                 <strong>
-                    {% trans "Totale seances" %} :
+                    {% trans "Total heures" %} :
                         {{ secteur_data.total_heures }}
                 </strong>
                 </td>

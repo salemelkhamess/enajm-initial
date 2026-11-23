@@ -112,11 +112,11 @@
     <div class="content" style="direction: rtl; text-align: right;">
         <p>أنا الموقع أسفله مدير التكوين الأولي والتدريبات والمسابقات أفيد بأن :</p>
 
-        <p>السيد (ة) : {{ etudiant.nom }} {{ etudiant.prenom }}</p>
+        <p>السيد (ة) : {{ etudiant.nom_complet_langue }}</p>
 
-        <p>المولود(ة) بتاريخ : {{ etudiant.date_naissance|date:"d/m/Y" }} ب : {{ etudiant.lieu_naissance }}</p>
+        <p>المولود(ة) بتاريخ : {{ etudiant.date_naissance|date:"d/m/Y" }} ب : {{ etudiant.lieu_naissance_langue }}</p>
 
-        <p>الحامل (ة) للرقم الوطني : {{ etudiant.nni }}</p>
+        <p>الحامل (ة) للرقم الوطني : {{ etudiant.nni|default_if_none:"" }}</p>
 
         <p>مسجل (ة) في سجلات المدرسة تحت الرقم : {{ etudiant.matricule }}، لمتابعة الدروس في التخصص: {{ etudiant.secteur.nom }} السنة : {{ etudiant.annee.numero_annee }} من التكوين .</p>
 

@@ -12,6 +12,45 @@
         </p>
     </div>
     <div class="box-body">
+        <p>
+            <a href="{% url 'emploi_create' %}" class="btn btn-default"><i class="fa fa-plus"></i> {% trans "Ajouter un cours par niveau (langue)" %}</a>
+        </p>
+        {% if emplois_niveaux %}
+        <div class="panel panel-info">
+            <div class="panel-heading"><h4 style="margin:0;">{% trans "Cours par niveau (tous secteurs)" %}
+                <span class="badge">{{ emplois_niveaux|length }}</span></h4></div>
+            <div class="panel-body">
+                <table class="table table-bordered table-hover" style="width:100%">
+                    <thead><tr>
+                        <th>{% trans "Niveau" %}</th><th>{% trans "Langue du cours" %}</th><th>{% trans "Matière" %}</th>
+                        <th>{% trans "Professeur" %}</th><th>{% trans "Salle" %}</th><th>{% trans "Jour" %}</th><th>{% trans "Heures" %}</th>
+                        <th>{% trans "Élèves" %}</th><th>{% trans "Actions" %}</th>
+                    </tr></thead>
+                    <tbody>
+                    {% for emploi in emplois_niveaux %}
+                        <tr>
+                            <td>{{ emploi.niveau.nom }}</td>
+                            <td>{{ emploi.get_langue_display }}</td>
+                            <td>{{ emploi.matiere.nom }}</td>
+                            <td>{{ emploi.professeur.nom }} {{ emploi.professeur.prenom }}</td>
+                            <td>{{ emploi.salle.nom }}</td>
+                            <td>{{ emploi.jour|jour_i18n }}</td>
+                            <td>{{ emploi.heure_debut|time:"H:i" }} - {{ emploi.heure_fin|time:"H:i" }}</td>
+                            <td>
+                                <a href="{% url 'liste_etudiants_imprimer' %}?langue=ar&niveau={{ emploi.niveau_id }}" target="_blank" class="btn btn-xs btn-primary"><i class="fa fa-print"></i> {% trans "Liste arabe" %}</a>
+                                <a href="{% url 'liste_etudiants_imprimer' %}?langue=fr&niveau={{ emploi.niveau_id }}" target="_blank" class="btn btn-xs btn-success"><i class="fa fa-print"></i> {% trans "Liste français" %}</a>
+                            </td>
+                            <td>
+                                <a href="{% url 'emploi_update' emploi.pk %}" class="btn btn-warning btn-xs"><i class="fa fa-edit"></i></a>
+                                <a href="{% url 'emploi_delete' emploi.pk %}" class="btn btn-danger btn-xs"><i class="fa fa-trash"></i></a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {% endif %}
         {% for secteur in secteurs_emplois %}
         <div class="panel panel-default">
             <div class="panel-heading">

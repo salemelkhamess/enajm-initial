@@ -7,6 +7,9 @@
         <h3 class="box-title">{% trans "Documents de" %} {{ etudiant.nom }} {{ etudiant.prenom }}</h3>
         <div class="box-tools">
          <p class="text-right">
+                {% if precedent %}<a href="{% url 'document_create' precedent.id %}" class="btn btn-default btn-sm" title="{{ precedent.nom_complet_langue }}"><i class="fa fa-backward"></i> {% trans "Élève précédent" %}</a>{% endif %}
+                {% if position %}<span class="label label-info">{{ position }} / {{ total }}</span>{% endif %}
+                {% if suivant %}<a href="{% url 'document_create' suivant.id %}" class="btn btn-default btn-sm" title="{{ suivant.nom_complet_langue }}">{% trans "Élève suivant" %} <i class="fa fa-forward"></i></a>{% endif %}
                 <a href="{% url 'document_create' etudiant.id %}" class="btn btn-primary btn-sm">
                 <i class="fas fa-plus"></i> {% trans "Ajouter un document" %}
             </a>

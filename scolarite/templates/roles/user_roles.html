@@ -12,7 +12,7 @@
 <ul class="list-group mb-4">
     {% for user_role in user_roles %}
     <li class="list-group-item d-flex justify-content-between align-items-center">
-        {{ user_role.role.name }}
+        {{ user_role.role.libelle }}
         <form method="post" action="{% url 'remove_role_from_user' user.id user_role.role.id %}">
             {% csrf_token %}
             <button type="submit" class="btn btn-sm btn-danger">{% trans "Retirer" %}</button>
@@ -29,14 +29,14 @@
     <div class="input-group mb-3">
         <select name="role_id" class="form-select">
             {% for role in available_roles %}
-            <option value="{{ role.id }}">{{ role.name }}</option>
+            <option value="{{ role.id }}">{{ role.libelle }}</option>
             {% endfor %}
         </select>
         <button type="submit" class="btn btn-primary">{% trans "Ajouter" %}</button>
     </div>
 </form>
 
-<a href="{% url 'admin:yourapp_user_changelist' %}" class="btn btn-secondary">{% trans "Retour à la liste des utilisateurs" %}</a>
+<a href="{% url 'user_list' %}" class="btn btn-secondary">{% trans "Retour à la liste des utilisateurs" %}</a>
     </div>
 </div>
 {% endblock %}

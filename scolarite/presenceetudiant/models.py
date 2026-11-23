@@ -10,6 +10,19 @@ from django.utils import timezone
 from django.db.models import Count, F, Q
 
 from django.db.models.functions import ExtractWeek, ExtractMonth, ExtractYear
+import os
+import uuid
+from django.conf import settings
+from django.core.files.storage import FileSystemStorage
+
+# Documents de justification (certificats médicaux…) : hors du dossier public /media/
+stockage_prive = FileSystemStorage(location=settings.PRIVATE_MEDIA_ROOT)
+
+
+def chemin_justification(instance, nom_fichier):
+    nom = os.path.basename(nom_fichier).replace(' ', '_')
+    dossier = f"periode-{instance.periode_id}" if instance.periode_id else str(instance.absence_id)
+    return f"justifications/{dossier}/{uuid.uuid4().hex[:8]}_{nom}"
 
 # Une absence enregistrée reste « en attente » pendant ce délai (justification possible).
 # Passé ce délai sans justification, elle est validée et compte comme absence.
@@ -21,14 +34,23 @@ def seuil_validation():
     return timezone.now() - DELAI_VALIDATION_ABSENCE
 
 
+def q_soumise():
+    """Justification déposée par le médecin, en attente de la décision de l'administration."""
+    return Q(present=False, is_justified=False, justif_etat='soumise')
+
+
 def q_en_attente():
-    """Absence non justifiée, enregistrée depuis moins de 72 h : pas encore une absence."""
-    return Q(present=False, is_justified=False, date_enregistrement__gt=seuil_validation())
+    """
+    Absence non justifiée qui n'est pas encore une absence : enregistrée depuis moins de 72 h,
+    ou justification soumise en attente de décision (le délai de 72 h est alors suspendu).
+    """
+    return Q(present=False, is_justified=False) & (
+        Q(justif_etat='soumise') | Q(date_enregistrement__gt=seuil_validation()))
 
 
 def q_comptee():
-    """Absence validée : non justifiée et délai de 72 h écoulé (ou ancienne, sans date d'enregistrement)."""
-    return Q(present=False, is_justified=False) & (
+    """Absence validée : non justifiée, sans justification en cours, délai de 72 h écoulé (ou ancienne)."""
+    return Q(present=False, is_justified=False) & ~Q(justif_etat='soumise') & (
         Q(date_enregistrement__isnull=True) | Q(date_enregistrement__lte=seuil_validation()))
 
 
@@ -56,6 +78,25 @@ class PresenceEtudiant(models.Model):
     is_justified  = models.BooleanField(default=False)
     date_enregistrement = models.DateTimeField(null=True, blank=True, editable=False)
 
+    # Justification : déposée par le médecin, décidée par l'administration / le pointeur / le super administrateur
+    JUSTIF_ETATS = [
+        ('aucune', 'Aucune'),
+        ('soumise', 'Soumise (en attente de validation)'),
+        ('acceptee', 'Acceptée'),
+        ('refusee', 'Refusée'),
+    ]
+    justif_etat = models.CharField(max_length=10, choices=JUSTIF_ETATS, default='aucune')
+    justif_soumise_par = models.ForeignKey('users.User', null=True, blank=True, on_delete=models.SET_NULL,
+                                           related_name='+', editable=False)
+    justif_soumise_le = models.DateTimeField(null=True, blank=True, editable=False)
+    justif_decidee_par = models.ForeignKey('users.User', null=True, blank=True, on_delete=models.SET_NULL,
+                                           related_name='+', editable=False)
+    justif_decidee_le = models.DateTimeField(null=True, blank=True, editable=False)
+    justif_motif_refus = models.TextField(blank=True, null=True)
+    # Justification par période (autorisation de plusieurs jours) à laquelle cette absence est rattachée
+    justif_periode = models.ForeignKey('JustificationPeriode', null=True, blank=True, on_delete=models.SET_NULL,
+                                       related_name='absences', editable=False)
+
     class Meta:
         db_table = 'presence_etudiant'
         unique_together = ['etudiant', 'matiere', 'date_cours', 'jour']  # Modification
@@ -75,16 +116,46 @@ class PresenceEtudiant(models.Model):
                 self.date_enregistrement = timezone.now()
             else:
                 self.date_enregistrement = ancien['date_enregistrement']  # absence déjà validée : on la garde telle quelle
+        self._rattacher_a_une_periode()
         super().save(*args, **kwargs)
+
+    def _rattacher_a_une_periode(self):
+        """
+        Une absence enregistrée pendant une période déjà justifiée (autorisation de plusieurs jours) reprend
+        cette justification : en attente de validation, ou directement justifiée si la période est acceptée.
+        Les absences déjà validées (72 h écoulées) ne sont plus justifiables.
+        """
+        if (self.present or self.is_justified or self.justif_periode_id or self.justif_etat != 'aucune'
+                or not self.date_cours or not self.etudiant_id):
+            return
+        if not (self.date_enregistrement and self.date_enregistrement > seuil_validation()):
+            return
+        periode = JustificationPeriode._base_manager.filter(
+            etudiant_id=self.etudiant_id, etat__in=('soumise', 'acceptee'),
+            date_debut__lte=self.date_cours, date_fin__gte=self.date_cours).order_by('-soumise_le').first()
+        if periode is None:
+            return
+        self.justif_periode = periode
+        self.justification = periode.justification
+        self.date_justification = periode.soumise_le.date() if periode.soumise_le else None
+        self.justif_soumise_par = periode.soumise_par
+        self.justif_soumise_le = periode.soumise_le
+        if periode.etat == 'acceptee':
+            self.is_justified, self.status, self.justif_etat = True, True, 'acceptee'
+            self.justif_decidee_par, self.justif_decidee_le = periode.decidee_par, periode.decidee_le
+        else:
+            self.justif_etat = 'soumise'
 
     # --- états d'une absence ---------------------------------------------------------------
     @property
     def etat_absence(self):
-        """'present', 'justifiee', 'en_attente' ou 'validee'."""
+        """'present', 'justifiee', 'justification_soumise', 'en_attente' ou 'validee'."""
         if self.present:
             return 'present'
         if self.is_justified:
             return 'justifiee'
+        if self.justif_etat == 'soumise':
+            return 'justification_soumise'
         if self.date_enregistrement and self.date_enregistrement > seuil_validation():
             return 'en_attente'
         return 'validee'
@@ -96,6 +167,11 @@ class PresenceEtudiant(models.Model):
             return 0
         reste = self.date_enregistrement + DELAI_VALIDATION_ABSENCE - timezone.now()
         return max(int(reste.total_seconds() // 3600) + 1, 1)
+
+    @property
+    def justifiable(self):
+        """Le médecin peut justifier tant que l'absence n'est pas validée (ni déjà justifiée)."""
+        return self.etat_absence in ('en_attente', 'justification_soumise')
 
     def valider_maintenant(self):
         """Valide l'absence sans attendre la fin du délai."""
@@ -428,3 +504,54 @@ class PresenceEtudiant(models.Model):
             date_filter &
             Q(present=False, is_justified=True, status=True)
         ).values('etudiant').distinct().count()
+
+
+
+class DocumentJustification(models.Model):
+    """Pièce jointe (certificat médical, etc.) déposée à l'appui de la justification d'une absence."""
+    absence = models.ForeignKey(PresenceEtudiant, null=True, blank=True, on_delete=models.CASCADE, related_name='documents')
+    periode = models.ForeignKey('JustificationPeriode', null=True, blank=True, on_delete=models.CASCADE, related_name='documents')
+    fichier = models.FileField(upload_to=chemin_justification, storage=stockage_prive)
+    nom = models.CharField(max_length=255)
+    ajoute_par = models.ForeignKey('users.User', null=True, blank=True, on_delete=models.SET_NULL, related_name='+')
+    ajoute_le = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = 'presence_etudiant_document'
+        ordering = ['ajoute_le']
+
+    def __str__(self):
+        return self.nom
+
+
+
+class JustificationPeriode(models.Model):
+    """
+    Justification d'un élève pour une période (ex. autorisation de 3 jours du 11/11 au 13/11) : toutes ses absences
+    pendant cette période sont justifiées par un même dossier (texte + documents), puis validées en une fois
+    par l'administration, le pointeur ou le super administrateur.
+    """
+    objects = AnneeFilteredManager('etudiant__annee')
+    ETATS = [('soumise', 'Soumise (en attente de validation)'), ('acceptee', 'Acceptée'), ('refusee', 'Refusée')]
+
+    etudiant = models.ForeignKey(Etudiant, on_delete=models.CASCADE, related_name='justifications_periode')
+    date_debut = models.DateField()
+    date_fin = models.DateField()
+    justification = models.TextField()
+    etat = models.CharField(max_length=10, choices=ETATS, default='soumise')
+    soumise_par = models.ForeignKey('users.User', null=True, blank=True, on_delete=models.SET_NULL, related_name='+')
+    soumise_le = models.DateTimeField(default=timezone.now)
+    decidee_par = models.ForeignKey('users.User', null=True, blank=True, on_delete=models.SET_NULL, related_name='+')
+    decidee_le = models.DateTimeField(null=True, blank=True)
+    motif_refus = models.TextField(blank=True, null=True)
+
+    class Meta:
+        db_table = 'justification_periode'
+        ordering = ['-date_debut', '-id']
+
+    def __str__(self):
+        return f"{self.etudiant} : {self.date_debut} → {self.date_fin}"
+
+    @property
+    def nb_jours(self):
+        return (self.date_fin - self.date_debut).days + 1

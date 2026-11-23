@@ -1,0 +1,70 @@
+{% load static i18n %}<!DOCTYPE html>
+<html lang="{{ LANGUAGE_CODE }}" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <title>{% trans "Cartes des élèves fonctionnaires" %}</title>
+  <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
+  {% include 'etudiants/_carte_styles.html' %}
+  <style>
+    body { background: #e9edf0; margin: 0; }
+    .barre { background: #fff; padding: 10px 15px; border-bottom: 1px solid #ccc; position: sticky; top: 0; z-index: 5; display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+    .barre label { margin: 0 4px 0 0; font-weight: 600; }
+    .feuille { display: grid; grid-template-columns: repeat(2, 85.6mm); gap: 3mm; justify-content: center; padding: 6mm; }
+    .f-recto .carte.verso, .f-verso .carte.recto { display: none; }
+    .paire { display: contents; }
+    /* impression : le papier est choisi par le script (carte réelle ou A4) */
+    @media print {
+      body { background: #fff; } .barre { display: none; }
+      .feuille { padding: 0; }
+      .carte { border-radius: 2.2mm; }
+      .mode-carte .feuille { display: block; }
+      .mode-carte .carte { page-break-after: always; border-radius: 0; border: 0; }
+      .mode-carte .carte:last-child { page-break-after: auto; }
+      .mode-a4 .feuille { gap: 3mm; justify-content: start; }
+      .mode-a4 .carte { page-break-inside: avoid; break-inside: avoid; }
+    }
+  </style>
+  <style id="stylePage"></style>
+</head>
+<body class="mode-a4 f-recto-verso">
+  <div class="barre">
+    <strong>{{ total }} {% trans "carte(s)" %}{% if filtre %} — {{ filtre }}{% endif %}</strong>
+    {% if sans_photo %}<span class="label label-warning">{{ sans_photo }} {% trans "sans photo" %}</span>{% endif %}
+    <span><label for="papier">{% trans "Papier" %}</label>
+      <select id="papier" class="form-control" style="display:inline-block;width:auto;">
+        <option value="carte">{% trans "Carte réelle (une carte par page, 85,6 × 54 mm)" %}</option>
+        <option value="a4" selected>{% trans "Feuille A4 (cartes à découper)" %}</option>
+      </select></span>
+    <span><label for="face">{% trans "Face" %}</label>
+      <select id="face" class="form-control" style="display:inline-block;width:auto;">
+        <option value="recto-verso" selected>{% trans "Recto + verso" %}</option>
+        <option value="recto">{% trans "Recto seulement" %}</option>
+        <option value="verso">{% trans "Verso seulement" %}</option>
+      </select></span>
+    <button class="btn btn-primary" onclick="window.print()"><i class="fa fa-print"></i> {% trans "Imprimer" %}</button>
+  </div>
+  <div class="feuille">
+    {% for etudiant in etudiants %}
+    <div class="paire">
+      {% include 'etudiants/_carte.html' with face='recto' %}
+      {% include 'etudiants/_carte.html' with face='verso' %}
+    </div>
+    {% empty %}
+    <p style="grid-column: 1 / -1; text-align:center; padding: 40px;">{% trans "Aucun élève à imprimer." %}</p>
+    {% endfor %}
+  </div>
+<script>
+(function () {
+  var papier = document.getElementById('papier'), face = document.getElementById('face');
+  function appliquer() {
+    var body = document.body;
+    body.className = 'mode-' + papier.value + ' f-' + face.value;
+    document.getElementById('stylePage').textContent = papier.value === 'carte'
+      ? '@page { size: 85.6mm 54mm; margin: 0; }'
+      : '@page { size: A4; margin: 5mm; }';
+  }
+  papier.onchange = face.onchange = appliquer; appliquer();
+})();
+</script>
+</body>
+</html>

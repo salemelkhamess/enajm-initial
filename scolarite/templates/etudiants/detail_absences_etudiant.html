@@ -34,7 +34,7 @@
 
         <h3 align="center">
                     {% if LANGUAGE_CODE == 'ar' %}
-                        غيابات الطالب: {{ etudiant.nom }} {{ etudiant.prenom }}
+                        غيابات التلميذ: {{ etudiant.nom }} {{ etudiant.prenom }}
                     {% else %}
                         {% trans "Absences de" %} {{ etudiant.nom }} {{ etudiant.prenom }}
                     {% endif %}

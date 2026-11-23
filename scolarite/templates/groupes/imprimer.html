@@ -1,0 +1,65 @@
+{% load static i18n %}<!DOCTYPE html>
+<html lang="{% if ar %}ar{% else %}fr{% endif %}" dir="{% if ar %}rtl{% else %}ltr{% endif %}">
+<head>
+  <meta charset="UTF-8">
+  <title>{{ groupe.nom_affiche }}</title>
+  <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
+  <style>
+    body { background: #fff; padding: 18px; font-size: 13px; }
+    .entete p { margin: 0; font-weight: 600; }
+    .titre { font-size: 16px; font-weight: 700; margin: 14px 0 4px; }
+    .infos p { margin: 0 0 3px; }
+    h4 { text-align: center; margin: 14px 0 8px; font-weight: 700; }
+    table { border-collapse: collapse; width: 100%; }
+    table thead th { background: #1b7a3a !important; color: #fff !important; text-align: center; padding: 6px; border: 1px solid #444;
+                     -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    table tbody td { padding: 5px 7px; border: 1px solid #444; }
+    td.num, td.mle { text-align: center; width: 70px; } td.signature { width: 160px; height: 30px; }
+    tr { page-break-inside: avoid; }
+    .no-print { margin-bottom: 14px; }
+    @media print { .no-print { display: none; } body { padding: 0; } @page { margin: 12mm; } }
+  </style>
+</head>
+<body>
+  <div class="no-print">
+    <button class="btn btn-primary" onclick="window.print()"><i class="fa fa-print"></i> {% trans "Imprimer" %}</button>
+    {% if emargement %}<a class="btn btn-default" href="?emargement=0">{% trans "Sans émargement" %}</a>{% else %}<a class="btn btn-default" href="?">{% trans "Avec émargement" %}</a>{% endif %}
+  </div>
+  <div class="entete">
+    {% if ar %}
+      <p>المدرسة الوطنية للإدارة والصحافة والقضاء</p><p>مركز تدريس اللغات</p>
+      <p>التكوين الأولي{% if groupe.bloc %} — {{ groupe.bloc.nom }}{% endif %}</p><p>السنة الجامعية {{ groupe.annee }}</p>
+    {% else %}
+      <p>ENAJM / Service de la scolarité</p><p>Formation initiale{% if groupe.bloc %} / {{ groupe.bloc.nom }}{% endif %}</p>
+      <p>Année universitaire {{ groupe.annee }}</p>
+    {% endif %}
+  </div>
+  <div class="titre">
+    {% if groupe.langue == 'ar' %}مجموعة اللغة العربية{% elif groupe.langue == 'fr' %}Français{% else %}{% if ar %}مجموعة{% else %}Groupe{% endif %}{% endif %} / {% if ar %}{{ groupe.nom_ar|default:groupe.code }}{% else %}{{ groupe.nom_fr|default:groupe.code }} ({{ groupe.code }}){% endif %}{% if groupe.niveau_langue %} – {% if ar %}المستوى{% else %}Niveau{% endif %} {{ groupe.niveau_langue }}{% endif %}
+  </div>
+  <div class="infos">
+    {% if groupe.horaire or groupe.salle %}<p>{% if groupe.horaire %}{% if ar %}التوقيت{% else %}Horaire{% endif %} : {{ groupe.horaire }}{% endif %}{% if groupe.salle %} &nbsp; {% if ar %}القاعة{% else %}Salle{% endif %} : {{ groupe.salle.nom }}{% endif %}</p>{% endif %}
+    {% if groupe.professeur_affiche %}<p>{% if ar %}الأستاذ{% else %}Professeur{% endif %} : {{ groupe.professeur_affiche }}</p>{% endif %}
+    {% if groupe.coordinateur %}<p>{% if ar %}المنسق{% else %}Coordinateur{% endif %} : {{ groupe.coordinateur }}</p>{% endif %}
+  </div>
+  <h4>{% if ar %}قائمة حضور التلاميذ الموظفين{% else %}Liste de présence des élèves fonctionnaires{% endif %}</h4>
+  <table>
+    <thead><tr>
+      <th>{% if ar %}الرقم الترتيبي{% else %}N° Ordre{% endif %}</th><th>{% if ar %}رقم التسجيل{% else %}Mle{% endif %}</th>
+      <th>{% if ar %}الاسم{% else %}Noms et prénoms{% endif %}</th><th>{% if ar %}الشعبة{% else %}Filière{% endif %}</th>
+      {% if avec_niveau %}<th>{% if ar %}المستوى{% else %}Niveau{% endif %}</th>{% endif %}
+      {% if emargement %}<th>{% if ar %}التوقيع{% else %}Émargement{% endif %}</th>{% endif %}
+    </tr></thead>
+    <tbody>
+    {% for l in lignes %}
+      <tr><td class="num">{{ forloop.counter }}</td><td class="mle">{{ l.e.matricule }}</td><td>{{ l.nom }}</td><td>{{ l.e.secteur.nom }}</td>
+          {% if avec_niveau %}<td class="num">{{ l.a.niveau_eleve }}</td>{% endif %}
+          {% if emargement %}<td class="signature"></td>{% endif %}</tr>
+    {% empty %}
+      <tr><td colspan="6" style="text-align:center;padding:20px;">{% if ar %}لا يوجد تلاميذ في هذه المجموعة{% else %}Aucun élève dans ce groupe{% endif %}</td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  <p style="margin-top:10px;">{% if ar %}العدد{% else %}Effectif{% endif %} : <strong>{{ lignes|length }}</strong></p>
+</body>
+</html>

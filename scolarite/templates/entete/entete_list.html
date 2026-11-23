@@ -35,8 +35,8 @@
                     </td>
                     <td>{{ entete.nom_fr }}</td>
                     <td>{{ entete.nom_ar }}</td>
-                    <td>{{ entete.titre_fr }}</td>
-                    <td>{{ entete.titre_ar }}</td>
+                    <td>{{ entete.titre_fr|default_if_none:"" }}</td>
+                    <td>{{ entete.titre_ar|default_if_none:"" }}</td>
                     <td>
                         <a href="{% url 'entete_update' entete.pk %}" class="btn btn-primary btn-sm">
                             {% trans "Modifier" %}

@@ -24,6 +24,21 @@
                     {{ form.secteur }}
                 </div>
             </div>
+            {% if a_niveaux %}
+            <div class="col-md-3">
+                <div class="form-group">
+                    {{ form.niveau.label_tag }}
+                    {{ form.niveau }}
+                </div>
+            </div>
+            {% endif %}
+            <div class="col-md-3" id="blocGroupe" style="display:none;">
+                <div class="form-group {% if form.groupe.errors %}has-error{% endif %}">
+                    {{ form.groupe.label_tag }}
+                    <select name="groupe" id="id_groupe" class="form-control select" style="width:100%"></select>
+                    {% for e in form.groupe.errors %}<span class="help-block">{{ e }}</span>{% endfor %}
+                </div>
+            </div>
             <div class="col-md-3">
                 <div class="form-group">
                     {{ form.matiere.label_tag }}
@@ -64,6 +79,22 @@
 {% endblock %}
 {% block scripts %}
 
+<script>
+// Groupes de la classe choisie (sections GA/GB/GC, groupes de langue…) : le choix est obligatoire si la classe est divisée en sections
+function chargerGroupes(secteurId, choisi) {
+    var $bloc = $('#blocGroupe'), $sel = $('#id_groupe');
+    if (!secteurId) { $bloc.hide(); $sel.html(''); return; }
+    $.getJSON('{% url "groupes_classe_api" %}', { secteur_id: secteurId }, function (data) {
+        if (!data.groupes.length) { $bloc.hide(); $sel.html('<option value=""></option>'); return; }
+        var o = '<option value="">' + (data.sections ? '{% trans "— Choisir un groupe —" %}' : '{% trans "— Toute la classe —" %}') + '</option>';
+        o += '<option value="all">{% trans "Toute la classe" %}</option>';
+        $.each(data.groupes, function (i, g) { o += '<option value="' + g.id + '">' + g.label + '</option>'; });
+        $sel.html(o); if (choisi) $sel.val(choisi); $bloc.show();
+    });
+}
+chargerGroupes($('#id_secteur').val(), '{{ form.groupe.value|default:"" }}');   // tout de suite : un autre script de la page peut faire échouer les « $(function) »
+$('#id_secteur').change(function () { chargerGroupes($(this).val(), ''); });
+</script>
 <script>
 $('#id_secteur').change(function() {
     var secteurId = $(this).val();

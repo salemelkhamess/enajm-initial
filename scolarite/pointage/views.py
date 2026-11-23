@@ -1,3 +1,5 @@
+import logging
+logger = logging.getLogger(__name__)
 from django.utils.translation import gettext as _
 from django.utils.translation import get_language
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView, TemplateView
@@ -13,7 +15,7 @@ from .forms import PointageForm
 from emploie.models import EmploiDuTemps
 from django.db.models import Count, F, Q
 from django.http import JsonResponse
-from .models import Pointage
+from .models import Pointage, cle_seance_reelle
 from parametres.models import Parametres
 
 class PointageListView(ListView):
@@ -89,9 +91,10 @@ class PointageCreateView(CreateView):
         annee =parametres.annee_courante
         trimestre = parametres.trimestre_courant
 
-        existing_pointages = Pointage.objects.filter(date=date)
+        # un pointage existant bloque seulement la MÊME classe à cette date (les autres classes restent pointables)
+        existing_pointages = Pointage.objects.filter(date=date, seance__secteur=secteur)
         if existing_pointages.exists():
-            form.add_error(None, f"Des pointages existent déjà pour la date {date}.")
+            form.add_error(None, _("Des pointages existent déjà pour la classe %(classe)s à la date %(date)s.") % {'classe': secteur.nom, 'date': date})
             return self.form_invalid(form)
 
         seances = EmploiDuTemps.objects.filter(
@@ -182,33 +185,58 @@ class PointageUpdateView(UpdateView):
         return context
 
     def form_valid(self, form):
+        """Met à jour TOUTES les séances affichées sur la page (état, titre du cours, date) :
+        avant, seule la séance ouverte était enregistrée, avec l'état « présent » par défaut."""
+        from django.db import IntegrityError
         try:
-            pointage = self.get_object()  # Récupère le pointage existant
+            pointage = self.get_object()
             parametres = Parametres.get_instance()
+            secteur = form.cleaned_data['secteur']
+            jour = form.cleaned_data['jour']
+            date = form.cleaned_data['date']
+            ancienne_date = pointage.date
 
-            # Mettre à jour les champs du pointage
-            pointage.seance = EmploiDuTemps.objects.get(
-                secteur=form.cleaned_data['secteur'],
-                jour=form.cleaned_data['jour'],
-                professeur=pointage.professeur
-            )
-            pointage.date = form.cleaned_data['date']
-            pointage.annee = parametres.annee_courante
-            pointage.trimestre = parametres.trimestre_courant
+            seances = list(EmploiDuTemps.objects.filter(secteur=secteur, jour=jour))
+            ids_seances = {s.id for s in seances}
 
-            # Mettre à jour l'état et les remarques
-            pointage.etat = self.request.POST.get(f'etat_{pointage.seance.id}', 'present')
-            pointage.remarques = self.request.POST.get(f'remarques_{pointage.seance.id}', '')
+            # classe ou jour modifiés : on rattache le pointage ouvert à la séance du même professeur
+            if pointage.seance_id not in ids_seances:
+                nouvelle = next((s for s in seances if s.professeur_id == pointage.professeur_id), None)
+                if nouvelle is None:
+                    form.add_error(None, _("Aucune séance de ce professeur pour cette classe et ce jour."))
+                    return self.form_invalid(form)
+                pointage.seance = nouvelle
 
-            pointage.save()
+            existants = {p.seance_id: p for p in Pointage.objects.filter(seance_id__in=ids_seances, date=ancienne_date)}
+            existants[pointage.seance_id] = pointage
+
+            with transaction.atomic():
+                for seance in seances:
+                    p = existants.get(seance.id)
+                    if p is None:
+                        continue
+                    cle_etat, cle_rem = f'etat_{seance.id}', f'remarques_{seance.id}'
+                    if cle_etat in self.request.POST:
+                        p.etat = self.request.POST[cle_etat]
+                    if cle_rem in self.request.POST:
+                        p.remarques = self.request.POST[cle_rem]
+                    p.seance = seance
+                    p.date = date
+                    p.annee = parametres.annee_courante
+                    p.trimestre = parametres.trimestre_courant
+                    p.save()
 
             messages.success(self.request, _("Pointage mis à jour avec succès."))
             return HttpResponseRedirect(self.get_success_url())
 
-        except Exception as e:
-            print(f"Error in form_valid: {str(e)}")
-            form.add_error(None, f"Une erreur est survenue: {str(e)}")
+        except IntegrityError:
+            form.add_error(None, _("Un pointage existe déjà pour cette séance à cette date."))
             return self.form_invalid(form)
+        except Exception as e:
+            logger.exception("Erreur inattendue")
+            form.add_error(None, _("Une erreur est survenue. Veuillez réessayer ou contacter l'administration."))
+            return self.form_invalid(form)
+
 
 class PointageDeleteView(DeleteView):
     model = Pointage
@@ -293,7 +321,7 @@ class AbsencesProfesseursView(TemplateView):
             'professeur__nom',
             'professeur__prenom'
         ).annotate(
-            nombre_absences=Count('id'),
+            nombre_absences=Count(cle_seance_reelle(), distinct=True),   # un cours commun = une seule séance
             nombre_heures=F('nombre_absences') * 2
         ).filter(
             nombre_heures__gte=heures_demandees

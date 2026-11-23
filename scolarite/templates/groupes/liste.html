@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block content %}
+<div class="box box-primary">
+    <div class="box-header with-border"><h3 class="box-title">{% trans "Groupes" %} — {{ annee }}</h3></div>
+    <div class="box-body">
+        {% if messages %}{% for message in messages %}
+        <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %}">{{ message }}</div>
+        {% endfor %}{% endif %}
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:12px;">
+            <div>
+                <a href="{% url 'groupe_creer' %}" class="btn btn-primary"><i class="fa fa-plus"></i> {% trans "Ajouter un groupe" %}</a>
+                {% if inactifs %}
+                    <a href="?{% if bloc_id %}bloc={{ bloc_id }}&{% endif %}{% if langue %}langue={{ langue }}{% endif %}" class="btn btn-default"><i class="fa fa-eye-slash"></i> {% trans "Masquer les inactifs" %}</a>
+                {% elif nb_inactifs %}
+                    <a href="?inactifs=1" class="btn btn-default"><i class="fa fa-eye"></i> {% trans "Afficher les inactifs" %} ({{ nb_inactifs }})</a>
+                {% endif %}
+            </div>
+            <form method="get" class="form-inline">
+                {% if inactifs %}<input type="hidden" name="inactifs" value="1">{% endif %}
+                <select name="bloc" class="form-control" onchange="this.form.submit()">
+                    <option value="">{% trans "Tous les blocs" %}</option>
+                    {% for b in blocs %}<option value="{{ b.id }}" {% if bloc_id == b.id|stringformat:"s" %}selected{% endif %}>{{ b.nom }}</option>{% endfor %}
+                </select>
+                <select name="langue" class="form-control" onchange="this.form.submit()">
+                    <option value="">{% trans "Tous les types" %}</option>
+                    <option value="fr" {% if langue == 'fr' %}selected{% endif %}>{% trans "Français" %}</option>
+                    <option value="ar" {% if langue == 'ar' %}selected{% endif %}>{% trans "Arabe" %}</option>
+                    <option value="sec" {% if langue == 'sec' %}selected{% endif %}>{% trans "Section (hors langue)" %}</option>
+                </select>
+            </form>
+        </div>
+        <p class="text-muted">
+            <i class="fa fa-info-circle"></i> {% trans "Élèves sans groupe de français" %} : <strong>{{ sans_groupe_fr }}</strong> —
+            {% trans "sans groupe d'arabe" %} : <strong>{{ sans_groupe_ar }}</strong>
+        </p>
+        <table class="table table-bordered table-hover">
+            <thead><tr>
+                <th>{% trans "Bloc" %}</th><th>{% trans "Type" %}</th><th>{% trans "Groupe" %}</th><th>{% trans "Niveau de langue" %}</th>
+                <th>{% trans "Professeur" %}</th><th>{% trans "Salle" %}</th><th>{% trans "Horaire" %}</th>
+                <th style="width:80px">{% trans "Élèves" %}</th><th>{% trans "Statut" %}</th><th style="width:380px">{% trans "Actions" %}</th>
+            </tr></thead>
+            <tbody>
+            {% for g in groupes %}
+                <tr {% if not g.actif %}class="text-muted"{% endif %}>
+                    <td><small>{{ g.bloc.nom|default:"—" }}</small></td>
+                    <td>{% if g.langue == 'fr' %}<span class="label label-primary">{% trans "Français" %}</span>{% elif g.langue == 'ar' %}<span class="label label-success">{% trans "Arabe" %}</span>{% else %}<span class="label label-warning">{% trans "Section" %}</span>{% endif %}</td>
+                    <td><strong>{{ g.nom_affiche }}</strong><br><small class="text-muted">{{ g.code }}{% if g.intitule %} — {{ g.intitule }}{% endif %}</small></td>
+                    <td>{{ g.niveau_langue|default:"—" }}</td>
+                    <td>{{ g.professeur_affiche|default:"—" }}</td>
+                    <td>{{ g.salle.nom|default:"—" }}</td>
+                    <td>{{ g.horaire|default:"—" }}</td>
+                    <td><span class="badge">{{ g.effectif }}</span></td>
+                    <td>{% if g.actif %}<span class="label label-success">{% trans "Actif" %}</span>{% else %}<span class="label label-default">{% trans "Inactif" %}</span>{% endif %}</td>
+                    <td>
+                        <a href="{% url 'groupe_eleves' g.pk %}" class="btn btn-sm btn-info"><i class="fa fa-users"></i> {% trans "Élèves" %}</a>
+                        <a href="{% url 'groupe_imprimer' g.pk %}" target="_blank" class="btn btn-sm btn-primary" title="{% trans 'Liste de présence' %}"><i class="fa fa-print"></i></a>
+                        <a href="{% url 'groupe_modifier' g.pk %}" class="btn btn-sm btn-warning"><i class="fa fa-edit"></i></a>
+                        <form method="post" action="{% url 'groupe_basculer' g.pk %}" style="display:inline;">{% csrf_token %}
+                            <button type="submit" class="btn btn-sm {% if g.actif %}btn-default{% else %}btn-success{% endif %}" title="{% if g.actif %}{% trans 'Désactiver' %}{% else %}{% trans 'Activer' %}{% endif %}">
+                                {% if g.actif %}<i class="fa fa-ban"></i>{% else %}<i class="fa fa-check"></i>{% endif %}</button>
+                        </form>
+                        {% if not g.effectif %}
+                        <form method="post" action="{% url 'groupe_supprimer' g.pk %}" style="display:inline;" onsubmit="return confirm('{% trans "Supprimer ce groupe ?" %}');">{% csrf_token %}
+                            <button type="submit" class="btn btn-sm btn-danger" title="{% trans 'Supprimer' %}"><i class="fa fa-trash"></i></button>
+                        </form>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% empty %}
+                <tr><td colspan="10">{% trans "Aucun groupe." %}</td></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

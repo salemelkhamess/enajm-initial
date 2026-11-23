@@ -11,7 +11,7 @@ from pointagematiere.models import PointageMatiere
 from presenceetudiant.models import PresenceEtudiant
 from presenceprof.models import PresenceProfesseur
 from professeur.models import Professeur
-from pointage.models import Pointage
+from pointage.models import Pointage, nb_seances, cle_seance_reelle
 from branches.models import Secteur
 from pv.models import PV
 from salle.models import Salle
@@ -59,7 +59,7 @@ class DashboardView(TemplateView):
 
         context['total_professeurs'] = Professeur.objects.count()
         annee_active = get_annee_courante()
-        context['total_pointages_aujourdhui'] = Pointage.objects.filter(date=today, annee=annee_active).count()
+        context['total_pointages_aujourdhui'] = nb_seances(Pointage.objects.filter(date=today, annee=annee_active))
         context['total_cours_aujourdhui'] = EmploiDuTemps.objects.filter(jour=today.strftime('%A'), annee=annee_active).count()
         context['total_secteurs'] = Secteur.objects.count()
         context['total_pvs'] = PV.objects.filter(annee=annee_active).count()
@@ -70,21 +70,21 @@ class DashboardView(TemplateView):
         end_week = start_week + timedelta(days=6)
 
         context['prof_stats_summary'] = {
-            'present_week': Pointage.objects.filter(
+            'present_week': nb_seances(Pointage.objects.filter(
                 etat='present', annee=annee_active,
                 date__range=(start_week, end_week)
-            ).count(),
-            'absent_week': Pointage.objects.filter(
+            )),
+            'absent_week': nb_seances(Pointage.objects.filter(
                 etat='absent', annee=annee_active,
                 date__range=(start_week, end_week)
-            ).count(),
+            )),
         }
 
         # Absences
-        total_absences_professeurs = Pointage.objects.filter(
+        total_absences_professeurs = nb_seances(Pointage.objects.filter(
             etat='absent', annee=annee_active,
             date__range=(start_week, end_week)
-        ).count()
+        ))
 
         total_absences_etudiants = PresenceEtudiant.objects.filter(
             q_comptee(), annee=annee_active,
@@ -98,7 +98,7 @@ class DashboardView(TemplateView):
         absences_professeurs = (
             Pointage.objects.filter(etat='absent', annee=annee_active, date__range=(start_week, end_week))
             .values('date')
-            .annotate(count=Count('id'))
+            .annotate(count=Count(cle_seance_reelle(), distinct=True))
             .order_by('date')
         )
 
@@ -309,10 +309,10 @@ class ProfesseurStatsView(TemplateView):
 
         stats_jour = {
             'date': today,
-            'present': Pointage.objects.filter(annee=get_annee_courante(), date=today, etat='present').count(),
-            'absent': Pointage.objects.filter(annee=get_annee_courante(), date=today, etat='absent').count(),
-            'retard': Pointage.objects.filter(annee=get_annee_courante(), date=today, etat='retard').count(),
-            'conge': Pointage.objects.filter(annee=get_annee_courante(), date=today, etat='conge').count(),
+            'present': nb_seances(Pointage.objects.filter(annee=get_annee_courante(), date=today, etat='present')),
+            'absent': nb_seances(Pointage.objects.filter(annee=get_annee_courante(), date=today, etat='absent')),
+            'retard': nb_seances(Pointage.objects.filter(annee=get_annee_courante(), date=today, etat='retard')),
+            'conge': nb_seances(Pointage.objects.filter(annee=get_annee_courante(), date=today, etat='conge')),
         }
         today = timezone.now().date()
         start_of_week = today - timedelta(days=today.weekday())  # Lundi
@@ -322,18 +322,18 @@ class ProfesseurStatsView(TemplateView):
 
         stats_semaine = {
             'semaine': f"Semaine {start_of_week} au {end_of_week}",
-            'present': Pointage.objects.filter(annee=get_annee_courante(), date__range=[start_of_week, end_of_week], etat='present').count(),
-            'absent': Pointage.objects.filter(annee=get_annee_courante(), date__range=[start_of_week, end_of_week], etat='absent').count(),
-            'retard': Pointage.objects.filter(annee=get_annee_courante(), date__range=[start_of_week, end_of_week], etat='retard').count(),
-            'conge': Pointage.objects.filter(annee=get_annee_courante(), date__range=[start_of_week, end_of_week], etat='conge').count(),
+            'present': nb_seances(Pointage.objects.filter(annee=get_annee_courante(), date__range=[start_of_week, end_of_week], etat='present')),
+            'absent': nb_seances(Pointage.objects.filter(annee=get_annee_courante(), date__range=[start_of_week, end_of_week], etat='absent')),
+            'retard': nb_seances(Pointage.objects.filter(annee=get_annee_courante(), date__range=[start_of_week, end_of_week], etat='retard')),
+            'conge': nb_seances(Pointage.objects.filter(annee=get_annee_courante(), date__range=[start_of_week, end_of_week], etat='conge')),
         }
 
         stats_mois = {
             'mois': today.strftime("%B %Y"),  # Ex: "June 2023"
-            'present': Pointage.objects.filter(annee=get_annee_courante(), date__range=[start_of_month, end_of_month], etat='present').count(),
-            'absent': Pointage.objects.filter(annee=get_annee_courante(), date__range=[start_of_month, end_of_month], etat='absent').count(),
-            'retard': Pointage.objects.filter(annee=get_annee_courante(), date__range=[start_of_month, end_of_month], etat='retard').count(),
-            'conge': Pointage.objects.filter(annee=get_annee_courante(), date__range=[start_of_month, end_of_month], etat='conge').count(),
+            'present': nb_seances(Pointage.objects.filter(annee=get_annee_courante(), date__range=[start_of_month, end_of_month], etat='present')),
+            'absent': nb_seances(Pointage.objects.filter(annee=get_annee_courante(), date__range=[start_of_month, end_of_month], etat='absent')),
+            'retard': nb_seances(Pointage.objects.filter(annee=get_annee_courante(), date__range=[start_of_month, end_of_month], etat='retard')),
+            'conge': nb_seances(Pointage.objects.filter(annee=get_annee_courante(), date__range=[start_of_month, end_of_month], etat='conge')),
         }
 
 
@@ -537,17 +537,17 @@ def get_professor_stats_ajax(request):
     end_date_str = request.GET.get('end_date')
 
     if not start_date_str or not end_date_str:
-        return JsonResponse({'error': 'Dates manquantes'}, status=400)
+        return JsonResponse({'error': _("Dates manquantes")}, status=400)
 
     try:
         start_date = datetime.strptime(start_date_str, '%Y-%m-%d').date()
         end_date = datetime.strptime(end_date_str, '%Y-%m-%d').date()
 
         if start_date > end_date:
-            return JsonResponse({'error': 'Date de début postérieure à la date de fin'}, status=400)
+            return JsonResponse({'error': _("Date de début postérieure à la date de fin")}, status=400)
 
     except ValueError:
-        return JsonResponse({'error': 'Format de date invalide'}, status=400)
+        return JsonResponse({'error': _("Format de date invalide")}, status=400)
 
     # Utiliser la même méthode que la vue principale
     view = ProfesseurStatsView()
@@ -797,17 +797,17 @@ def get_student_stats_ajax(request):
     classe = request.GET.get('classe')
 
     if not start_date_str or not end_date_str:
-        return JsonResponse({'error': 'Dates manquantes'}, status=400)
+        return JsonResponse({'error': _("Dates manquantes")}, status=400)
 
     try:
         start_date = datetime.strptime(start_date_str, '%Y-%m-%d').date()
         end_date = datetime.strptime(end_date_str, '%Y-%m-%d').date()
 
         if start_date > end_date:
-            return JsonResponse({'error': 'Date de début postérieure à la date de fin'}, status=400)
+            return JsonResponse({'error': _("Date de début postérieure à la date de fin")}, status=400)
 
     except ValueError:
-        return JsonResponse({'error': 'Format de date invalide'}, status=400)
+        return JsonResponse({'error': _("Format de date invalide")}, status=400)
 
     # Filtres supplémentaires
     filters = {
@@ -1076,7 +1076,7 @@ def dashboard_stats_ajax(request):
         start_date = timezone.make_aware(datetime.strptime(start_date_str, '%Y-%m-%d'))
         end_date = timezone.make_aware(datetime.strptime(end_date_str, '%Y-%m-%d') + timedelta(days=1))
     except (ValueError, TypeError):
-        return JsonResponse({'error': 'Invalid date format'}, status=400)
+        return JsonResponse({'error': _("Format de date invalide")}, status=400)
 
     # 1. Statistiques d'enseignement (progress)
     seances = Seance.objects.filter(trimestre__annee=get_annee_courante(), date__range=(start_date, end_date))

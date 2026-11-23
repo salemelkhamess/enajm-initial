@@ -6,7 +6,7 @@ from django.utils.translation import get_language
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 
 from entete.models import Entete
-from pointage.models import Pointage
+from pointage.models import Pointage, cle_seance_reelle
 from pointagematiere.models import PointageMatiere
 from .models import PresenceProfesseur
 from .forms import PresenceProfesseurForm
@@ -93,7 +93,7 @@ def rapport_presence_professeurs(request):
         .filter(etat='absent')
         .filter(date__range=(debut, fin)) if debut and fin else
         Pointage.objects.filter(etat='absent')
-    ).values('professeur__nom', 'professeur__prenom').annotate(total_absences=Count('id'))
+    ).values('professeur__nom', 'professeur__prenom').annotate(total_absences=Count(cle_seance_reelle(), distinct=True))
 
     context = {
         'presences_combinees': presences_combinees,

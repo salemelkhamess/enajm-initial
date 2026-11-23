@@ -2180,3 +2180,1127 @@ msgstr ""
 
 msgid "Compte utilisateur (rôle Professeur)"
 msgstr "Compte utilisateur (rôle Professeur)"
+
+msgid "Nom (arabe)"
+msgstr "Nom (arabe)"
+
+msgid "Prénom (arabe)"
+msgstr "Prénom (arabe)"
+
+msgid "Nom (français)"
+msgstr "Nom (français)"
+
+msgid "Prénom (français)"
+msgstr "Prénom (français)"
+
+msgid "Lieu de naissance (arabe)"
+msgstr "Lieu de naissance (arabe)"
+
+msgid "Lieu de naissance (français)"
+msgstr "Lieu de naissance (français)"
+
+msgid "Langue d'impression"
+msgstr "Langue d'impression"
+
+msgid "Liste arabe"
+msgstr "Liste arabe"
+
+msgid "Liste français"
+msgstr "Liste français"
+
+msgid "Toutes les classes"
+msgstr "Toutes les classes"
+
+msgid "Exporter en Excel"
+msgstr "Exporter en Excel"
+
+msgid "Importer depuis Excel"
+msgstr "Importer depuis Excel"
+
+msgid "Importer des élèves fonctionnaires depuis Excel"
+msgstr "Importer des élèves fonctionnaires depuis Excel"
+
+msgid "Les élèves sont ajoutés à l'année en cours"
+msgstr "Les élèves sont ajoutés à l'année en cours"
+
+msgid ""
+"Un élève dont le matricule existe déjà est mis à jour ; les cellules vides "
+"ne modifient rien."
+msgstr ""
+"Un élève dont le matricule existe déjà est mis à jour ; les cellules vides "
+"ne modifient rien."
+
+msgid "Télécharger le modèle Excel"
+msgstr "Télécharger le modèle Excel"
+
+msgid ""
+"Le fichier doit avoir les mêmes colonnes que le modèle (1ère ligne : noms "
+"des champs de la base). Si une seule ligne est invalide, rien n'est importé."
+msgstr ""
+"Le fichier doit avoir les mêmes colonnes que le modèle (1ère ligne : noms "
+"des champs de la base). Si une seule ligne est invalide, rien n'est importé."
+
+msgid "Import annulé : corrigez ces erreurs puis réessayez."
+msgstr "Import annulé : corrigez ces erreurs puis réessayez."
+
+msgid "Ligne"
+msgstr "Ligne"
+
+msgid "erreurs au total"
+msgstr "erreurs au total"
+
+msgid "Import terminé"
+msgstr "Import terminé"
+
+msgid "créé(s)"
+msgstr "créé(s)"
+
+msgid "mis à jour"
+msgstr "mis à jour"
+
+msgid "ligne(s)"
+msgstr "ligne(s)"
+
+msgid "Importer"
+msgstr "Importer"
+
+msgid "Choisissez un fichier .xlsx."
+msgstr "Choisissez un fichier .xlsx."
+
+msgid "Fichier .xlsx de 5 Mo maximum attendu."
+msgstr "Fichier .xlsx de 5 Mo maximum attendu."
+
+msgid "%(n)s documents maximum par absence."
+msgstr "%(n)s documents maximum par absence."
+
+msgid "Accepter la justification"
+msgstr "Accepter la justification"
+
+msgid "Aucun document"
+msgstr "Aucun document"
+
+msgid "Aucune justification en attente de décision pour cette absence."
+msgstr "Aucune justification en attente de décision pour cette absence."
+
+msgid "Cette absence est validée : elle ne peut plus être justifiée."
+msgstr "Cette absence est validée : elle ne peut plus être justifiée."
+
+msgid "Cette absence ne peut pas être justifiée."
+msgstr "Cette absence ne peut pas être justifiée."
+
+msgid "Date de la justification"
+msgstr "Date de la justification"
+
+msgid "Documents déjà joints"
+msgstr "Documents déjà joints"
+
+msgid "Documents joints"
+msgstr "Documents joints"
+
+msgid "Déposée par"
+msgstr "Déposée par"
+
+msgid "Envoyer la justification"
+msgstr "Envoyer la justification"
+
+msgid "Examiner la justification"
+msgstr "Examiner la justification"
+
+msgid "Indiquez le motif du refus."
+msgstr "Indiquez le motif du refus."
+
+msgid "Joindre des documents (certificat médical, etc.)"
+msgstr "Joindre des documents (certificat médical, etc.)"
+
+msgid "Justification acceptée : l'absence est justifiée."
+msgstr "Justification acceptée : l'absence est justifiée."
+
+msgid "Justification envoyée : elle doit être validée par l'administration."
+msgstr "Justification envoyée : elle doit être validée par l'administration."
+
+msgid "Justification refusée."
+msgstr "Justification refusée."
+
+msgid "Justification soumise (en attente de validation)"
+msgstr "Justification soumise (en attente de validation)"
+
+msgid "Justification à valider"
+msgstr "Justification à valider"
+
+msgid "Justifier une absence"
+msgstr "Justifier une absence"
+
+msgid ""
+"La justification doit être validée par l'administration. Elle n'est possible"
+" que tant que l'absence n'est pas validée (72 h)."
+msgstr ""
+"La justification doit être validée par l'administration. Elle n'est possible"
+" que tant que l'absence n'est pas validée (72 h)."
+
+msgid "La justification est obligatoire."
+msgstr "La justification est obligatoire."
+
+msgid "Modifier la justification"
+msgstr "Modifier la justification"
+
+msgid "Motif du refus"
+msgstr "Motif du refus"
+
+msgid "PDF, JPG ou PNG — 5 Mo maximum par fichier"
+msgstr "PDF, JPG ou PNG — 5 Mo maximum par fichier"
+
+msgid "Refuser"
+msgstr "Refuser"
+
+msgid ""
+"Une justification est déjà en attente de validation : vous pouvez la "
+"modifier ou ajouter des documents."
+msgstr ""
+"Une justification est déjà en attente de validation : vous pouvez la "
+"modifier ou ajouter des documents."
+
+msgid "Une justification est en attente de décision : examinez-la d'abord."
+msgstr "Une justification est en attente de décision : examinez-la d'abord."
+
+msgid ""
+"Vous avez déposé cette justification : elle doit être validée par une autre "
+"personne."
+msgstr ""
+"Vous avez déposé cette justification : elle doit être validée par une autre "
+"personne."
+
+msgid ""
+"Vous ne pouvez pas valider une justification que vous avez vous-même "
+"déposée."
+msgstr ""
+"Vous ne pouvez pas valider une justification que vous avez vous-même "
+"déposée."
+
+msgid "documents au maximum"
+msgstr "documents au maximum"
+
+msgid "ou"
+msgstr "ou"
+
+msgid "« %(nom)s » : formats acceptés : PDF, JPG, PNG."
+msgstr "« %(nom)s » : formats acceptés : PDF, JPG, PNG."
+
+msgid "« %(nom)s » dépasse 5 Mo."
+msgstr "« %(nom)s » dépasse 5 Mo."
+
+msgid "Niveaux"
+msgstr "Niveaux de langue"
+
+msgid "Niveau"
+msgstr "Niveau de langue"
+
+msgid "Ajouter un niveau"
+msgstr "Ajouter un niveau de langue"
+
+msgid "Afficher les inactifs"
+msgstr "Afficher les inactifs"
+
+msgid "Masquer les inactifs"
+msgstr "Masquer les inactifs"
+
+msgid "Statut"
+msgstr "Statut"
+
+msgid "Actif"
+msgstr "Actif"
+
+msgid "Inactif"
+msgstr "Inactif"
+
+msgid "Désactiver"
+msgstr "Désactiver"
+
+msgid "Activer"
+msgstr "Activer"
+
+msgid "Aucun niveau actif."
+msgstr "Aucun niveau de langue actif."
+
+msgid ""
+"Un niveau inactif n'est plus proposé dans les formulaires. Un niveau ne se "
+"supprime pas."
+msgstr ""
+"Un niveau de langue inactif n'est plus proposé dans les formulaires. Un "
+"niveau de langue ne se supprime pas."
+
+msgid "Nouveau niveau"
+msgstr "Nouveau niveau de langue"
+
+msgid "Modifier le niveau"
+msgstr "Modifier le niveau de langue"
+
+msgid "Niveau créé."
+msgstr "Niveau de langue créé."
+
+msgid "Niveau modifié."
+msgstr "Niveau de langue modifié."
+
+msgid "Niveau activé."
+msgstr "Niveau de langue activé."
+
+msgid "Niveau désactivé."
+msgstr "Niveau de langue désactivé."
+
+msgid "Un niveau porte déjà ce nom."
+msgstr "Un niveau de langue porte déjà ce nom."
+
+msgid "Un niveau ne se supprime pas : désactivez-le."
+msgstr "Un niveau de langue ne se supprime pas : désactivez-le."
+
+msgid "Liste des niveaux"
+msgstr "Liste des niveaux de langue"
+
+msgid "Ajouter un cours par niveau (langue)"
+msgstr "Ajouter un cours par niveau de langue"
+
+msgid "Ce champ est obligatoire (sauf pour un cours par niveau)."
+msgstr "Ce champ est obligatoire (sauf pour un cours par niveau de langue)."
+
+msgid "Choisissez la langue du cours (arabe ou français)."
+msgstr "Choisissez la langue du cours (arabe ou français)."
+
+msgid "Cours par niveau (tous secteurs)"
+msgstr "Cours par niveau de langue (tous secteurs)"
+
+msgid "Langue du cours"
+msgstr "Langue du cours"
+
+msgid "Niveau (cours par niveau, ex. langue)"
+msgstr "Niveau de langue (cours par niveau)"
+
+msgid "Niveau (cours transversal)"
+msgstr "Niveau de langue (cours transversal)"
+
+msgid "Tous les niveaux"
+msgstr "Tous les niveaux de langue"
+
+msgid "Élèves"
+msgstr "Élèves"
+
+msgid "— Tout le secteur —"
+msgstr "— Tout le secteur —"
+
+msgid "%(champ)s trop long (%(limite)s caractères max)"
+msgstr "%(champ)s trop long (%(limite)s caractères max)"
+
+msgid "%(nom)s : %(n)s hors limites (%(minimum)s-%(maximum)s)"
+msgstr "%(nom)s : %(n)s hors limites (%(minimum)s-%(maximum)s)"
+
+msgid "%(nom)s : « %(brut)s » n'est pas un nombre"
+msgstr "%(nom)s : « %(brut)s » n'est pas un nombre"
+
+msgid "Accès refusé"
+msgstr "Accès refusé"
+
+msgid "Aucun étudiant trouvé pour ce secteur et année"
+msgstr "Aucun étudiant trouvé pour ce secteur et année"
+
+msgid "Aucune évaluation trouvée pour les critères sélectionnés"
+msgstr "Aucune évaluation trouvée pour les critères sélectionnés"
+
+msgid ""
+"Ce NNI (%(nni)s) est déjà attribué à un autre élève : %(nom)s (matricule "
+"%(matricule)s)."
+msgstr ""
+"Ce NNI (%(nni)s) est déjà attribué à un autre élève : %(nom)s (matricule "
+"%(matricule)s)."
+
+msgid "Ce NNI est déjà attribué à un autre élève."
+msgstr "Ce NNI est déjà attribué à un autre élève."
+
+msgid ""
+"Ce matricule (%(matricule)s) est déjà attribué à un autre élève : %(nom)s "
+"(année %(annee)s)."
+msgstr ""
+"Ce matricule (%(matricule)s) est déjà attribué à un autre élève : %(nom)s "
+"(année %(annee)s)."
+
+msgid "Ce matricule est déjà attribué à un autre élève."
+msgstr "Ce matricule est déjà attribué à un autre élève."
+
+msgid "Ce niveau de langue a déjà un cours pendant cette plage horaire."
+msgstr "Ce niveau de langue a déjà un cours pendant cette plage horaire."
+
+msgid "Cette année existe déjà."
+msgstr "Cette année existe déjà."
+
+msgid "Choisissez l'année."
+msgstr "Choisissez l'année."
+
+msgid "Choisissez la classe de l'élève."
+msgstr "Choisissez la classe de l'élève."
+
+msgid ""
+"Choisissez la langue du cours (arabe ou français) pour un cours par niveau "
+"de langue."
+msgstr ""
+"Choisissez la langue du cours (arabe ou français) pour un cours par niveau "
+"de langue."
+
+msgid ""
+"Colonnes obligatoires absentes de la 1ère ligne : %(colonnes)s. Utilisez le "
+"modèle."
+msgstr ""
+"Colonnes obligatoires absentes de la 1ère ligne : %(colonnes)s. Utilisez le "
+"modèle."
+
+msgid "Date de début postérieure à la date de fin"
+msgstr "Date de début postérieure à la date de fin"
+
+msgid "Dates manquantes"
+msgstr "Dates manquantes"
+
+msgid "Des pointages existent déjà pour la date %(date)s."
+msgstr "Des pointages existent déjà pour la date %(date)s."
+
+msgid "Email ou mot de passe invalide."
+msgstr "Email ou mot de passe invalide."
+
+msgid ""
+"Enregistrement impossible : une valeur déjà utilisée (matricule ou NNI) "
+"existe pour un autre élève."
+msgstr ""
+"Enregistrement impossible : une valeur déjà utilisée (matricule ou NNI) "
+"existe pour un autre élève."
+
+msgid "Fichier illisible : utilisez un fichier .xlsx"
+msgstr "Fichier illisible : utilisez un fichier .xlsx"
+
+msgid "Fichier vide"
+msgstr "Fichier vide"
+
+msgid "Format de date invalide"
+msgstr "Format de date invalide"
+
+msgid "L'adresse email est obligatoire."
+msgstr "L'adresse email est obligatoire."
+
+msgid "L'heure de fin doit être après l'heure de début."
+msgstr "L'heure de fin doit être après l'heure de début."
+
+msgid ""
+"La demande envoyée n'est pas valide. Retournez à la page précédente et "
+"réessayez."
+msgstr ""
+"La demande envoyée n'est pas valide. Retournez à la page précédente et "
+"réessayez."
+
+msgid "La page demandée n'existe pas ou a été déplacée."
+msgstr "La page demandée n'existe pas ou a été déplacée."
+
+msgid "La salle est déjà occupée pendant cette plage horaire."
+msgstr "La salle est déjà occupée pendant cette plage horaire."
+
+msgid "Le matricule est obligatoire."
+msgstr "Le matricule est obligatoire."
+
+msgid "Le nom en arabe est obligatoire."
+msgstr "Le nom en arabe est obligatoire."
+
+msgid "Le nom est obligatoire."
+msgstr "Le nom est obligatoire."
+
+msgid "Le professeur a déjà un cours pendant cette plage horaire."
+msgstr "Le professeur a déjà un cours pendant cette plage horaire."
+
+msgid "Le prénom est obligatoire."
+msgstr "Le prénom est obligatoire."
+
+msgid "Le trimestre doit appartenir à la même année."
+msgstr "Le trimestre doit appartenir à la même année."
+
+msgid "Le trimestre sélectionné n'appartient pas à l'année choisie."
+msgstr "Le trimestre sélectionné n'appartient pas à l'année choisie."
+
+msgid "Les mots de passe ne correspondent pas."
+msgstr "Les mots de passe ne correspondent pas."
+
+msgid "NNI %(d_nni)s déjà utilisé par un autre élève"
+msgstr "NNI %(d_nni)s déjà utilisé par un autre élève"
+
+msgid "Notes spéciales enregistrées avec succès"
+msgstr "Notes spéciales enregistrées avec succès"
+
+msgid "Page introuvable"
+msgstr "Page introuvable"
+
+msgid "Page précédente"
+msgstr "Page précédente"
+
+msgid "Paramètre annee_id manquant"
+msgstr "Paramètre annee_id manquant"
+
+msgid "Paramètre manquant"
+msgstr "Paramètre manquant"
+
+msgid "Requête invalide"
+msgstr "Requête invalide"
+
+msgid "Retour à l'accueil"
+msgstr "Retour à l'accueil"
+
+msgid "Saisissez une adresse email valide."
+msgstr "Saisissez une adresse email valide."
+
+msgid "Saisissez une année de naissance valide (ex. 1990)."
+msgstr "Saisissez une année de naissance valide (ex. 1990)."
+
+msgid "Session expirée"
+msgstr "Session expirée"
+
+msgid "Session expirée, veuillez recommencer"
+msgstr "Session expirée, veuillez recommencer"
+
+msgid ""
+"Un problème technique est survenu. Veuillez réessayer. Si le problème "
+"persiste, contactez l'administration."
+msgstr ""
+"Un problème technique est survenu. Veuillez réessayer. Si le problème "
+"persiste, contactez l'administration."
+
+msgid "Un utilisateur avec cet email existe déjà."
+msgstr "Un utilisateur avec cet email existe déjà."
+
+msgid ""
+"Une erreur est survenue. Veuillez réessayer ou contacter l'administration."
+msgstr ""
+"Une erreur est survenue. Veuillez réessayer ou contacter l'administration."
+
+msgid "Vos informations ont été mises à jour!"
+msgstr "Vos informations ont été mises à jour!"
+
+msgid "Votre mot de passe a été changé!"
+msgstr "Votre mot de passe a été changé!"
+
+msgid ""
+"Votre session a expiré ou le formulaire n'est plus valide. Rechargez la page"
+" puis réessayez."
+msgstr ""
+"Votre session a expiré ou le formulaire n'est plus valide. Rechargez la page"
+" puis réessayez."
+
+msgid "Vous n'avez pas l'autorisation d'accéder à cette page."
+msgstr "Vous n'avez pas l'autorisation d'accéder à cette page."
+
+msgid "année inconnue : %(annee)s"
+msgstr "année inconnue : %(annee)s"
+
+msgid "classe ambiguë (plusieurs secteurs nommés « %(secteur)s »)"
+msgstr "classe ambiguë (plusieurs secteurs nommés « %(secteur)s »)"
+
+msgid "classe inconnue : « %(secteur)s »"
+msgstr "classe inconnue : « %(secteur)s »"
+
+msgid "classe obligatoire pour un nouvel élève"
+msgstr "classe obligatoire pour un nouvel élève"
+
+msgid "diplôme inconnu : « %(jeton)s »"
+msgstr "diplôme inconnu : « %(jeton)s »"
+
+msgid "email invalide : %(email)s"
+msgstr "email invalide : %(email)s"
+
+msgid "matricule %(d_matricule)s en double dans le fichier"
+msgstr "matricule %(d_matricule)s en double dans le fichier"
+
+msgid "matricule manquant"
+msgstr "matricule manquant"
+
+msgid "matricule trop long (20 caractères max)"
+msgstr "matricule trop long (20 caractères max)"
+
+msgid "niveau de langue inactif : « %(niveau)s »"
+msgstr "niveau de langue inactif : « %(niveau)s »"
+
+msgid "niveau de langue inconnu : « %(niveau)s »"
+msgstr "niveau de langue inconnu : « %(niveau)s »"
+
+msgid "nom manquant"
+msgstr "nom manquant"
+
+msgid "sexe invalide : « %(sexe)s » (H ou F)"
+msgstr "sexe invalide : « %(sexe)s » (H ou F)"
+
+msgid "situation familiale invalide : « %(situation)s » (C, M ou D)"
+msgstr "situation familiale invalide : « %(situation)s » (C, M ou D)"
+
+msgid "tous les départements"
+msgstr "tous les départements"
+
+msgid "This field is required."
+msgstr "Ce champ est obligatoire."
+
+msgid "Enter a valid email address."
+msgstr "Saisissez une adresse email valide."
+
+msgid "Enter a whole number."
+msgstr "Saisissez un nombre entier."
+
+msgid "Enter a number."
+msgstr "Saisissez un nombre."
+
+msgid "Enter a valid date."
+msgstr "Saisissez une date valide."
+
+msgid "Enter a valid time."
+msgstr "Saisissez une heure valide."
+
+msgid "Enter a valid date/time."
+msgstr "Saisissez une date et une heure valides."
+
+msgid "Enter a valid URL."
+msgstr "Saisissez une adresse web valide."
+
+msgid "Enter a valid value."
+msgstr "La valeur saisie n'est pas valide."
+
+msgid "Enter a list of values."
+msgstr "Saisissez une liste de valeurs."
+
+msgid "Select a valid choice. %(value)s is not one of the available choices."
+msgstr "Choix invalide : « %(value)s » ne fait pas partie des choix proposés."
+
+msgid ""
+"Select a valid choice. That choice is not one of the available choices."
+msgstr "Choix invalide : cette valeur ne fait pas partie des choix proposés."
+
+msgid "Ensure this value is less than or equal to %(limit_value)s."
+msgstr "Cette valeur doit être inférieure ou égale à %(limit_value)s."
+
+msgid "Ensure this value is greater than or equal to %(limit_value)s."
+msgstr "Cette valeur doit être supérieure ou égale à %(limit_value)s."
+
+msgid "%(model_name)s with this %(field_label)s already exists."
+msgstr ""
+"Un enregistrement avec la même valeur de « %(field_label)s » existe déjà."
+
+msgid ""
+"Upload a valid image. The file you uploaded was either not an image or a "
+"corrupted image."
+msgstr ""
+"Envoyez une image valide : le fichier choisi n'est pas une image ou est "
+"endommagé."
+
+msgid "The submitted file is empty."
+msgstr "Le fichier envoyé est vide."
+
+msgid "Avec signature"
+msgstr "Avec signature"
+
+msgid "Absences concernées"
+msgstr "Absences concernées"
+
+msgid "Au"
+msgstr "Au"
+
+msgid "Du"
+msgstr "Du"
+
+msgid ""
+"Aucune absence en attente sur cette période : la justification s'appliquera "
+"aux absences enregistrées pendant la période."
+msgstr ""
+"Aucune absence en attente sur cette période : la justification s'appliquera "
+"aux absences enregistrées pendant la période."
+
+msgid ""
+"Aucune absence enregistrée pour l'instant : la justification s'appliquera "
+"aux absences enregistrées pendant la période."
+msgstr ""
+"Aucune absence enregistrée pour l'instant : la justification s'appliquera "
+"aux absences enregistrées pendant la période."
+
+msgid "Aucune absence à justifier sur cette période."
+msgstr "Aucune absence à justifier sur cette période."
+
+msgid "Autre élève (autorisation à l'avance)"
+msgstr "Autre élève (autorisation à l'avance)"
+
+msgid ""
+"Cette absence fait partie d'une justification par période : modifiez-la "
+"depuis « Justifier par période »."
+msgstr ""
+"Cette absence fait partie d'une justification par période : modifiez-la "
+"depuis « Justifier par période »."
+
+msgid "Choisir"
+msgstr "Choisir"
+
+msgid "Choisissez un élève dans la liste pour lui joindre son document."
+msgstr "Choisissez un élève dans la liste pour lui joindre son document."
+
+msgid "Enregistrer et passer à l'élève suivant"
+msgstr "Enregistrer et passer à l'élève suivant"
+
+msgid ""
+"Justification enregistrée pour %(nom)s (%(n)s absence(s)) : elle doit être "
+"validée par l'administration."
+msgstr ""
+"Justification enregistrée pour %(nom)s (%(n)s absence(s)) : elle doit être "
+"validée par l'administration."
+
+msgid "Justification par période à valider"
+msgstr "Justification par période à valider"
+
+msgid "Justifications par période en attente de validation"
+msgstr "Justifications par période en attente de validation"
+
+msgid "Justifier"
+msgstr "Justifier"
+
+msgid "Justifier par période"
+msgstr "Justifier par période"
+
+msgid "Justifier une période d'absence"
+msgstr "Justifier une période d'absence"
+
+msgid "La date de fin est antérieure à la date de début."
+msgstr "La date de fin est antérieure à la date de début."
+
+msgid "La période ne peut pas dépasser 90 jours."
+msgstr "La période ne peut pas dépasser 90 jours."
+
+msgid ""
+"Les absences de l'élève pendant toute la période sont justifiées avec un "
+"seul dossier. Les absences déjà validées (72 h écoulées) ne peuvent plus "
+"être justifiées."
+msgstr ""
+"Les absences de l'élève pendant toute la période sont justifiées avec un "
+"seul dossier. Les absences déjà validées (72 h écoulées) ne peuvent plus "
+"être justifiées."
+
+msgid "Passer sans enregistrer"
+msgstr "Passer sans enregistrer"
+
+msgid "Période"
+msgstr "Période"
+
+msgid "Tous les élèves de cette période ont une justification."
+msgstr "Tous les élèves de cette période ont une justification."
+
+msgid ""
+"Une justification est déjà en attente de validation pour cette période : "
+"vous pouvez la modifier ou ajouter des documents."
+msgstr ""
+"Une justification est déjà en attente de validation pour cette période : "
+"vous pouvez la modifier ou ajouter des documents."
+
+msgid "jour(s)"
+msgstr "jour(s)"
+
+msgid "Élèves avec des absences à justifier"
+msgstr "Élèves avec des absences à justifier"
+
+msgid "Il n'y a plus d'élève à justifier dans la liste."
+msgstr "Il n'y a plus d'élève à justifier dans la liste."
+
+msgid "puis élève suivant"
+msgstr "puis élève suivant"
+
+msgid "Élève précédent"
+msgstr "Élève précédent"
+
+msgid "Élève suivant"
+msgstr "Élève suivant"
+
+msgid "Période de la justification"
+msgstr "Période de la justification"
+
+msgid ""
+"Modifiez les dates pour justifier plusieurs jours (ex. autorisation de 3 "
+"jours)."
+msgstr ""
+"Modifiez les dates pour justifier plusieurs jours (ex. autorisation de 3 "
+"jours)."
+
+msgid "Dates"
+msgstr "Dates"
+
+msgid "Aucune absence à justifier pour le moment."
+msgstr "Aucune absence à justifier pour le moment."
+
+msgid "Documents"
+msgstr "Documents"
+
+msgid "Voir les documents"
+msgstr "Voir les documents"
+
+msgid "déjà enregistré"
+msgstr "déjà enregistré"
+
+msgid "Documents déjà enregistrés"
+msgstr "Documents déjà enregistrés"
+
+msgid "Aucun document enregistré pour cet élève."
+msgstr "Aucun document enregistré pour cet élève."
+
+msgid "Historique des justifications"
+msgstr "Historique des justifications"
+
+msgid "Déposée le"
+msgstr "Déposée le"
+
+msgid "Décision"
+msgstr "Décision"
+
+msgid "Aucune justification enregistrée pour cet élève."
+msgstr "Aucune justification enregistrée pour cet élève."
+
+msgid "Acceptée"
+msgstr "Acceptée"
+
+msgid "Refusée"
+msgstr "Refusée"
+
+msgid "Historique"
+msgstr "Historique"
+
+msgid "Excel arabe"
+msgstr "Excel arabe"
+
+msgid "Excel français"
+msgstr "Excel français"
+
+msgid "Nom, numéro et classe"
+msgstr "Nom, numéro et classe"
+
+#, python-format
+msgid "Déjà occupé par : %(detail)s"
+msgstr "Déjà occupé par : %(detail)s"
+
+#, python-format
+msgid ""
+"%(classe)s — %(matiere)s, %(prof)s, salle %(salle)s (%(debut)s-%(fin)s)"
+msgstr ""
+"%(classe)s — %(matiere)s, %(prof)s, salle %(salle)s (%(debut)s-%(fin)s)"
+
+#, python-format
+msgid "%(jour)s %(debut)s-%(fin)s : %(erreur)s"
+msgstr "%(jour)s %(debut)s-%(fin)s : %(erreur)s"
+
+msgid "72 h non dépassées"
+msgstr "72 h non dépassées"
+
+msgid ""
+"Absence non encore définitive : le délai de 72 h pour la justifier n'est pas"
+" dépassé"
+msgstr ""
+"Absence non encore définitive : le délai de 72 h pour la justifier n'est pas"
+" dépassé"
+
+msgid "Total heures"
+msgstr "Total heures"
+
+#, python-format
+msgid ""
+"Des pointages existent déjà pour la classe %(classe)s à la date %(date)s."
+msgstr ""
+"Des pointages existent déjà pour la classe %(classe)s à la date %(date)s."
+
+msgid "Imprimer les cartes"
+msgstr "Imprimer les cartes"
+
+msgid "Imprimer les cartes de tous les élèves (ou de la classe choisie)"
+msgstr "Imprimer les cartes de tous les élèves (ou de la classe choisie)"
+
+msgid "Cartes des élèves fonctionnaires"
+msgstr "Cartes des élèves fonctionnaires"
+
+msgid "carte(s)"
+msgstr "carte(s)"
+
+msgid "sans photo"
+msgstr "sans photo"
+
+msgid "Papier"
+msgstr "Papier"
+
+msgid "Carte réelle (une carte par page, 85,6 × 54 mm)"
+msgstr "Carte réelle (une carte par page, 85,6 × 54 mm)"
+
+msgid "Feuille A4 (cartes à découper)"
+msgstr "Feuille A4 (cartes à découper)"
+
+msgid "Face"
+msgstr "Face"
+
+msgid "Recto + verso"
+msgstr "Recto + verso"
+
+msgid "Recto seulement"
+msgstr "Recto seulement"
+
+msgid "Verso seulement"
+msgstr "Verso seulement"
+
+msgid "Aucun élève à imprimer."
+msgstr "Aucun élève à imprimer."
+
+msgid "Aucune séance de ce professeur pour cette classe et ce jour."
+msgstr "Aucune séance de ce professeur pour cette classe et ce jour."
+
+msgid "Un pointage existe déjà pour cette séance à cette date."
+msgstr "Un pointage existe déjà pour cette séance à cette date."
+
+msgid "Dernier élève de la liste"
+msgstr "Dernier élève de la liste"
+
+msgid "Modifications enregistrées. Élève suivant : %(nom)s"
+msgstr "Modifications enregistrées. Élève suivant : %(nom)s"
+
+msgid "Modifications enregistrées. C'était le dernier élève de la liste."
+msgstr "Modifications enregistrées. C'était le dernier élève de la liste."
+
+msgid "Bloc (formation)"
+msgstr "Bloc (formation)"
+
+msgid "Code du groupe"
+msgstr "Code du groupe"
+
+msgid "Ex. : G1Ad, G2F, GAar, GBar"
+msgstr "Ex. : G1Ad, G2F, GAar, GBar"
+
+msgid "Niveau de langue"
+msgstr "Niveau de langue"
+
+msgid "Ex. : A1.1, A2.2 / A2.3, ب1"
+msgstr "Ex. : A1.1, A2.2 / A2.3, ب1"
+
+msgid "Intitulé"
+msgstr "Intitulé"
+
+msgid "Ex. : Groupe 1"
+msgstr "Ex. : Groupe 1"
+
+msgid "Professeur (nom libre)"
+msgstr "Professeur (nom libre)"
+
+msgid "Utilisé si le professeur n'est pas dans la liste."
+msgstr "Utilisé si le professeur n'est pas dans la liste."
+
+msgid "Coordinateur"
+msgstr "Coordinateur"
+
+msgid "Horaire"
+msgstr "Horaire"
+
+msgid "Ex. : 10-12"
+msgstr "Ex. : 10-12"
+
+msgid "— Aucun —"
+msgstr "— Aucun —"
+
+msgid "— Aucune —"
+msgstr "— Aucune —"
+
+msgid "La langue ne peut plus être modifiée : le groupe contient des élèves."
+msgstr "La langue ne peut plus être modifiée : le groupe contient des élèves."
+
+msgid "Ce code existe déjà pour ce bloc et cette année."
+msgstr "Ce code existe déjà pour ce bloc et cette année."
+
+msgid "Français"
+msgstr "Français"
+
+msgid "Arabe"
+msgstr "Arabe"
+
+msgid "Groupe créé. Ajoutez maintenant les élèves."
+msgstr "Groupe créé. Ajoutez maintenant les élèves."
+
+msgid "Groupe modifié."
+msgstr "Groupe modifié."
+
+msgid "Groupe activé."
+msgstr "Groupe activé."
+
+msgid "Groupe désactivé."
+msgstr "Groupe désactivé."
+
+msgid ""
+"Ce groupe contient des élèves : retirez-les d'abord, ou désactivez le "
+"groupe."
+msgstr ""
+"Ce groupe contient des élèves : retirez-les d'abord, ou désactivez le "
+"groupe."
+
+msgid "Groupe supprimé."
+msgstr "Groupe supprimé."
+
+#, python-format
+msgid ""
+"Groupe %(code)s enregistré : %(n)d élève(s) — %(a)d ajouté(s), %(r)d "
+"retiré(s), %(d)d déplacé(s)."
+msgstr ""
+"Groupe %(code)s enregistré : %(n)d élève(s) — %(a)d ajouté(s), %(r)d "
+"retiré(s), %(d)d déplacé(s)."
+
+msgid "Déplacés depuis un autre groupe de la même langue : "
+msgstr "Déplacés depuis un autre groupe de la même langue : "
+
+msgid "Groupes"
+msgstr "Groupes"
+
+msgid "Tous les blocs"
+msgstr "Tous les blocs"
+
+msgid "Toutes les langues"
+msgstr "Toutes les langues"
+
+msgid "Élèves sans groupe de français"
+msgstr "Élèves sans groupe de français"
+
+msgid "sans groupe d'arabe"
+msgstr "sans groupe d'arabe"
+
+msgid "Bloc"
+msgstr "Bloc"
+
+msgid "Code"
+msgstr "Code"
+
+msgid "Liste de présence"
+msgstr "Liste de présence"
+
+msgid "Supprimer ce groupe ?"
+msgstr "Supprimer ce groupe ?"
+
+msgid "Aucun groupe."
+msgstr "Aucun groupe."
+
+msgid "Nouveau groupe"
+msgstr "Nouveau groupe"
+
+msgid "Modifier le groupe"
+msgstr "Modifier le groupe"
+
+msgid "Élèves du groupe"
+msgstr "Élèves du groupe"
+
+msgid ""
+"Un élève n'est que dans un groupe par langue : s'il est déjà dans un autre "
+"groupe de cette langue (indiqué entre crochets), il sera déplacé ici."
+msgstr ""
+"Un élève n'est que dans un groupe par langue : s'il est déjà dans un autre "
+"groupe de cette langue (indiqué entre crochets), il sera déplacé ici."
+
+msgid "Ajouter toute une classe"
+msgstr "Ajouter toute une classe"
+
+msgid "— Choisir une classe —"
+msgstr "— Choisir une classe —"
+
+msgid "Tout retirer"
+msgstr "Tout retirer"
+
+msgid "Membres actuels"
+msgstr "Membres actuels"
+
+msgid "(niveau individuel facultatif, ex. أ1)"
+msgstr "(niveau individuel facultatif, ex. أ1)"
+
+msgid "Rechercher un élève (matricule, nom)…"
+msgstr "Rechercher un élève (matricule, nom)…"
+
+msgid "Retour aux groupes"
+msgstr "Retour aux groupes"
+
+msgid "Sans émargement"
+msgstr "Sans émargement"
+
+msgid "Avec émargement"
+msgstr "Avec émargement"
+
+msgid "Section (hors langue)"
+msgstr "Section (hors langue)"
+
+msgid "Section"
+msgstr "Section"
+
+msgid "Type de groupe"
+msgstr "Type de groupe"
+
+msgid "Tous les types"
+msgstr "Tous les types"
+
+msgid ""
+"Un élève n'est que dans un groupe par type (français, arabe ou section) : "
+"s'il est déjà dans un autre groupe de ce type (indiqué entre crochets), il "
+"sera déplacé ici."
+msgstr ""
+"Un élève n'est que dans un groupe par type (français, arabe ou section) : "
+"s'il est déjà dans un autre groupe de ce type (indiqué entre crochets), il "
+"sera déplacé ici."
+
+msgid "Le type ne peut plus être modifié : le groupe contient des élèves."
+msgstr "Le type ne peut plus être modifié : le groupe contient des élèves."
+
+msgid "Listes de pointage"
+msgstr "Listes de pointage"
+
+msgid "Listes de pointage des élèves"
+msgstr "Listes de pointage des élèves"
+
+msgid "— Choisir un groupe —"
+msgstr "— Choisir un groupe —"
+
+msgid "Toute la classe"
+msgstr "Toute la classe"
+
+msgid "Une liste par groupe"
+msgstr "Une liste par groupe"
+
+msgid "Toute la classe (une seule liste)"
+msgstr "Toute la classe (une seule liste)"
+
+msgid "Noms en"
+msgstr "Noms en"
+
+msgid "Imprimer la liste"
+msgstr "Imprimer la liste"
+
+msgid "Imprimer toutes les séances du jour"
+msgstr "Imprimer toutes les séances du jour"
+
+msgid ""
+"Aucune séance prévue dans l'emploi du temps pour cette classe ce jour-là."
+msgstr ""
+"Aucune séance prévue dans l'emploi du temps pour cette classe ce jour-là."
+
+msgid ""
+"Choisissez une classe et une date : les séances de l'emploi du temps du jour"
+" s'affichent, avec la liste de pointage à imprimer pour chacune."
+msgstr ""
+"Choisissez une classe et une date : les séances de l'emploi du temps du jour"
+" s'affichent, avec la liste de pointage à imprimer pour chacune."
+
+msgid "page(s) de liste"
+msgstr "page(s) de liste"
+
+msgid "— Toute la classe —"
+msgstr "— Toute la classe —"
+
+msgid ""
+"Cette classe est divisée en groupes : choisissez un groupe, ou « Toute la "
+"classe »."
+msgstr ""
+"Cette classe est divisée en groupes : choisissez un groupe, ou « Toute la "
+"classe »."
+
+msgid "Groupe introuvable."
+msgstr "Groupe introuvable."
+
+msgid ""
+"Nom affiché en arabe à la place du code (ex. : المجموعة 4 - الفرنسية "
+"(المالية))."
+msgstr ""
+"Nom affiché en arabe à la place du code (ex. : المجموعة 4 - الفرنسية "
+"(المالية))."
+
+msgid "Nom affiché en français (à défaut : le code)."
+msgstr "Nom affiché en français (à défaut : le code)."

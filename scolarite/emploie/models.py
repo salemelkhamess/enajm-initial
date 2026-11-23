@@ -36,6 +36,13 @@ class EmploiDuTemps(models.Model):
     heure_debut = models.TimeField()
     heure_fin = models.TimeField()
 
+    # Cours transversal par niveau (ex. cours de langue) : tous les élèves du niveau, de tous les secteurs,
+    # suivent ce cours ensemble, en arabe ou en français. Le secteur est alors celui de rattachement de la matière.
+    LANGUES = [('ar', 'العربية'), ('fr', 'Français')]
+    niveau = models.ForeignKey('niveaux.Niveau', null=True, blank=True, on_delete=models.PROTECT,
+                               related_name='emplois', verbose_name="Niveau de langue")
+    langue = models.CharField(max_length=2, choices=LANGUES, blank=True, default='', verbose_name="Langue du cours")
+
 
 
     class Meta:
@@ -59,47 +66,28 @@ class EmploiDuTemps(models.Model):
 
         # Vérifier que l'heure de fin est après l'heure de début
         if self.heure_fin <= self.heure_debut:
-            raise ValidationError("L'heure de fin doit être après l'heure de début.")
+            raise ValidationError(_("L'heure de fin doit être après l'heure de début."))
 
         # Vérifier que le trimestre appartient à la même année
         if self.trimestre.annee != self.annee:
-            raise ValidationError("Le trimestre doit appartenir à la même année.")
+            raise ValidationError(_("Le trimestre doit appartenir à la même année."))
 
-        # Vérifier les conflits de salle
-        conflits_salle = EmploiDuTemps.objects.filter(
-            jour=self.jour,
-            salle=self.salle,
-            annee=self.annee,
-            trimestre=self.trimestre
-        ).exclude(
-            pk=self.pk if self.pk else None
-        ).filter(
-            models.Q(
-                heure_debut__lt=self.heure_fin,
-                heure_fin__gt=self.heure_debut
-            )
-        )
+        # Cours par niveau : langue obligatoire, et un seul cours à la fois pour un même niveau
+        if self.niveau_id:
+            if not self.langue:
+                raise ValidationError(_("Choisissez la langue du cours (arabe ou français) pour un cours par niveau de langue."))
+            conflits_niveau = EmploiDuTemps.objects.filter(
+                jour=self.jour, niveau_id=self.niveau_id, annee=self.annee, trimestre=self.trimestre
+            ).exclude(pk=self.pk if self.pk else None).filter(
+                models.Q(heure_debut__lt=self.heure_fin, heure_fin__gt=self.heure_debut))
+            if conflits_niveau.exists():
+                raise ValidationError(_("Ce niveau de langue a déjà un cours pendant cette plage horaire."))
+        else:
+            self.langue = ''
 
-        if conflits_salle.exists():
-            raise ValidationError("La salle est déjà occupée pendant cette plage horaire.")
+        # Une même salle peut accueillir plusieurs cours au même créneau (cours commun à plusieurs classes)
 
-        # Vérifier les conflits de professeur
-        conflits_prof = EmploiDuTemps.objects.filter(
-            jour=self.jour,
-            professeur=self.professeur,
-            annee=self.annee,
-            trimestre=self.trimestre
-        ).exclude(
-            pk=self.pk if self.pk else None
-        ).filter(
-            models.Q(
-                heure_debut__lt=self.heure_fin,
-                heure_fin__gt=self.heure_debut
-            )
-        )
-
-        if conflits_prof.exists():
-            raise ValidationError("Le professeur a déjà un cours pendant cette plage horaire.")
+        # Un professeur peut avoir plusieurs cours au même créneau (cours communs, classes regroupées) : pas de contrôle.
 
     def __str__(self):
         return f"{self.trimestre} - {self.jour} {self.heure_debut} - {self.matiere.nom} ({self.secteur})"

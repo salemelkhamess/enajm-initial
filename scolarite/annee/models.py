@@ -8,7 +8,8 @@ class Annee(models.Model):
         verbose_name = _('Année')
         verbose_name_plural = _('Années')
 
-    formation = models.ForeignKey(Formation, on_delete=models.CASCADE, verbose_name=_('formation'))
+    # Vide = année valable pour tous les départements (cas normal). Conservé pour compatibilité.
+    formation = models.ForeignKey(Formation, on_delete=models.CASCADE, null=True, blank=True, verbose_name=_('formation'))
     numero_annee = models.PositiveIntegerField(verbose_name=_('numero_annee'))
 
     def __str__(self):

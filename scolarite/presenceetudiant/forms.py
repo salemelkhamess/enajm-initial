@@ -3,6 +3,7 @@ from django.urls import reverse_lazy
 
 from annee.models import Annee
 from branches.models import Secteur
+from niveaux.models import Niveau
 from emploie.models import EmploiDuTemps
 from matiers.models import Matiere
 from trimestre.models import Trimestre
@@ -130,16 +131,50 @@ class PresenceForm(forms.Form):
         })
     )
 
+    # Groupe : '' (rien), 'all' (toute la classe) ou l'identifiant d'un groupe. Obligatoire si la classe est découpée en sections.
+    groupe = forms.CharField(
+        required=False,
+        label=_("Groupe"),
+        widget=forms.Select(attrs={'class': 'form-control select', 'style': 'width: 100%'}, choices=[('', '— —')])
+    )
+
+    niveau = forms.ModelChoiceField(
+        queryset=Niveau.actifs(),
+        required=False,
+        label=_("Niveau (cours par niveau, ex. langue)"),
+        empty_label=_("— Tout le secteur —"),
+        widget=forms.Select(attrs={'class': 'form-control select', 'style': 'width: 100%'})
+    )
+
 
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        if 'niveau' in self.fields:
+            self.fields['niveau'].label_from_instance = lambda n: n.libelle
         if 'secteur' in self.data:
             try:
                 secteur_id = int(self.data.get('secteur'))
                 self.fields['matiere'].queryset = Matiere.objects.filter(secteur_id=secteur_id)
             except (ValueError, TypeError):
                 pass
+
+    def clean(self):
+        from groupes.models import Groupe
+        data = super().clean()
+        secteur = data.get('secteur')
+        choix = (data.get('groupe') or '').strip()
+        data['groupe_obj'] = None
+        if choix == 'all':
+            return data
+        if choix.isdigit():
+            data['groupe_obj'] = Groupe.objects.filter(pk=int(choix), actif=True).first()
+            if data['groupe_obj'] is None:
+                self.add_error('groupe', _("Groupe introuvable."))
+            return data
+        if secteur and Groupe.objects.filter(actif=True, langue='', affectations__etudiant__secteur=secteur).exists():
+            self.add_error('groupe', _("Cette classe est divisée en groupes : choisissez un groupe, ou « Toute la classe »."))
+        return data
 
 class PresenceEtudiantForm2(forms.ModelForm):
     class Meta:

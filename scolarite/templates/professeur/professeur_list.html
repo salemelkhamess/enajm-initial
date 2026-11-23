@@ -27,8 +27,8 @@
                 <tr>
                     <td>{{ professeur.nom }}</td>
                     <td>{{ professeur.prenom }}</td>
-                    <td>{{ professeur.email }}</td>
-                    <td>{{ professeur.telephone }}</td>
+                    <td>{{ professeur.email|default_if_none:"" }}</td>
+                    <td>{{ professeur.telephone|default_if_none:"" }}</td>
                     <td>{{ professeur.specialite }}</td>
                     <td>
                                <a href="{% url 'professeur_certificat' professeur.pk %}" class="btn btn-success btn-sm" title="{% trans "Afficher certificat" %}" target="_blank"><i class="fa fa-file-text-o"></i></a>

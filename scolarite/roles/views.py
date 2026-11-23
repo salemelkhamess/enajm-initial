@@ -10,7 +10,7 @@ from users.models import User
 @login_required
 @permission_required('yourapp.view_role', raise_exception=True)
 def role_list(request):
-    roles = Role.objects.all()
+    roles = Role.visibles()
     return render(request, 'roles/role_list.html', {'roles': roles})
 
 @login_required
@@ -51,8 +51,8 @@ def role_delete(request, pk):
 @permission_required('yourapp.view_userrole', raise_exception=True)
 def user_roles(request, user_id):
     user = get_object_or_404(User, pk=user_id)
-    user_roles = user.user_roles.all()
-    available_roles = Role.objects.exclude(id__in=[ur.role.id for ur in user_roles])
+    user_roles = user.user_roles.exclude(role__code__in=Role.ROLES_MASQUES)
+    available_roles = Role.visibles().exclude(id__in=[ur.role.id for ur in user_roles])
     return render(request, 'roles/user_roles.html', {
         'user': user,
         'user_roles': user_roles,

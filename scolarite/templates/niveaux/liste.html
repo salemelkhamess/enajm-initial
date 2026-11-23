@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block content %}
+<div class="box box-primary">
+    <div class="box-header with-border"><h3 class="box-title">{% trans "Niveaux" %}</h3></div>
+    <div class="box-body">
+        {% if messages %}{% for message in messages %}
+        <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %}">{{ message }}</div>
+        {% endfor %}{% endif %}
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:12px;">
+            <a href="{% url 'niveau_creer' %}" class="btn btn-primary"><i class="fa fa-plus"></i> {% trans "Ajouter un niveau" %}</a>
+            {% if inactifs %}
+                <a href="{% url 'niveau_liste' %}" class="btn btn-default"><i class="fa fa-eye-slash"></i> {% trans "Masquer les inactifs" %}</a>
+            {% elif nb_inactifs %}
+                <a href="?inactifs=1" class="btn btn-default"><i class="fa fa-eye"></i> {% trans "Afficher les inactifs" %} ({{ nb_inactifs }})</a>
+            {% endif %}
+        </div>
+        <table class="table table-bordered table-hover">
+            <thead><tr>
+                <th style="width:60px">#</th><th>{% trans "Nom (français)" %}</th><th>{% trans "Nom (arabe)" %}</th>
+                <th style="width:90px">{% trans "Élèves" %}</th><th style="width:120px">{% trans "Statut" %}</th><th style="width:420px">{% trans "Actions" %}</th>
+            </tr></thead>
+            <tbody>
+            {% for n in niveaux %}
+                <tr {% if not n.actif %}class="text-muted"{% endif %}>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ n.nom_fr }}</td>
+                    <td dir="rtl">{{ n.nom_ar }}</td>
+                    <td>{{ n.effectif }}</td>
+                    <td>{% if n.actif %}<span class="label label-success">{% trans "Actif" %}</span>{% else %}<span class="label label-default">{% trans "Inactif" %}</span>{% endif %}</td>
+                    <td>
+                        <a href="{% url 'liste_etudiants_imprimer' %}?langue=ar&niveau={{ n.pk }}" target="_blank" class="btn btn-sm btn-primary"><i class="fa fa-print"></i> {% trans "Liste arabe" %}</a>
+                        <a href="{% url 'liste_etudiants_imprimer' %}?langue=fr&niveau={{ n.pk }}" target="_blank" class="btn btn-sm btn-success"><i class="fa fa-print"></i> {% trans "Liste français" %}</a>
+                        <a href="{% url 'niveau_modifier' n.pk %}" class="btn btn-sm btn-warning"><i class="fa fa-edit"></i> {% trans "Modifier" %}</a>
+                        <form method="post" action="{% url 'niveau_basculer' n.pk %}" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-sm {% if n.actif %}btn-default{% else %}btn-success{% endif %}">
+                                {% if n.actif %}<i class="fa fa-ban"></i> {% trans "Désactiver" %}{% else %}<i class="fa fa-check"></i> {% trans "Activer" %}{% endif %}
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+            {% empty %}
+                <tr><td colspan="6">{% trans "Aucun niveau actif." %}</td></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

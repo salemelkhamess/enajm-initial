@@ -23,23 +23,8 @@
     <div class="box-body">
         <form method="post" id="filterForm" class="{% if lang == 'ar' %}rtl-lang{% endif %}">
             {% csrf_token %}
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="form-group">
-                        {{ form.annee.label_tag }}
-                        {{ form.annee }}
-                        {{ form.annee.errors }}
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group">
-                        {{ form.trimestre.label_tag }}
-                        {{ form.trimestre }}
-                        {{ form.trimestre.errors }}
-                    </div>
-                </div>
-            </div>
-            
+            <p class="text-muted"><i class="fa fa-calendar"></i> {% trans "Année" %} : <strong>{{ annee_active }}</strong> &nbsp;—&nbsp; {% trans "Trimestre" %} : <strong>{{ trimestre_actif }}</strong></p>
+
             <div class="row">
                 <div class="col-md-6">
                     <div class="form-group">

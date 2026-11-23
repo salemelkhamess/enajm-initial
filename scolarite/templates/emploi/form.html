@@ -18,7 +18,19 @@
     <div class="box-body">
                <form method="post">
             {% csrf_token %}
-            {{ form.as_p }}
+            <div class="alert alert-info" style="max-width:900px;">
+                <strong>Cours par niveau de langue :</strong> choisissez un <em>niveau de langue</em> et la <em>langue</em> du cours :
+                tous les élèves de ce niveau de langue, de tous les secteurs, suivent le cours ensemble. Le secteur est alors celui de la matière.
+                Laissez le niveau de langue vide pour un cours d'un seul secteur.
+            </div>
+            <div class="form-grid-3">
+            {% for field in form %}
+                <div class="form-group">
+                    {{ field.label_tag }} {{ field }}
+                    {% for e in field.errors %}<div class="text-danger">{{ e }}</div>{% endfor %}
+                </div>
+            {% endfor %}
+            </div>
             <button type="submit" class="btn btn-success"><i class="fa fa-save"></i> Enregistrer</button>
             <a href="{% url 'emploi_liste' %}" class="btn btn-secondary"><i class="fa fa-arrow-left"></i> Retour</a>
         </form>

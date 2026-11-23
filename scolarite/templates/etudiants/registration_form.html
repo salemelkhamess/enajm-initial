@@ -1,5 +1,6 @@
 <!-- templates/etudiants/registration_form.html -->
 {% extends 'base.html' %}
+{% load etudiant_extras %}
 {% load i18n %}
 {% block styles%}
 <style>
@@ -263,7 +264,7 @@
                 {% else %}
                 <span>Nom et prénom:</span>
                 {% endif %}
-                <div class="form-data-line">{{ etudiant.nom }} {{ etudiant.prenom }}</div>
+                <div class="form-data-line">{{ etudiant.nom_complet_langue }}</div>
             </div>
 
             <!-- Birth info -->
@@ -282,7 +283,7 @@
                     {% else %}
                     <span>Lieu de naissance:</span>
                     {% endif %}
-                    <div class="form-data-line">{{ etudiant.lieu_naissance }}</div>
+                    <div class="form-data-line">{{ etudiant.lieu_naissance_langue }}</div>
                 </div>
             </div>
 
@@ -294,7 +295,7 @@
                     {% else %}
                     <span>NNI:</span>
                     {% endif %}
-                    <div class="form-data-line">{{ etudiant.nni }}</div>
+                    <div class="form-data-line">{{ etudiant.nni|default_if_none:"" }}</div>
                 </div>
                 <div class="screen-form-line-left">
                     {% if LANGUAGE_CODE == 'ar' or LANGUAGE_CODE == 'ar-ma' %}
@@ -302,7 +303,7 @@
                     {% else %}
                     <span>Situation de famille:</span>
                     {% endif %}
-                    <div class="form-data-line">{{ etudiant.get_situation_amoureuse_display }}</div>
+                    <div class="form-data-line">{{ etudiant.get_situation_amoureuse_display|default_if_none:"" }}</div>
                 </div>
             </div>
 
@@ -313,7 +314,7 @@
                 {% else %}
                 <span>Nombre d'enfant(s):</span>
                 {% endif %}
-                <div class="form-data-line">{{ etudiant.nombre_enfants }}</div>
+                <div class="form-data-line">{{ etudiant.nombre_enfants|default_if_none:"" }}</div>
             </div>
 
             <!-- Qualifications -->
@@ -327,41 +328,15 @@
                   {% if LANGUAGE_CODE == 'ar' or LANGUAGE_CODE == 'ar-ma' %}
         <span>الشهادات:</span>
         <span>
-            {% for diplome in etudiant.diplomes %}
-                {% if diplome == 'B' %}
-                    الشهادة الإعدادية
-                {% elif diplome == 'BAC' %}
-                    البكالوريا
-                {% elif diplome == 'L' %}
-                    الإجازة
-                {% elif diplome == 'M' %}
-                    الماجستير
-                {% elif diplome == 'D' %}
-                    الدكتوراه
-                {% else %}
-                    {{ diplome }}
-                {% endif %}
-                {% if not forloop.last %}، {% endif %}
+            {% for diplome in etudiant.diplomes|diplomes_ordonnes %}
+                {{ diplome|diplome_label }}{% if not forloop.last %}، {% endif %}
             {% endfor %}
         </span>
     {% else %}
         <span>Diplômes:</span>
         <span>
-            {% for diplome in etudiant.diplomes %}
-                {% if diplome == 'B' %}
-                    Brevet
-                {% elif diplome == 'BAC' %}
-                    Baccalauréat
-                {% elif diplome == 'L' %}
-                    Licence
-                {% elif diplome == 'M' %}
-                    Maîtrise
-                {% elif diplome == 'D' %}
-                    Doctorat
-                {% else %}
-                    {{ diplome }}
-                {% endif %}
-                {% if not forloop.last %}, {% endif %}
+            {% for diplome in etudiant.diplomes|diplomes_ordonnes %}
+                {{ diplome|diplome_label }}{% if not forloop.last %}, {% endif %}
             {% endfor %}
         </span>
     {% endif %}
@@ -376,7 +351,7 @@
                     {% else %}
                     <span>Numéro(s) de téléphone:</span>
                     {% endif %}
-                    <div class="form-data-line">{{ etudiant.telephone }}</div>
+                    <div class="form-data-line">{{ etudiant.telephone|default_if_none:"" }}</div>
                 </div>
                 <div class="screen-form-line-left">
                     {% if LANGUAGE_CODE == 'ar' or LANGUAGE_CODE == 'ar-ma' %}
@@ -384,7 +359,7 @@
                     {% else %}
                     <span>E-mail:</span>
                     {% endif %}
-                    <div class="form-data-line">{{ etudiant.email }}</div>
+                    <div class="form-data-line">{{ etudiant.email|default_if_none:"" }}</div>
                 </div>
             </div>
 

@@ -107,7 +107,7 @@
                     <td>{{ pv.etudiant.matricule }}</td>
                     <td>{{ pv.get_type_display }}</td>
                     <td>{{ pv.date_creation|date:"d/m/Y" }}</td>
-                    <td>{{ pv.contenu }}</td>
+                    <td>{{ pv.contenu|default_if_none:"" }}</td>
                 </tr>
                 {% empty %}
                 <tr>

@@ -14,16 +14,14 @@
         <table class="table table-bordered" id="example2">
             <thead>
                 <tr>
-                    <th>{% trans "Classe" %}</th>
-                    <th>{% trans "Numéro Année" %}</th>
+                    <th>{% trans "Année" %} — {% trans "tous les départements" %}</th>
                     <th>{% trans "Actions" %}</th>
                 </tr>
             </thead>
             <tbody>
                 {% for annee in annees %}
                 <tr>
-                    <td>{{ annee.formation.nom }}</td>
-                    <td>{{ annee.numero_annee }}</td>
+                    <td>{{ annee }}</td>
                     <td>
                         <a href="{% url 'annee_edit' annee.pk %}" class="btn btn-warning btn-sm">
                             <i class="fa fa-edit"></i> {% trans "Modifier" %}
@@ -34,7 +32,7 @@
                     </td>
                 </tr>
                 {% empty %}
-                <tr><td colspan="3">{% trans "Aucune année enregistrée." %}</td></tr>
+                <tr><td colspan="2">{% trans "Aucune année enregistrée." %}</td></tr>
                 {% endfor %}
             </tbody>
         </table>

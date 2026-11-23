@@ -22,7 +22,7 @@ class UserCreationForm(forms.ModelForm):
         label=_("Mot de passe")
     )
     roles = forms.ModelMultipleChoiceField(
-        queryset=Role.objects.all(),
+        queryset=Role.visibles(),
         widget=forms.CheckboxSelectMultiple,
         required=False,
         label=_("Rôles")
@@ -47,6 +47,12 @@ class UserCreationForm(forms.ModelForm):
             'phone': _("Téléphone"),
             'address': _("Adresse"),
         }
+        error_messages = {
+            'email': {'unique': _("Un utilisateur avec cet email existe déjà."), 'invalid': _("Saisissez une adresse email valide."),
+                      'required': _("L'adresse email est obligatoire.")},
+            'first_name': {'required': _("Le prénom est obligatoire.")},
+            'last_name': {'required': _("Le nom est obligatoire.")},
+        }
         widgets = {
             'first_name': forms.TextInput(attrs={'class': 'form-control'}),
             'last_name': forms.TextInput(attrs={'class': 'form-control'}),
@@ -54,6 +60,10 @@ class UserCreationForm(forms.ModelForm):
             'phone': forms.TextInput(attrs={'class': 'form-control'}),
             'address': forms.Textarea(attrs={'class': 'form-control', 'rows': 2}),
         }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['roles'].label_from_instance = lambda role: role.libelle
 
     def save(self, commit=True):
         user = super().save(commit=False)
@@ -75,7 +85,7 @@ class UserUpdateForm(forms.ModelForm):
     )
 
     roles = forms.ModelMultipleChoiceField(
-        queryset=Role.objects.all(),
+        queryset=Role.visibles(),
         widget=forms.CheckboxSelectMultiple,
         required=False,
         label=_("Rôles")
@@ -97,6 +107,12 @@ class UserUpdateForm(forms.ModelForm):
             'phone': _("Téléphone"),
             'address': _("Adresse"),
         }
+        error_messages = {
+            'email': {'unique': _("Un utilisateur avec cet email existe déjà."), 'invalid': _("Saisissez une adresse email valide."),
+                      'required': _("L'adresse email est obligatoire.")},
+            'first_name': {'required': _("Le prénom est obligatoire.")},
+            'last_name': {'required': _("Le nom est obligatoire.")},
+        }
         widgets = {
             'first_name': forms.TextInput(attrs={'class': 'form-control'}),
             'last_name': forms.TextInput(attrs={'class': 'form-control'}),
@@ -107,9 +123,11 @@ class UserUpdateForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # Pré-remplir les rôles existants
+        self.fields['roles'].label_from_instance = lambda role: role.libelle
+        # Pré-remplir les rôles existants (les rôles masqués ne sont pas affichés)
         if self.instance and self.instance.pk:
-            self.fields['roles'].initial = [ur.role for ur in self.instance.user_roles.filter(is_active=True)]
+            self.fields['roles'].initial = [ur.role for ur in self.instance.user_roles.filter(is_active=True)
+                                            if not ur.role.masque]
 
     def save(self, commit=True):
         user = super().save(commit=False)
@@ -120,8 +138,8 @@ class UserUpdateForm(forms.ModelForm):
         if commit:
             user.save()
 
-            # Supprimer les rôles existants
-            user.user_roles.all().delete()
+            # Supprimer les rôles existants, sauf les rôles masqués (non modifiables ici : ils restent attribués)
+            user.user_roles.exclude(role__code__in=Role.ROLES_MASQUES).delete()
 
             # Ajouter les rôles sélectionnés
             for role in self.cleaned_data.get('roles', []):

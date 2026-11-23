@@ -61,7 +61,7 @@
 
         <div style="margin-bottom: 30px; line-height: 2;">
             <p style="margin: 0;"><strong>الاسم والنقي:</strong> {{ bulletin.etudiant }}</p>
-            <p style="margin: 0;"><strong>تاريخ ومحل الميلاد:</strong> {{ bulletin.etudiant.date_naissance }} {{ bulletin.etudiant.lieu_naissance }}</p>
+            <p style="margin: 0;"><strong>تاريخ ومحل الميلاد:</strong> {{ bulletin.etudiant.date_naissance|default_if_none:"" }} {{ bulletin.etudiant.lieu_naissance_langue }}</p>
             <p style="margin: 0;"><strong>الرقم:</strong> {{ bulletin.etudiant.matricule }} <strong>السلك العالي الشعبية:</strong> {{ bulletin.etudiant.secteur }}</p>
         </div>
 

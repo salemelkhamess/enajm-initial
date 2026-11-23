@@ -56,7 +56,9 @@ def accueil(request):
 def absences(request, creneau_id):
     c = _creneau(request, creneau_id)
     d, erreur = _date_demandee(request, c)
-    etudiants = list(Etudiant.objects.filter(secteur=c.secteur).order_by('nom', 'prenom'))
+    # cours par niveau (ex. langue) : tous les élèves du niveau, de tous les secteurs
+    etudiants = list(Etudiant.objects.filter(niveau=c.niveau).order_by('nom', 'prenom') if c.niveau_id
+                     else Etudiant.objects.filter(secteur=c.secteur).order_by('nom', 'prenom'))
     existantes = {p.etudiant_id: p for p in PresenceEtudiant.objects.filter(
         matiere=c.matiere, date_cours=d, jour=c.jour, etudiant__in=etudiants)}
 

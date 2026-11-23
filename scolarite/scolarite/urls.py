@@ -20,6 +20,11 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.conf.urls.i18n import i18n_patterns
 
+handler400 = 'scolarite.error_views.erreur_400'
+handler403 = 'scolarite.error_views.erreur_403'
+handler404 = 'scolarite.error_views.erreur_404'
+handler500 = 'scolarite.error_views.erreur_500'
+
 urlpatterns = [
     path('i18n/', include('django.conf.urls.i18n')),
 ]
@@ -50,6 +55,8 @@ urlpatterns += i18n_patterns(
     re_path(r'^parametres/', include('parametres.urls')),
     re_path(r'^rapports/', include('rapports.urls')),
     re_path(r'^espace-prof/', include('espace_prof.urls')),
+    re_path(r'^niveaux/', include('niveaux.urls')),
+    re_path(r'^groupes/', include('groupes.urls')),
     re_path(r'^roles/', include('roles.urls')),
     re_path(r'^documents/', include('documents.urls')),
 

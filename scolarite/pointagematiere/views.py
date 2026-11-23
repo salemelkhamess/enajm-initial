@@ -14,6 +14,16 @@ from .forms import PointageMatiereForm
 from django.http import JsonResponse
 
 
+def _ajouter_periode(context, objet):
+    """Année et trimestre affichés (en lecture seule) : ceux du pointage, sinon les actifs des paramètres."""
+    from parametres.models import Parametres
+    if objet is not None and objet.pk:
+        context['annee_active'], context['trimestre_actif'] = objet.annee, objet.trimestre
+    else:
+        p = Parametres.get_instance()
+        context['annee_active'], context['trimestre_actif'] = p.annee_courante, p.trimestre_courant
+
+
 class PointageMatiereListView(ListView):
     model = PointageMatiere
     template_name = 'pointage_matiere/list.html'
@@ -38,7 +48,16 @@ class PointageMatiereCreateView(SuccessMessageMixin, CreateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['lang'] = get_language()  # Passer la langue au template
+        _ajouter_periode(context, getattr(self, 'object', None))
         return context
+
+    def form_valid(self, form):
+        # année et trimestre actifs, pris dans les paramètres
+        from parametres.models import Parametres
+        parametres = Parametres.get_instance()
+        form.instance.annee = parametres.annee_courante
+        form.instance.trimestre = parametres.trimestre_courant
+        return super().form_valid(form)
 
 
 class PointageMatiereUpdateView(SuccessMessageMixin, UpdateView):
@@ -47,6 +66,12 @@ class PointageMatiereUpdateView(SuccessMessageMixin, UpdateView):
     template_name = 'pointage_matiere/form.html'
     success_url = reverse_lazy('pointage_matiere_list')
     success_message = _("Pointage matière mis à jour avec succès")
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['lang'] = get_language()
+        _ajouter_periode(context, self.object)
+        return context
 
 class PointageMatiereDeleteView(SuccessMessageMixin, DeleteView):
     model = PointageMatiere

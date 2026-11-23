@@ -147,7 +147,7 @@
 
                 <p>أعلاه في حالة غش في مادة <strong>{{ pv.matiere.nom }}</strong>، وكان بحوزته</p>
 
-                <p>{{ pv.contenu }}</p>
+                <p>{{ pv.contenu|default_if_none:"" }}</p>
 
                 <p>وقد تم ضبطه بمعرفتنا وتم تحرير هذا المحضر في ساعته وتاريخه.</p>
             </div>

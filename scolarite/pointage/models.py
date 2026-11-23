@@ -31,3 +31,19 @@ class Pointage(models.Model):
 
     def __str__(self):
         return f"{self.professeur} - {self.date} - {self.etat} - {self.annee} - {self.trimestre}"
+
+
+def cle_seance_reelle():
+    """Clé d'une séance réelle : professeur + date + créneau + matière.
+    Un cours commun à plusieurs classes (même professeur, même matière, même créneau) donne un pointage par classe,
+    mais ne compte que pour UNE séance dans les statistiques et les rapports."""
+    from django.db.models import CharField, Value
+    from django.db.models.functions import Cast, Concat
+    return Concat(Cast('professeur_id', CharField()), Value('|'), Cast('date', CharField()), Value('|'),
+                  Cast('seance__heure_debut', CharField()), Value('|'), 'seance__matiere__nom')
+
+
+def nb_seances(queryset):
+    """Nombre de séances réelles d'un ensemble de pointages (cours communs comptés une fois)."""
+    from django.db.models import Count
+    return queryset.aggregate(n=Count(cle_seance_reelle(), distinct=True))['n'] or 0

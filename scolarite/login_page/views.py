@@ -2,8 +2,12 @@
 from django.contrib.auth import authenticate, login
 from django.shortcuts import render, redirect
 from django.contrib import messages
+from django.utils.translation import gettext as _
 
 def login_view(request):
+    # déjà connecté : on va directement à l'accueil (au lieu de réafficher la page de connexion)
+    if request.user.is_authenticated:
+        return redirect('/home')
     if request.method == 'POST':
         email = request.POST.get('email')
         password = request.POST.get('password')
@@ -15,6 +19,6 @@ def login_view(request):
             login(request, user)
             return redirect('/home')  # or settings.LOGIN_REDIRECT_URL
         else:
-            messages.error(request, 'Email ou mot de passe invalide.')
+            messages.error(request, _("Email ou mot de passe invalide."))
 
     return render(request, 'login_page/login.html')

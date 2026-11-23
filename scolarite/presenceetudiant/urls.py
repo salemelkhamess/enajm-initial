@@ -23,6 +23,9 @@ urlpatterns = [
     path('ajax/charger-matieres/', views.charger_matieres, name='charger_matieres'),
 
     path('enregistrement-presence/', EnregistrementPresenceView.as_view(), name='enregistrement_presence'),
+    path('groupes-classe/', views.groupes_classe_api, name='groupes_classe_api'),
+    path('listes-pointage/', views.listes_pointage, name='listes_pointage'),
+    path('listes-pointage/imprimer/', views.listes_pointage_imprimer, name='listes_pointage_imprimer'),
     path('enregistrement-presence/etudiants/', EnregistrementPresenceEtudiantsView.as_view(),
          name='enregistrement_presence_etudiants'),
     path('matieres/', matieres_api, name='matieres_api'),
@@ -33,6 +36,12 @@ path('rapport-absences-classe/', rapport_absences_by_class, name='rapport_absenc
     path('absences_non_justifiees/', views.absences_non_justifiees, name='absences_non_justifiees'),
     path('absence-alerts/', views.check_absence_alerts, name='absence_alerts'),
     path('absences/valider/<int:absence_id>/', views.valider_absence, name='valider_absence'),
+    path('absences/examiner/<int:absence_id>/', views.examiner_justification, name='examiner_justification'),
+    path('absences/periode/', views.justification_periode, name='justification_periode'),
+    path('absences/historique/', views.historique_justifications_general, name='historique_justifications_general'),
+    path('absences/historique/<int:etudiant_id>/', views.historique_justifications, name='historique_justifications'),
+    path('absences/periode/<int:periode_id>/examiner/', views.examiner_periode, name='examiner_periode'),
+    path('absences/justificatif/<int:document_id>/', views.justificatif_document, name='justificatif_document'),
     path('absences-par-matiere/', AbsenceParMatiereView.as_view(), name='absences_par_matiere'),
 
 ]

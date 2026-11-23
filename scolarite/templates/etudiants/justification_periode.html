@@ -1,0 +1,122 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block content %}
+<div class="box box-primary">
+    <div class="box-header with-border"><h3 class="box-title">{% trans "Justifier une période d'absence" %}</h3></div>
+    <div class="box-body">
+        {% if messages %}{% for message in messages %}
+        <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %}">{{ message }}</div>
+        {% endfor %}{% endif %}
+        {% for e in erreurs %}<div class="alert alert-danger">{{ e }}</div>{% endfor %}
+
+        <p><a href="{% url 'liste_absences_non_justifiees' %}" class="btn btn-link" style="padding-left:0;"><i class="fa fa-arrow-left"></i> {% trans "Retour" %}</a></p>
+        <p class="text-muted">{% trans "Les absences de l'élève pendant toute la période sont justifiées avec un seul dossier. Les absences déjà validées (72 h écoulées) ne peuvent plus être justifiées." %}</p>
+
+        <div class="row">
+            <div class="col-md-5">
+                <h4>{% trans "Élèves avec des absences à justifier" %} <span class="badge">{{ total_file }}</span></h4>
+                <table class="table table-bordered table-hover">
+                    <thead><tr><th>{% trans "Matricule" %}</th><th>{% trans "Élève fonctionnaire" %}</th><th>{% trans "Classe" %}</th><th>{% trans "Absences" %}</th><th>{% trans "Dates" %}</th><th></th></tr></thead>
+                    <tbody>
+                    {% for g in file %}
+                        <tr {% if selection and g.etudiant.id == selection.id %}class="info"{% endif %}>
+                            <td>{{ g.etudiant.matricule }}</td>
+                            <td>{{ g.etudiant.nom_complet_langue }}</td>
+                            <td>{{ g.etudiant.secteur.nom }}</td>
+                            <td class="text-center">{{ g.absences|length }}</td>
+                            <td><small>{{ g.du|date:"d/m" }}{% if g.du != g.au %} → {{ g.au|date:"d/m" }}{% endif %}</small></td>
+                            <td><a href="?etudiant={{ g.etudiant.id }}" class="btn btn-xs btn-primary">{% trans "Justifier" %}</a></td>
+                        </tr>
+                    {% empty %}
+                        <tr><td colspan="6">{% trans "Aucune absence à justifier pour le moment." %}</td></tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+                <form method="get" class="form-inline">
+                    <label>{% trans "Autre élève (autorisation à l'avance)" %}</label>
+                    <select name="etudiant" class="form-control" id="autreEtudiant" style="width:260px;">
+                        <option value="">---------</option>
+                        {% for e in tous_etudiants %}<option value="{{ e.id }}" {% if selection and e.id == selection.id %}selected{% endif %}>{{ e.matricule }} — {{ e.nom_complet_langue }}</option>{% endfor %}
+                    </select>
+                    <button class="btn btn-default">{% trans "Choisir" %}</button>
+                </form>
+            </div>
+
+            <div class="col-md-7">
+                {% if selection %}
+                <div class="box box-solid" style="border:1px solid #ddd;">
+                    <div class="box-header with-border">
+                        <h4 class="box-title">{{ selection.nom_complet_langue }} <a href="{% url 'historique_justifications' selection.id %}" class="btn btn-xs btn-default" title="{% trans 'Historique des justifications' %}"><i class="fa fa-history"></i></a> <small>{{ selection.matricule }} — {{ selection.secteur.nom }}</small>
+                            {% if position %}<span class="label label-info">{{ position }} / {{ total_file }}</span>{% endif %}</h4>
+                    </div>
+                    <div class="box-body">
+                        <div class="form-inline" style="margin-bottom:12px;padding:8px;background:#f7f7f7;border:1px solid #e3e3e3;border-radius:3px;">
+                            <strong>{% trans "Période de la justification" %} :</strong>
+                            {% trans "Du" %} <input type="date" id="pDebut" value="{{ debut|date:'Y-m-d' }}" class="form-control input-sm" data-no-default>
+                            {% trans "Au" %} <input type="date" id="pFin" value="{{ fin|date:'Y-m-d' }}" class="form-control input-sm" data-no-default>
+                            <small class="text-muted">&nbsp;{% trans "Modifiez les dates pour justifier plusieurs jours (ex. autorisation de 3 jours)." %}</small>
+                        </div>
+                        {% if absences_selection %}
+                        <p><strong>{% trans "Absences concernées" %} ({{ absences_selection|length }}) :</strong></p>
+                        <ul>{% for a in absences_selection %}<li>{{ a.date_cours|date:"d/m/Y" }} — {{ a.matiere.nom }}{% if a.heures_avant_validation %} <small class="text-muted">({{ a.heures_avant_validation }} {% trans "h restantes" %})</small>{% endif %}</li>{% endfor %}</ul>
+                        {% else %}
+                        <div class="alert alert-info">{% trans "Aucune absence en attente sur cette période : la justification s'appliquera aux absences enregistrées pendant la période." %}</div>
+                        {% endif %}
+                        {% if existante %}
+                        <div class="alert alert-warning">{% trans "Une justification est déjà en attente de validation pour cette période : vous pouvez la modifier ou ajouter des documents." %}</div>
+                        {% endif %}
+                        <form method="post" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <input type="hidden" name="etudiant" value="{{ selection.id }}">
+                            <input type="hidden" name="date_debut" id="postDebut" value="{{ debut|date:'Y-m-d' }}">
+                            <input type="hidden" name="date_fin" id="postFin" value="{{ fin|date:'Y-m-d' }}">
+                            <div class="form-group">
+                                <label>{% trans "Justification" %}</label>
+                                <textarea name="justification" id="texteJustification" rows="3" class="form-control" required>{{ texte }}</textarea>
+                            </div>
+                            {% if existante and existante.documents.all %}
+                            <div class="form-group">
+                                <label>{% trans "Documents déjà joints" %}</label>
+                                <ul>{% for d in existante.documents.all %}<li><a href="{% url 'justificatif_document' d.id %}" target="_blank">{{ d.nom }}</a></li>{% endfor %}</ul>
+                            </div>
+                            {% endif %}
+                            <div class="form-group">
+                                <label>{% trans "Joindre des documents (certificat médical, etc.)" %}</label>
+                                <input type="file" name="documents" multiple accept=".pdf,.jpg,.jpeg,.png" class="form-control">
+                                <small class="text-muted">{% trans "PDF, JPG ou PNG — 5 Mo maximum par fichier" %} ({{ nb_max }} {% trans "documents au maximum" %})</small>
+                            </div>
+                            <button type="submit" class="btn btn-success"><i class="fa fa-save"></i> {% trans "Enregistrer et passer à l'élève suivant" %}</button>
+                            {% if suivant %}<a href="?etudiant={{ suivant }}" class="btn btn-default">{% trans "Passer sans enregistrer" %} <i class="fa fa-forward"></i></a>{% endif %}
+                        </form>
+                    </div>
+                </div>
+                {% else %}
+                <div class="alert alert-info">{% trans "Choisissez un élève dans la liste pour lui joindre son document." %}</div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+if (window.jQuery && jQuery.fn.select2) { jQuery('#autreEtudiant').select2({ width: '260px' }); }
+
+// Période de la justification (du … au …) : au changement, la page se recharge avec les absences concernées
+// de cette période ; le texte déjà saisi est conservé.
+(function () {
+    var debut = document.getElementById('pDebut'), fin = document.getElementById('pFin');
+    if (!debut || !fin) { return; }
+    function recharger(changeDebut) {
+        if (!debut.value) { return; }
+        if (!fin.value || fin.value < debut.value || changeDebut && fin.value < debut.value) { fin.value = debut.value; }
+        var params = new URLSearchParams({date_debut: debut.value, date_fin: fin.value, etudiant: '{{ selection.id|default:"" }}'});
+        var texte = document.getElementById('texteJustification');
+        if (texte && texte.value) { params.set('texte', texte.value); }
+        window.location.href = window.location.pathname + '?' + params.toString();
+    }
+    debut.addEventListener('change', function () { recharger(true); });
+    fin.addEventListener('change', function () { recharger(false); });
+})();
+</script>
+{% endblock %}

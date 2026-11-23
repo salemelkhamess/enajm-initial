@@ -24,10 +24,12 @@ class EmploiDuTempsForm(forms.ModelForm):
 
     class Meta:
         model = EmploiDuTemps
-        fields = ['annee', 'trimestre', 'secteur', 'matiere', 'professeur', 'salle', 'jour', 'heure_debut', 'heure_fin']
+        fields = ['annee', 'trimestre', 'niveau', 'langue', 'secteur', 'matiere', 'professeur', 'salle', 'jour', 'heure_debut', 'heure_fin']
 
         labels = {
             'secteur': _("Département"),
+            'niveau': _("Niveau (cours transversal)"),
+            'langue': _("Langue du cours"),
             'annee': _("Année"),
             'trimestre': _("Trimestre"),
             'matiere': _("Matière"),
@@ -40,6 +42,16 @@ class EmploiDuTempsForm(forms.ModelForm):
         from presenceetudiant.forms import jours_choices
         self.fields['jour'].choices = [('', '---------')] + jours_choices(EmploiDuTemps.JOURS_CHOIX)
 
+        # Niveau (facultatif) : seulement les niveaux actifs (+ celui du cours modifié) ; le secteur devient facultatif
+        from niveaux.models import Niveau
+        niveaux = Niveau.objects.filter(Q(actif=True) | Q(pk=self.instance.niveau_id)) if self.instance.pk and self.instance.niveau_id else Niveau.actifs()
+        self.fields['niveau'].queryset = niveaux
+        self.fields['niveau'].required = False
+        self.fields['niveau'].label_from_instance = lambda n: n.libelle
+        self.fields['langue'].required = False
+        self.fields['langue'].choices = [('', '---------')] + EmploiDuTemps.LANGUES
+        self.fields['secteur'].required = False
+
         # Configuration des attributs des champs
         for name, field in self.fields.items():
             classes = 'form-control'
@@ -49,6 +61,18 @@ class EmploiDuTempsForm(forms.ModelForm):
 
     def clean(self):
         cleaned_data = super().clean()
+        niveau = cleaned_data.get('niveau')
+        if niveau:
+            # cours par niveau : langue obligatoire, secteur = secteur de rattachement de la matière
+            if not cleaned_data.get('langue'):
+                self.add_error('langue', _("Choisissez la langue du cours (arabe ou français)."))
+            matiere = cleaned_data.get('matiere')
+            if matiere:
+                cleaned_data['secteur'] = matiere.secteur
+        else:
+            cleaned_data['langue'] = ''
+            if not cleaned_data.get('secteur'):
+                self.add_error('secteur', _("Ce champ est obligatoire (sauf pour un cours par niveau)."))
         annee = cleaned_data.get('annee')
         trimestre = cleaned_data.get('trimestre')
         secteur = cleaned_data.get('secteur')
@@ -63,7 +87,7 @@ class EmploiDuTempsForm(forms.ModelForm):
 
         # Vérifier que le trimestre appartient à l'année
         if trimestre.annee != annee:
-            raise ValidationError("Le trimestre sélectionné n'appartient pas à l'année choisie.")
+            raise ValidationError(_("Le trimestre sélectionné n'appartient pas à l'année choisie."))
 
         # Convertir les heures en objets time pour la comparaison
         try:
@@ -74,43 +98,11 @@ class EmploiDuTempsForm(forms.ModelForm):
 
         # Vérifier que l'heure de fin est après l'heure de début
         if hf <= hd:
-            raise ValidationError("L'heure de fin doit être après l'heure de début.")
+            raise ValidationError(_("L'heure de fin doit être après l'heure de début."))
 
-        # Vérifier les conflits de salle
-        conflits_salle = EmploiDuTemps.objects.filter(
-            jour=jour,
-            salle=salle,
-            annee=annee,
-            trimestre=trimestre
-        ).exclude(
-            pk=self.instance.pk if self.instance else None
-        ).filter(
-            Q(
-                heure_debut__lt=hf,
-                heure_fin__gt=hd
-            )
-        )
+        # Une même salle peut accueillir plusieurs cours au même créneau (cours commun à plusieurs classes)
 
-        if conflits_salle.exists():
-            raise ValidationError("La salle est déjà occupée pendant cette plage horaire.")
-
-        # Vérifier les conflits de professeur
-        conflits_prof = EmploiDuTemps.objects.filter(
-            jour=jour,
-            professeur=professeur,
-            annee=annee,
-            trimestre=trimestre
-        ).exclude(
-            pk=self.instance.pk if self.instance else None
-        ).filter(
-            Q(
-                heure_debut__lt=hf,
-                heure_fin__gt=hd
-            )
-        )
-
-        if conflits_prof.exists():
-            raise ValidationError("Le professeur a déjà un cours pendant cette plage horaire.")
+        # Un professeur peut avoir plusieurs cours au même créneau (cours communs, classes regroupées) : pas de contrôle.
 
         return cleaned_data
 

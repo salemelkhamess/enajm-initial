@@ -1,6 +1,11 @@
+import logging
+logger = logging.getLogger(__name__)
 from django.utils.translation import gettext as _
 # emploi/views.py
 from django.contrib import messages
+from django.core.exceptions import ValidationError
+from django.db import transaction
+from django.db.models import Q
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, render, redirect
 from django.urls import reverse_lazy
@@ -13,13 +18,14 @@ from branches.models import Secteur
 from entete.models import Entete
 from matiers.models import Matiere
 from parametres.models import Parametres
+from etudiant.models import Etudiant
 from professeur.models import Professeur
 from salle.models import Salle
 from trimestre.models import Trimestre
 from .models import EmploiDuTemps
 from .forms import EmploiDuTempsForm, EmploiParametresForm
 from django.core.exceptions import ValidationError
-from django.db.models import Prefetch
+from django.db.models import Prefetch, Q
 
 class EmploiListView(ListView):
     model = EmploiDuTemps
@@ -27,11 +33,19 @@ class EmploiListView(ListView):
     context_object_name = 'secteurs_emplois'
 
     def get_queryset(self):
-        # Récupérer tous les secteurs avec leurs emplois du temps
+        # Récupérer tous les secteurs avec leurs emplois du temps (hors cours par niveau, listés à part)
         return Secteur.objects.prefetch_related(
             Prefetch('emploidutemps_set',
-                    queryset=EmploiDuTemps.objects.select_related('matiere', 'professeur', 'salle')
+                    queryset=EmploiDuTemps.objects.filter(niveau__isnull=True)
+                    .select_related('matiere', 'professeur', 'salle')
                     .order_by('jour', 'heure_debut')))
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['emplois_niveaux'] = (EmploiDuTemps.objects.filter(niveau__isnull=False)
+                                      .select_related('matiere', 'professeur', 'salle', 'niveau', 'trimestre')
+                                      .order_by('niveau__nom_fr', 'jour', 'heure_debut'))
+        return context
 
 class EmploiCreateView(CreateView):
     model = EmploiDuTemps
@@ -134,8 +148,42 @@ class EmploiGrilleView(View):
 
 
 class SauvegarderGrilleView(View):
+    @staticmethod
+    def _detail_conflit(jour, debut, fin, salle_id, professeur_id, secteur_id, annee_id, trimestre_id):
+        """Décrit le cours déjà programmé qui bloque l'enregistrement (salle ou professeur occupé)."""
+        autres = (EmploiDuTemps.objects.filter(jour=jour, annee_id=annee_id, trimestre_id=trimestre_id,
+                                               heure_debut__lt=fin, heure_fin__gt=debut)
+                  .exclude(secteur_id=secteur_id)
+                  .filter(professeur_id=professeur_id)
+                  .select_related('secteur', 'professeur', 'salle', 'matiere')[:2])
+        return " ; ".join(
+            _("%(classe)s — %(matiere)s, %(prof)s, salle %(salle)s (%(debut)s-%(fin)s)") % {
+                'classe': a.secteur.nom, 'matiere': a.matiere.nom, 'prof': a.professeur,
+                'salle': a.salle, 'debut': str(a.heure_debut)[:5], 'fin': str(a.heure_fin)[:5]}
+            for a in autres)
+
     def post(self, request):
+        position = {}
         try:
+            with transaction.atomic():
+                return self._enregistrer(request, position)
+        except ValidationError as e:
+            # tout est annulé : l'ancien emploi du temps reste intact
+            texte = " ".join(e.messages)
+            if position:
+                texte = _("%(jour)s %(debut)s-%(fin)s : %(erreur)s") % {
+                    'jour': _(position['jour']), 'debut': str(position['debut'])[:5],
+                    'fin': str(position['fin'])[:5], 'erreur': texte}
+                detail = self._detail_conflit(**position['ctx'])
+                if detail:
+                    texte += " " + _("Déjà occupé par : %(detail)s") % {'detail': detail}
+            return JsonResponse({'success': False, 'error': texte}, status=400)
+        except Exception:
+            logger.exception("Erreur inattendue")
+            return JsonResponse({'success': False, 'error': _("Une erreur est survenue. Veuillez réessayer ou contacter l'administration.")}, status=400)
+
+    def _enregistrer(self, request, position):
+        if True:
             parametres = Parametres.get_instance()
             data = request.POST
             annee_id = parametres.annee_courante.id  # Correct (avec "e")
@@ -167,7 +215,7 @@ class SauvegarderGrilleView(View):
                     salle_id = data.get(f'salle_{jour}_{debut}_{fin}')
 
                     if matiere_id and professeur_id and salle_id:
-                        EmploiDuTemps.objects.create(
+                        self._creer(position,
                             annee_id=annee_id,
                             trimestre_id=trimestre_id,
                             secteur_id=secteur_id,
@@ -190,7 +238,7 @@ class SauvegarderGrilleView(View):
                     salle_id = data.get(f'new_salle_{jour}')
 
                     if matiere_id and professeur_id and salle_id:
-                        EmploiDuTemps.objects.create(
+                        self._creer(position,
                             annee_id=annee_id,
                             trimestre_id=trimestre_id,
                             secteur_id=secteur_id,
@@ -204,8 +252,15 @@ class SauvegarderGrilleView(View):
 
             return JsonResponse({'success': True})
 
-        except Exception as e:
-            return JsonResponse({'success': False, 'error': str(e)}, status=400)
+
+    @staticmethod
+    def _creer(position, **champs):
+        position.update({'jour': champs['jour'], 'debut': champs['heure_debut'], 'fin': champs['heure_fin'],
+                         'ctx': dict(jour=champs['jour'], debut=champs['heure_debut'], fin=champs['heure_fin'],
+                                     salle_id=champs['salle_id'], professeur_id=champs['professeur_id'],
+                                     secteur_id=champs['secteur_id'], annee_id=champs['annee_id'],
+                                     trimestre_id=champs['trimestre_id'])})
+        return EmploiDuTemps.objects.create(**champs)
 
 
 class EmploiGrilleEditView(View):
@@ -305,7 +360,8 @@ class EmploiGrilleEditView(View):
             return redirect('emploi_liste')
 
         except Exception as e:
-            messages.error(request, f"Une erreur est survenue: {str(e)}")
+            logger.exception("Erreur inattendue")
+            messages.error(request, _("Une erreur est survenue. Veuillez réessayer ou contacter l'administration."))
             return redirect('emploi_grille_edit', pk=pk)
 
 
@@ -313,7 +369,7 @@ class EmploiGrilleEditView(View):
 def load_trimestres(request):
     annee_id = request.GET.get('annee_id')
     if not annee_id:
-        return JsonResponse({'error': 'Paramètre annee_id manquant'}, status=400)
+        return JsonResponse({'error': _("Paramètre annee_id manquant")}, status=400)
 
     trimestres = Trimestre.objects.filter(annee_id=annee_id).order_by('annee')
     data = [{'id': t.id, 'nom': t.numero_trimestre, 'nom_fr': t.nom} for t in trimestres]
@@ -351,7 +407,14 @@ def emploi_par_secteur(request):
                     'annee': annee_selectionnee,
                     'trimestre': trimestre_selectionne
                 }
-                emploi = EmploiDuTemps.objects.filter(**filters).order_by('jour', 'heure_debut')
+                # cours du secteur + cours par niveau (langues) suivis par des élèves de ce secteur
+                niveaux_du_secteur = list(Etudiant._base_manager.filter(
+                    secteur=secteur_selectionne, annee=annee_selectionnee, niveau__isnull=False
+                ).values_list('niveau_id', flat=True).distinct())
+                emploi = (EmploiDuTemps.objects.filter(annee=annee_selectionnee, trimestre=trimestre_selectionne)
+                          .filter(Q(secteur=secteur_selectionne, niveau__isnull=True) | Q(niveau_id__in=niveaux_du_secteur))
+                          .select_related('matiere', 'professeur', 'salle', 'niveau')
+                          .order_by('jour', 'heure_debut'))
 
     entete = Entete.objects.first()
 

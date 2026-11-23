@@ -1,0 +1,66 @@
+{% load static i18n %}<!DOCTYPE html>
+<html lang="{% if ar %}ar{% else %}fr{% endif %}" dir="{% if ar %}rtl{% else %}ltr{% endif %}">
+<head>
+  <meta charset="UTF-8">
+  <title>{% if ar %}قائمة الحضور{% else %}Liste de pointage{% endif %} — {{ secteur.nom }}</title>
+  <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
+  <style>
+    body { background: #fff; padding: 14px; font-size: 13px; }
+    .page { page-break-after: always; }
+    .page:last-child { page-break-after: auto; }
+    .entete p { margin: 0; font-weight: 600; }
+    h4 { text-align: center; font-weight: 700; margin: 12px 0 8px; }
+    .infos { display: grid; grid-template-columns: 1fr 1fr; gap: 2px 20px; margin-bottom: 10px; }
+    .infos div { padding: 1px 0; }
+    table { border-collapse: collapse; width: 100%; }
+    thead { display: table-header-group; }
+    table thead th { background: #1b7a3a !important; color: #fff !important; text-align: center; padding: 6px; border: 1px solid #444;
+                     -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    table tbody td { padding: 6px 8px; border: 1px solid #444; }
+    td.num, td.mle { text-align: center; width: 70px; } td.signature { width: 170px; }
+    tr { page-break-inside: avoid; }
+    .no-print { margin-bottom: 12px; }
+    @media print { .no-print { display: none; } body { padding: 0; } @page { size: A4; margin: 12mm; } }
+  </style>
+</head>
+<body>
+  <div class="no-print">
+    <button class="btn btn-primary" onclick="window.print()"><i class="fa fa-print"></i> {% trans "Imprimer" %}</button>
+    <span class="text-muted">{{ pages|length }} {% trans "page(s) de liste" %}</span>
+  </div>
+  {% for p in pages %}
+  <div class="page">
+    <div class="entete">
+      {% if ar %}<p>المدرسة الوطنية للإدارة والصحافة والقضاء</p><p>مصلحة الدراسات — السنة الجامعية {{ annee }}</p>
+      {% else %}<p>ENAJM / Service de la scolarité</p><p>Année universitaire {{ annee }}</p>{% endif %}
+    </div>
+    <h4>{% if ar %}قائمة حضور التلاميذ الموظفين{% else %}Liste de présence des élèves fonctionnaires{% endif %}</h4>
+    <div class="infos">
+      <div><strong>{% if ar %}القسم{% else %}Classe{% endif %} :</strong> {{ secteur.nom }}{% if p.groupe %} — {% if ar %}{{ p.groupe.nom_ar|default:p.groupe.code }}{% else %}{{ p.groupe.nom_fr|default:p.groupe.code }}{% endif %}{% endif %}</div>
+      <div><strong>{% if ar %}التاريخ{% else %}Date{% endif %} :</strong> {% if ar %}{% trans jour %}{% else %}{{ jour }}{% endif %} {{ date|date:"d/m/Y" }}</div>
+      <div><strong>{% if ar %}المادة{% else %}Matière{% endif %} :</strong> {{ p.seance.matiere }}</div>
+      <div><strong>{% if ar %}التوقيت{% else %}Horaire{% endif %} :</strong> {{ p.seance.heure_debut|time:"H:i" }} - {{ p.seance.heure_fin|time:"H:i" }}</div>
+      <div><strong>{% if ar %}الأستاذ{% else %}Professeur{% endif %} :</strong> {{ p.seance.professeur }}</div>
+      <div><strong>{% if ar %}القاعة{% else %}Salle{% endif %} :</strong> {{ p.seance.salle }}</div>
+    </div>
+    <table>
+      <thead><tr>
+        <th>{% if ar %}ر.ت{% else %}N°{% endif %}</th><th>{% if ar %}رقم التسجيل{% else %}Matricule{% endif %}</th>
+        <th>{% if ar %}اللقب{% else %}Nom{% endif %}</th><th>{% if ar %}الاسم{% else %}Prénom{% endif %}</th>
+        <th>{% if ar %}التوقيع{% else %}Signature{% endif %}</th>
+      </tr></thead>
+      <tbody>
+      {% for l in p.lignes %}
+        <tr><td class="num">{{ forloop.counter }}</td><td class="mle">{{ l.e.matricule }}</td><td>{{ l.nom }}</td><td>{{ l.prenom }}</td><td class="signature"></td></tr>
+      {% empty %}
+        <tr><td colspan="5" style="text-align:center;padding:16px;">{% if ar %}لا يوجد تلاميذ{% else %}Aucun élève{% endif %}</td></tr>
+      {% endfor %}
+      </tbody>
+    </table>
+    <p style="margin-top:8px;">{% if ar %}العدد{% else %}Effectif{% endif %} : <strong>{{ p.lignes|length }}</strong></p>
+  </div>
+  {% empty %}
+  <p class="text-center" style="padding:40px;">{% if ar %}لا توجد حصة في جدول التوقيت لهذا اليوم{% else %}Aucune séance prévue ce jour-là.{% endif %}</p>
+  {% endfor %}
+</body>
+</html>

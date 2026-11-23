@@ -228,7 +228,7 @@
             error: function(xhr) {
                 Swal.fire({
                     title: '{% trans "Erreur!" %}',
-                    text: xhr.responseText || '{% trans "Une erreur est survenue" %}',
+                    text: (xhr.responseJSON && xhr.responseJSON.error) || '{% trans "Une erreur est survenue" %}',
                     icon: 'error',
                     confirmButtonText: '{% trans "OK" %}'
                 });

@@ -1,0 +1,51 @@
+{# Une carte (face « recto » ou « verso ») : variables etudiant, face #}
+{% load static i18n %}
+{% if face == 'recto' %}
+<div class="carte recto">
+    <svg class="fond" viewBox="0 0 856 540" preserveAspectRatio="none" aria-hidden="true">
+        <rect width="856" height="540" fill="#e6f3fa"/>
+        <rect width="826" height="130" fill="#ffffff"/>
+        <rect y="130" width="826" height="4" fill="#2e9b4a"/>
+        <rect y="134" width="826" height="50" fill="#2e7d32"/>
+        <rect x="826" y="0" width="30" height="180" fill="#2e9b4a"/>
+        <rect x="826" y="180" width="30" height="180" fill="#d32f2f"/>
+        <rect x="826" y="360" width="30" height="180" fill="#ffd800"/>
+    </svg>
+    <div class="entete">
+        <div class="logo-box"><img src="{% static 'dist/img/logo.jpeg' %}" alt=""></div>
+        <div class="textes">
+            <div class="t1">الجمهورية الإسلامية الموريتانية</div>
+            <div class="t2">المدرسة الوطنية للإدارة والصحافة والقضاء</div>
+            <div class="t3">École Nationale d'Administration, de Journalisme et de Magistrature</div>
+        </div>
+    </div>
+    <div class="titre">بطاقة تلميذ موظف</div>
+    <div class="corps">
+        <div class="photo">{% if etudiant.photo %}<img src="{% url 'photo_carte' etudiant.id %}" alt="">{% else %}<svg viewBox="0 0 100 120" preserveAspectRatio="xMidYMid slice"><rect width="100" height="120" fill="#efefef"/><circle cx="50" cy="38" r="17" fill="#cfcfcf"/><path d="M18 100 Q18 72 40 72 L60 72 Q82 72 82 100 L82 120 L18 120 Z" fill="#cfcfcf"/></svg>{% endif %}</div>
+        <div class="infos">
+            <div class="ligne"><span class="lib">الاسم واللقب</span><span class="val">{{ etudiant.nom_complet_ar }}</span></div>
+            <div class="ligne"><span class="lib">Nom et prénom</span><span class="val fr">{{ etudiant.nom_complet_fr }}</span></div>
+            <div class="ligne"><span class="lib">الرقم الوطني</span><span class="val">{{ etudiant.nni|default_if_none:"" }}</span></div>
+            <div class="ligne"><span class="lib">القسم</span><span class="val">{{ etudiant.secteur.nom }}</span></div>
+            <div class="ligne"><span class="lib">الرقم</span><span class="val">{{ etudiant.matricule }}</span></div>
+        </div>
+    </div>
+    <div class="pied"><span class="pastille">{{ etudiant.annee }}</span></div>
+</div>
+{% else %}
+<div class="carte verso">
+    <svg class="fond" viewBox="0 0 856 540" preserveAspectRatio="none" aria-hidden="true">
+        <rect width="856" height="540" fill="#ffffff"/>
+        <rect x="826" y="0" width="30" height="180" fill="#2e9b4a"/>
+        <rect x="826" y="180" width="30" height="180" fill="#d32f2f"/>
+        <rect x="826" y="360" width="30" height="180" fill="#ffd800"/>
+    </svg>
+    <div class="dos">
+        <div class="logo-box"><img src="{% static 'dist/img/logo.jpeg' %}" alt=""></div>
+        <div class="fr">CARTE D'ÉLÈVE FONCTIONNAIRE</div>
+        <div class="ecole">المدرسة الوطنية للإدارة والصحافة والقضاء</div>
+        <div class="ecole-fr">École Nationale d'Administration, de Journalisme et de Magistrature</div>
+        <div class="avis"><b>تنبيه هام</b>يرجى من الجهات المعنية تسهيل مهام حامل هذه البطاقة كلما تعلق الأمر بأنشطة التكوين أو البحث، ويُحظر عليه استخدامها خارج المؤسسة في غير المهام المذكورة.</div>
+    </div>
+</div>
+{% endif %}

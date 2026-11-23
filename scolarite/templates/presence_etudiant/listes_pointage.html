@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block content %}
+<div class="box box-primary">
+    <div class="box-header with-border"><h3 class="box-title">{% trans "Listes de pointage des élèves" %}</h3></div>
+    <div class="box-body">
+        <form method="get" class="row" id="formPointage">
+            <div class="col-md-3"><div class="form-group">
+                <label>{% trans "Classe" %}</label>
+                <select name="secteur" class="form-control" onchange="this.form.submit()">
+                    <option value="">{% trans "— Choisir une classe —" %}</option>
+                    {% for s in secteurs %}<option value="{{ s.id }}" {% if secteur and secteur.id == s.id %}selected{% endif %}>{{ s.nom }}</option>{% endfor %}
+                </select></div></div>
+            <div class="col-md-2"><div class="form-group">
+                <label>{% trans "Date" %}</label>
+                <input type="date" name="date" value="{{ date|date:'Y-m-d' }}" class="form-control" onchange="this.form.submit()">
+            </div></div>
+            {% if secteur and groupes %}
+            <div class="col-md-3"><div class="form-group">
+                <label>{% trans "Groupe" %}</label>
+                <select name="groupe" class="form-control" onchange="this.form.submit()">
+                    <option value="" {% if not choix %}selected{% endif %}>{% if sections %}{% trans "Une liste par groupe" %}{% else %}{% trans "Toute la classe" %}{% endif %}</option>
+                    {% if sections %}<option value="all" {% if choix == 'all' %}selected{% endif %}>{% trans "Toute la classe (une seule liste)" %}</option>{% endif %}
+                    {% for g in groupes %}<option value="{{ g.id }}" {% if choix == g.id|stringformat:"s" %}selected{% endif %}>{{ g.nom_affiche }}</option>{% endfor %}
+                </select></div></div>
+            {% endif %}
+            <div class="col-md-2"><div class="form-group">
+                <label>{% trans "Noms en" %}</label>
+                <select name="langue" class="form-control" onchange="this.form.submit()">
+                    <option value="ar" {% if langue == 'ar' %}selected{% endif %}>{% trans "Arabe" %}</option>
+                    <option value="fr" {% if langue == 'fr' %}selected{% endif %}>{% trans "Français" %}</option>
+                </select></div></div>
+        </form>
+
+        {% if secteur %}
+            <h4>{{ secteur.nom }} — {% trans jour %} {{ date|date:"d/m/Y" }}</h4>
+            {% if listes_apercu %}
+            <p class="text-muted">
+                {% for g, eleves in listes_apercu %}
+                    <span class="label label-info" style="margin:0 4px;">{% if g %}{{ g.nom_affiche }}{% else %}{% trans "Toute la classe" %}{% endif %} : {{ eleves|length }} {% trans "élèves" %}</span>
+                {% endfor %}
+            </p>
+            {% endif %}
+            {% if seances %}
+            <table class="table table-bordered">
+                <thead><tr><th>{% trans "Horaire" %}</th><th>{% trans "Matière" %}</th><th>{% trans "Professeur" %}</th><th>{% trans "Salle" %}</th><th style="width:170px"></th></tr></thead>
+                <tbody>
+                {% for s in seances %}
+                    <tr>
+                        <td>{{ s.heure_debut|time:"H:i" }} - {{ s.heure_fin|time:"H:i" }}</td>
+                        <td>{{ s.matiere }}</td><td>{{ s.professeur }}</td><td>{{ s.salle }}</td>
+                        <td><a class="btn btn-sm btn-primary" target="_blank" href="{% url 'listes_pointage_imprimer' %}?secteur={{ secteur.id }}&date={{ date|date:'Y-m-d' }}&groupe={{ choix }}&langue={{ langue }}&seance={{ s.id }}"><i class="fa fa-print"></i> {% trans "Imprimer la liste" %}</a></td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            <a class="btn btn-success" target="_blank" href="{% url 'listes_pointage_imprimer' %}?secteur={{ secteur.id }}&date={{ date|date:'Y-m-d' }}&groupe={{ choix }}&langue={{ langue }}&seance=all"><i class="fa fa-print"></i> {% trans "Imprimer toutes les séances du jour" %}</a>
+            {% else %}
+            <div class="alert alert-warning">{% trans "Aucune séance prévue dans l'emploi du temps pour cette classe ce jour-là." %}</div>
+            {% endif %}
+        {% else %}
+            <p class="text-muted">{% trans "Choisissez une classe et une date : les séances de l'emploi du temps du jour s'affichent, avec la liste de pointage à imprimer pour chacune." %}</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

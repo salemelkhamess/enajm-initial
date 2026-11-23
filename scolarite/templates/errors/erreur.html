@@ -1,0 +1,28 @@
+{% load i18n static %}<!DOCTYPE html>
+<html lang="{{ LANGUAGE_CODE|default:'fr' }}" dir="{% if LANGUAGE_CODE == 'ar' %}rtl{% else %}ltr{% endif %}">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ titre }}</title>
+  <style>
+    body { font-family: 'Source Sans Pro', Arial, sans-serif; background: #ecf0f5; margin: 0; display: flex; align-items: center; justify-content: center; min-height: 100vh; }
+    .carte { background: #fff; border-top: 3px solid #f64040; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,.15); max-width: 520px; width: 90%; padding: 30px; text-align: center; }
+    .code { font-size: 64px; font-weight: 700; color: #f64040; line-height: 1; }
+    h1 { font-size: 22px; margin: 12px 0 8px; color: #333; }
+    p { color: #555; font-size: 15px; line-height: 1.5; }
+    .actions a { display: inline-block; margin: 8px 6px 0; padding: 8px 16px; border-radius: 3px; text-decoration: none; background: #00a157; color: #fff; }
+    .actions a.sec { background: #fff; color: #333; border: 1px solid #ccc; }
+  </style>
+</head>
+<body>
+  <div class="carte">
+    <div class="code">{{ code }}</div>
+    <h1>{{ titre }}</h1>
+    <p>{{ message }}</p>
+    <div class="actions">
+      <a href="{% if user.is_authenticated %}/home/{% else %}/{% endif %}">{% trans "Retour à l'accueil" %}</a>
+      <a href="javascript:history.back()" class="sec">{% trans "Page précédente" %}</a>
+    </div>
+  </div>
+</body>
+</html>

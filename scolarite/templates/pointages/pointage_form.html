@@ -154,7 +154,7 @@
             <input type="date"
                    id="{{ form.date.id_for_label }}"
                    name="{{ form.date.html_name }}"
-                   value="{{ form.initial.date|default:form.date.value|date:'Y-m-d' }}"
+                   value="{% if form.is_bound %}{{ form.date.value|default:'' }}{% else %}{{ form.initial.date|default:form.date.value|date:'Y-m-d' }}{% endif %}"
                    class="form-control">
             {% if form.date.errors %}
                 <span class="help-block text-danger">
@@ -211,10 +211,10 @@
                 <td class="text-left align-middle">{% trans "État" %}</td>
                 <td class="text-center align-middle">
                     <select name="etat_{{ seance.id }}" class="form-control text-center mx-auto" style="width:90%">
-                        <option value="present">Présent / حاضر</option>
-                        <option value="absent">Absent / غائب</option>
-                        <option value="retard">En retard / متأخر</option>
-                        <option value="conge">Congé / إجازة</option>
+                        <option value="present"{% if seance.etat == 'present' %} selected{% endif %}>Présent / حاضر</option>
+                        <option value="absent"{% if seance.etat == 'absent' %} selected{% endif %}>Absent / غائب</option>
+                        <option value="retard"{% if seance.etat == 'retard' %} selected{% endif %}>En retard / متأخر</option>
+                        <option value="conge"{% if seance.etat == 'conge' %} selected{% endif %}>Congé / إجازة</option>
                     </select>
                 </td>
                 <td class="text-right align-middle" dir="rtl">الحالة</td>
@@ -224,7 +224,7 @@
             <tr>
                 <td class="text-left align-middle">{% trans "Titre du cours" %}</td>
                 <td class="text-center align-middle">
-                    <input type="text" name="remarques_{{ seance.id }}" class="form-control text-center mx-auto" style="width:90%" value="{{ seance.remarques }}">
+                    <input type="text" name="remarques_{{ seance.id }}" class="form-control text-center mx-auto" style="width:90%" value="{{ seance.remarques|default_if_none:"" }}">
                 </td>
                 <td class="text-right align-middle" dir="rtl">عنوان الدرس</td>
             </tr>
@@ -398,21 +398,8 @@ function loadSeances() {
         }
     {% endif %}
 
-    // Initialiser le datepicker si le champ date en a besoin
-    $('#id_date').datepicker({
-        format: 'yyyy-mm-dd',
-        autoclose: true,
-        todayHighlight: true
-    });
-
-
-     $('.datepicker').datepicker({
-        format: 'yyyy-mm-dd',
-        language: 'fr',
-        autoclose: true,
-        todayHighlight: true,
-        weekStart: 1
-    });
+    // Le champ date est un <input type="date"> natif : aucun sélecteur JavaScript ne doit s'y superposer
+    // (il remettait l'ancienne date à la sortie du champ).
 
 function printForm() {
     // Créer une fenêtre/frame pour l'impression
