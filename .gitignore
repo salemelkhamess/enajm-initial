@@ -5,3 +5,7 @@
 *.zip
 *.bak
 enajm_pass
+
+# Environnements virtuels Python (à recréer avec pip install -r scolarite/requirements.txt)
+venv/
+.venv/
