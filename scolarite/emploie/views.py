@@ -8,7 +8,7 @@ from django.db import transaction
 from django.db.models import Q
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, render, redirect
-from django.urls import reverse_lazy
+from django.urls import reverse, reverse_lazy
 from django.utils.translation import get_language
 from django.views import View
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
@@ -22,10 +22,43 @@ from etudiant.models import Etudiant
 from professeur.models import Professeur
 from salle.models import Salle
 from trimestre.models import Trimestre
-from .models import EmploiDuTemps
+from . import modifications
+from .models import EmploiDuTemps, ModificationEmploi
 from .forms import EmploiDuTempsForm, EmploiParametresForm
 from django.core.exceptions import ValidationError
 from django.db.models import Prefetch, Q
+
+
+def _auteur(request):
+    return str(request.user) if getattr(request.user, 'is_authenticated', False) else ''
+
+
+def _message_portee(portee):
+    if portee == ModificationEmploi.SEMAINE:
+        return _("Modification enregistrée pour la semaine actuelle seulement : l'emploi du temps hebdomadaire n'a pas changé.")
+    return _("Modification enregistrée pour la semaine actuelle et toutes les semaines suivantes.")
+
+
+def _page_confirmation(request, changements, retour_url):
+    """Demande la portée du changement (cette semaine seulement, ou aussi les suivantes) : la page renvoie
+    les mêmes champs, plus `portee`."""
+    champs = [(nom, valeurs) for nom, valeurs in request.POST.lists() if nom not in ('csrfmiddlewaretoken', 'portee')]
+    return render(request, 'emploi/confirmer_portee.html', {
+        'changements': modifications.decrire(changements),
+        'champs': champs,
+        'retour_url': retour_url,
+        'portees': ModificationEmploi.PORTEES,
+    })
+
+
+def _creneau_du_formulaire(donnees):
+    return modifications.creneau(
+        donnees['jour'], donnees['heure_debut'], donnees['heure_fin'],
+        donnees['matiere'].pk, donnees['professeur'].pk, donnees['salle'].pk)
+
+
+def _classe_du_formulaire(donnees):
+    return donnees['annee'].pk, donnees['trimestre'].pk, donnees['secteur'].pk
 
 class EmploiListView(ListView):
     model = EmploiDuTemps
@@ -47,35 +80,89 @@ class EmploiListView(ListView):
                                       .order_by('niveau__nom_fr', 'jour', 'heure_debut'))
         return context
 
-class EmploiCreateView(CreateView):
-    model = EmploiDuTemps
-    form_class = EmploiDuTempsForm
-    template_name = 'emploi/form.html'
-    success_url = reverse_lazy('emploi_liste')
+class PorteeDuChangementMixin:
+    """Ajout ou modification d'un créneau : si le changement touche une classe qui a déjà un emploi du temps, on
+    demande s'il vaut pour cette semaine seulement ou aussi pour les semaines suivantes (voir modifications.py)."""
+
+    def changement(self, form):
+        """(avant, apres) du créneau, ou None si rien à confirmer (autre classe, première saisie, rien de changé)."""
+        raise NotImplementedError
+
     def form_valid(self, form):
         try:
-            return super().form_valid(form)
+            couple = self.changement(form)
+            if couple is None:
+                return super().form_valid(form)
+            portee = self.request.POST.get('portee')
+            if portee not in modifications.PORTEES:
+                return _page_confirmation(self.request, [couple], self.success_url)
+            annee_id, trimestre_id, secteur_id = _classe_du_formulaire(form.cleaned_data)
+            with transaction.atomic():
+                if portee == ModificationEmploi.SUIVANTES:
+                    reponse = super().form_valid(form)  # enregistre tout le formulaire (niveau, langue, etc.)
+                else:
+                    reponse = redirect(self.success_url)  # le modèle hebdomadaire reste tel quel (rien n'est enregistré)
+                modifications.consigner([couple], annee_id=annee_id, trimestre_id=trimestre_id,
+                                        secteur_id=secteur_id, portee=portee, par=_auteur(self.request))
+            messages.success(self.request, _message_portee(portee))
+            return reponse
         except ValidationError as e:
             form.add_error(None, e)
             return self.form_invalid(form)
 
 
-class EmploiUpdateView(UpdateView):
+class EmploiCreateView(PorteeDuChangementMixin, CreateView):
     model = EmploiDuTemps
     form_class = EmploiDuTempsForm
     template_name = 'emploi/form.html'
     success_url = reverse_lazy('emploi_liste')
-    def form_valid(self, form):
-        try:
-            return super().form_valid(form)
-        except ValidationError as e:
-            form.add_error(None, e)
-            return self.form_invalid(form)
+
+    def changement(self, form):
+        classe = _classe_du_formulaire(form.cleaned_data)
+        if not modifications.etat_actuel(*classe):  # première saisie de la classe : aucun changement à confirmer
+            return None
+        return None, _creneau_du_formulaire(form.cleaned_data)
+
+
+class EmploiUpdateView(PorteeDuChangementMixin, UpdateView):
+    model = EmploiDuTemps
+    form_class = EmploiDuTempsForm
+    template_name = 'emploi/form.html'
+    success_url = reverse_lazy('emploi_liste')
+
+    def changement(self, form):
+        enregistre = EmploiDuTemps._base_manager.get(pk=self.object.pk)  # l'instance du formulaire est déjà modifiée
+        if (enregistre.annee_id, enregistre.trimestre_id, enregistre.secteur_id) != _classe_du_formulaire(form.cleaned_data):
+            return None  # le cours change de classe : ce n'est pas un changement d'horaire
+        avant, apres = modifications.creneau_de(enregistre), _creneau_du_formulaire(form.cleaned_data)
+        if modifications.identiques(avant, apres):
+            return None
+        return avant, apres
+
 
 class EmploiDeleteView(DeleteView):
     model = EmploiDuTemps
     template_name = 'emploi/delete_confirm.html'
     success_url = reverse_lazy('emploi_liste')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['portees'] = ModificationEmploi.PORTEES
+        return context
+
+    def form_valid(self, form):
+        portee = self.request.POST.get('portee')
+        if portee not in modifications.PORTEES:
+            portee = ModificationEmploi.SUIVANTES
+        avant = modifications.creneau_de(self.object)
+        with transaction.atomic():
+            modifications.consigner([(avant, None)], annee_id=self.object.annee_id,
+                                    trimestre_id=self.object.trimestre_id, secteur_id=self.object.secteur_id,
+                                    portee=portee, par=_auteur(self.request))
+            if portee == ModificationEmploi.SUIVANTES:
+                self.object.delete()
+        messages.success(self.request, _message_portee(portee))
+        return redirect(self.get_success_url())
 
 
 class EmploiGrilleView(View):
@@ -163,18 +250,25 @@ class SauvegarderGrilleView(View):
             for a in autres)
 
     def post(self, request):
-        position = {}
+        secteur_id = request.POST.get('secteur_id', '')
+        if not secteur_id.isdigit():
+            return JsonResponse({'success': False, 'error': _("Classe introuvable.")}, status=400)
+        parametres = Parametres.get_instance()
+        classe = {'annee_id': parametres.annee_courante.id, 'trimestre_id': parametres.trimestre_courant.id,
+                  'secteur_id': int(secteur_id)}
         try:
-            with transaction.atomic():
-                return self._enregistrer(request, position)
+            return self._enregistrer(request, classe)
         except ValidationError as e:
             # tout est annulé : l'ancien emploi du temps reste intact
             texte = " ".join(e.messages)
-            if position:
+            creneau = getattr(e, 'slot', None)
+            if creneau:
                 texte = _("%(jour)s %(debut)s-%(fin)s : %(erreur)s") % {
-                    'jour': _(position['jour']), 'debut': str(position['debut'])[:5],
-                    'fin': str(position['fin'])[:5], 'erreur': texte}
-                detail = self._detail_conflit(**position['ctx'])
+                    'jour': _(creneau['jour']), 'debut': f"{creneau['heure_debut']:%H:%M}",
+                    'fin': f"{creneau['heure_fin']:%H:%M}", 'erreur': texte}
+                detail = self._detail_conflit(
+                    jour=creneau['jour'], debut=creneau['heure_debut'], fin=creneau['heure_fin'],
+                    salle_id=creneau['salle_id'], professeur_id=creneau['professeur_id'], **classe)
                 if detail:
                     texte += " " + _("Déjà occupé par : %(detail)s") % {'detail': detail}
             return JsonResponse({'success': False, 'error': texte}, status=400)
@@ -182,85 +276,16 @@ class SauvegarderGrilleView(View):
             logger.exception("Erreur inattendue")
             return JsonResponse({'success': False, 'error': _("Une erreur est survenue. Veuillez réessayer ou contacter l'administration.")}, status=400)
 
-    def _enregistrer(self, request, position):
-        if True:
-            parametres = Parametres.get_instance()
-            data = request.POST
-            annee_id = parametres.annee_courante.id  # Correct (avec "e")
-            trimestre_id = parametres.trimestre_courant.id  # Correct (sans "e")
-
-            secteur_id = data.get('secteur_id')
-
-            # Supprimer les anciens emplois
-            EmploiDuTemps.objects.filter(
-                annee_id=annee_id,
-                trimestre_id=trimestre_id,
-                secteur_id=secteur_id
-            ).delete()
-
-            # Jours de la semaine
-            jours = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi']
-
-            # Sauvegarder les créneaux fixes
-            creneau_debuts = data.getlist('creneau_debut[]')
-            creneau_fins = data.getlist('creneau_fin[]')
-
-            for i in range(len(creneau_debuts)):
-                debut = creneau_debuts[i]
-                fin = creneau_fins[i]
-
-                for jour in jours:
-                    matiere_id = data.get(f'matiere_{jour}_{debut}_{fin}')
-                    professeur_id = data.get(f'professeur_{jour}_{debut}_{fin}')
-                    salle_id = data.get(f'salle_{jour}_{debut}_{fin}')
-
-                    if matiere_id and professeur_id and salle_id:
-                        self._creer(position,
-                            annee_id=annee_id,
-                            trimestre_id=trimestre_id,
-                            secteur_id=secteur_id,
-                            matiere_id=matiere_id,
-                            professeur_id=professeur_id,
-                            salle_id=salle_id,
-                            jour=jour,
-                            heure_debut=debut,
-                            heure_fin=fin
-                        )
-
-            # Sauvegarder les nouveaux créneaux ajoutés
-            new_debut = data.get('new_creneau_debut')
-            new_fin = data.get('new_creneau_fin')
-
-            if new_debut and new_fin:
-                for jour in jours:
-                    matiere_id = data.get(f'new_matiere_{jour}')
-                    professeur_id = data.get(f'new_professeur_{jour}')
-                    salle_id = data.get(f'new_salle_{jour}')
-
-                    if matiere_id and professeur_id and salle_id:
-                        self._creer(position,
-                            annee_id=annee_id,
-                            trimestre_id=trimestre_id,
-                            secteur_id=secteur_id,
-                            matiere_id=matiere_id,
-                            professeur_id=professeur_id,
-                            salle_id=salle_id,
-                            jour=jour,
-                            heure_debut=new_debut,
-                            heure_fin=new_fin
-                        )
-
-            return JsonResponse({'success': True})
-
-
-    @staticmethod
-    def _creer(position, **champs):
-        position.update({'jour': champs['jour'], 'debut': champs['heure_debut'], 'fin': champs['heure_fin'],
-                         'ctx': dict(jour=champs['jour'], debut=champs['heure_debut'], fin=champs['heure_fin'],
-                                     salle_id=champs['salle_id'], professeur_id=champs['professeur_id'],
-                                     secteur_id=champs['secteur_id'], annee_id=champs['annee_id'],
-                                     trimestre_id=champs['trimestre_id'])})
-        return EmploiDuTemps.objects.create(**champs)
+    def _enregistrer(self, request, classe):
+        portee = request.POST.get('portee')
+        statut, changements = modifications.enregistrer_grille(
+            modifications.grille_depuis_post(request.POST), portee=portee, par=_auteur(request), **classe)
+        if statut == 'confirmer':
+            # rien n'est enregistré : la page demande la portée (cette semaine seulement ou aussi les suivantes)
+            return JsonResponse({'success': False, 'confirmation': True,
+                                 'changements': modifications.decrire(changements)})
+        message = _message_portee(portee) if statut == 'applique' else ''
+        return JsonResponse({'success': True, 'message': str(message)})
 
 
 class EmploiGrilleEditView(View):
@@ -313,53 +338,26 @@ class EmploiGrilleEditView(View):
 
     def post(self, request, pk):
         emploi = get_object_or_404(EmploiDuTemps, pk=pk)
-
+        retour = reverse('emploi_grille_edit', args=[pk])
         try:
             data = request.POST
-            annee_id = emploi.annee.id
-            trimestre_id = emploi.trimestre.id
-            secteur_id = emploi.secteur.id
-
-            # D'abord supprimer les emplois existants pour ce secteur/année/trimestre
-            EmploiDuTemps.objects.filter(
-                annee_id=annee_id,
-                trimestre_id=trimestre_id,
-                secteur_id=secteur_id
-            ).delete()
-
-            # Jours de la semaine
-            jours = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi']
-
-            # Sauvegarder les nouveaux emplois
-            creneau_debuts = data.getlist('creneau_debut[]')
-            creneau_fins = data.getlist('creneau_fin[]')
-
-            for i in range(len(creneau_debuts)):
-                debut = creneau_debuts[i]
-                fin = creneau_fins[i]
-
-                for jour in jours:
-                    matiere_id = data.get(f'matiere_{jour}_{debut}_{fin}')
-                    professeur_id = data.get(f'professeur_{jour}_{debut}_{fin}')
-                    salle_id = data.get(f'salle_{jour}_{debut}_{fin}')
-
-                    if matiere_id and professeur_id and salle_id:
-                        EmploiDuTemps.objects.create(
-                            annee_id=annee_id,
-                            trimestre_id=trimestre_id,
-                            secteur_id=secteur_id,
-                            jour=jour,
-                            heure_debut=debut,
-                            heure_fin=fin,
-                            matiere_id=matiere_id,
-                            professeur_id=professeur_id,
-                            salle_id=salle_id
-                        )
-
-            messages.success(request, _("L'emploi du temps a été mis à jour avec succès."))
+            portee = data.get('portee')
+            statut, changements = modifications.enregistrer_grille(
+                modifications.grille_depuis_post(data), annee_id=emploi.annee_id, trimestre_id=emploi.trimestre_id,
+                secteur_id=emploi.secteur_id, portee=portee, par=_auteur(request))
+            if statut == 'confirmer':
+                # rien n'est enregistré : on demande la portée (cette semaine seulement ou aussi les suivantes)
+                return _page_confirmation(request, changements, retour)
+            if statut == 'applique':
+                messages.success(request, _message_portee(portee))
+            else:
+                messages.success(request, _("L'emploi du temps a été mis à jour avec succès."))
             return redirect('emploi_liste')
 
-        except Exception as e:
+        except ValidationError as e:
+            messages.error(request, " ".join(e.messages))
+            return redirect('emploi_grille_edit', pk=pk)
+        except Exception:
             logger.exception("Erreur inattendue")
             messages.error(request, _("Une erreur est survenue. Veuillez réessayer ou contacter l'administration."))
             return redirect('emploi_grille_edit', pk=pk)

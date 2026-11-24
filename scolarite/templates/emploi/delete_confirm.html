@@ -9,6 +9,20 @@
         <p>{% trans "Voulez-vous vraiment supprimer cette séance ?" %}</p>
         <form method="post">
             {% csrf_token %}
+            <div class="radio">
+                <label>
+                    <input type="radio" name="portee" value="suivantes" checked>
+                    {% trans "Cette semaine et toutes les semaines suivantes" %}
+                    <span class="text-muted">— {% trans "la séance est retirée de l'emploi du temps hebdomadaire" %}</span>
+                </label>
+            </div>
+            <div class="radio">
+                <label>
+                    <input type="radio" name="portee" value="semaine">
+                    {% trans "Cette semaine seulement" %}
+                    <span class="text-muted">— {% trans "l'emploi du temps hebdomadaire reste inchangé" %}</span>
+                </label>
+            </div>
             <a href="{% url 'emploi_liste' %}" class="btn btn-secondary">{% trans "Annuler" %}</a>
             <button type="submit" class="btn btn-danger">{% trans "Supprimer" %}</button>
         </form>

@@ -3304,3 +3304,71 @@ msgstr ""
 
 msgid "Nom affiché en français (à défaut : le code)."
 msgstr "Nom affiché en français (à défaut : le code)."
+
+#: emploie/modifications.py, templates/emploi/confirmer_portee.html
+msgid "Modification enregistrée pour la semaine actuelle seulement : l'emploi du temps hebdomadaire n'a pas changé."
+msgstr "Modification enregistrée pour la semaine actuelle seulement : l'emploi du temps hebdomadaire n'a pas changé."
+
+#: emploie/modifications.py, templates/emploi/confirmer_portee.html
+msgid "Modification enregistrée pour la semaine actuelle et toutes les semaines suivantes."
+msgstr "Modification enregistrée pour la semaine actuelle et toutes les semaines suivantes."
+
+#: emploie/modifications.py, templates/emploi/confirmer_portee.html
+msgid "Classe introuvable."
+msgstr "Classe introuvable."
+
+#: emploie/modifications.py, templates/emploi/confirmer_portee.html
+msgid "Ajout : %(creneau)s"
+msgstr "Ajout : %(creneau)s"
+
+#: emploie/modifications.py, templates/emploi/confirmer_portee.html
+msgid "Retrait : %(creneau)s"
+msgstr "Retrait : %(creneau)s"
+
+#: emploie/modifications.py, templates/emploi/confirmer_portee.html
+msgid "Cette semaine seulement"
+msgstr "Cette semaine seulement"
+
+#: emploie/modifications.py, templates/emploi/confirmer_portee.html
+msgid "Cette semaine et les semaines suivantes"
+msgstr "Cette semaine et les semaines suivantes"
+
+#: emploie/modifications.py, templates/emploi/confirmer_portee.html
+msgid "Confirmer la modification de l'emploi du temps"
+msgstr "Confirmer la modification de l'emploi du temps"
+
+#: emploie/modifications.py, templates/emploi/confirmer_portee.html
+msgid "Vous allez modifier :"
+msgstr "Vous allez modifier :"
+
+#: emploie/modifications.py, templates/emploi/confirmer_portee.html
+msgid "À partir de quand ce changement s'applique-t-il ?"
+msgstr "À partir de quand ce changement s'applique-t-il ?"
+
+#: emploie/modifications.py, templates/emploi/confirmer_portee.html
+msgid "Cette semaine et toutes les semaines suivantes"
+msgstr "Cette semaine et toutes les semaines suivantes"
+
+#: emploie/modifications.py, templates/emploi/confirmer_portee.html
+msgid "l'emploi du temps hebdomadaire est modifié"
+msgstr "l'emploi du temps hebdomadaire est modifié"
+
+#: emploie/modifications.py, templates/emploi/confirmer_portee.html
+msgid "l'emploi du temps hebdomadaire reste inchangé"
+msgstr "l'emploi du temps hebdomadaire reste inchangé"
+
+#: emploie/modifications.py, templates/emploi/confirmer_portee.html
+msgid "Les semaines déjà passées ne sont jamais modifiées."
+msgstr "Les semaines déjà passées ne sont jamais modifiées."
+
+#: emploie/modifications.py, templates/emploi/confirmer_portee.html
+msgid "la séance est retirée de l'emploi du temps hebdomadaire"
+msgstr "la séance est retirée de l'emploi du temps hebdomadaire"
+
+#: emploie/modifications.py, templates/emploi/confirmer_portee.html
+msgid "Confirmer la modification"
+msgstr "Confirmer la modification"
+
+#: emploie/modifications.py, templates/emploi/confirmer_portee.html
+msgid "Cette semaine et les suivantes"
+msgstr "Cette semaine et les suivantes"

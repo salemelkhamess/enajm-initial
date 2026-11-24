@@ -188,3 +188,74 @@ class EmploiDuTemps(models.Model):
         # 3. Multiplier par le nombre de séances hebdomadaires
         seances_par_semaine = cls.get_seances_par_semaine()
         return seances_par_semaine * semaines_dans_mois
+
+class ModificationEmploi(models.Model):
+    """
+    Journal des modifications de l'emploi du temps hebdomadaire (un créneau modifié, ajouté ou retiré).
+
+    Chaque ligne garde une copie figée du créneau avant et après la modification, avec la date d'effet et la
+    portée choisie par l'utilisateur : « cette semaine seulement » ou « cette semaine et les suivantes ».
+    La grille de l'emploi du temps peut supprimer et recréer ses lignes : ce journal n'a donc aucune clé étrangère
+    (seulement des identifiants et des noms recopiés), il survit à ces suppressions.
+
+    L'application qualité (app-qualite-enajem) lit cette table à sa synchronisation pour appliquer le changement
+    aux séances datées à partir de `date_effet`, et afficher l'état de modification.
+    """
+    SEMAINE, SUIVANTES = 'semaine', 'suivantes'
+    PORTEES = [
+        (SEMAINE, _("Cette semaine seulement")),
+        (SUIVANTES, _("Cette semaine et les semaines suivantes")),
+    ]
+
+    # classe concernée
+    secteur_id = models.PositiveIntegerField()
+    annee_id = models.PositiveIntegerField()
+    trimestre_id = models.PositiveIntegerField()
+
+    portee = models.CharField(max_length=10, choices=PORTEES)
+    # date de la modification : seules les séances datées à partir de ce jour sont concernées
+    date_effet = models.DateField()
+    # dernier jour concerné (dimanche de la semaine) pour « cette semaine seulement » ; vide : sans fin
+    date_fin = models.DateField(null=True, blank=True)
+
+    # créneau avant la modification (vide : créneau ajouté)
+    avant_jour = models.CharField(max_length=10, blank=True, default='')
+    avant_heure_debut = models.TimeField(null=True, blank=True)
+    avant_heure_fin = models.TimeField(null=True, blank=True)
+    avant_matiere_id = models.PositiveIntegerField(null=True, blank=True)
+    avant_matiere_nom = models.CharField(max_length=200, blank=True, default='')
+    avant_professeur_id = models.PositiveIntegerField(null=True, blank=True)
+    avant_professeur_nom = models.CharField(max_length=250, blank=True, default='')
+    avant_salle_id = models.PositiveIntegerField(null=True, blank=True)
+    avant_salle_nom = models.CharField(max_length=200, blank=True, default='')
+
+    # créneau après la modification (vide : créneau retiré)
+    apres_jour = models.CharField(max_length=10, blank=True, default='')
+    apres_heure_debut = models.TimeField(null=True, blank=True)
+    apres_heure_fin = models.TimeField(null=True, blank=True)
+    apres_matiere_id = models.PositiveIntegerField(null=True, blank=True)
+    apres_matiere_nom = models.CharField(max_length=200, blank=True, default='')
+    apres_professeur_id = models.PositiveIntegerField(null=True, blank=True)
+    apres_professeur_nom = models.CharField(max_length=250, blank=True, default='')
+    apres_salle_id = models.PositiveIntegerField(null=True, blank=True)
+    apres_salle_nom = models.CharField(max_length=200, blank=True, default='')
+
+    cree_par = models.CharField(max_length=150, blank=True, default='')
+    cree_le = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = "Modification de l'emploi du temps"
+        verbose_name_plural = "Modifications de l'emploi du temps"
+        ordering = ['id']
+        indexes = [models.Index(fields=['trimestre_id', 'date_effet'])]
+
+    @property
+    def est_ajout(self):
+        return not self.avant_jour
+
+    @property
+    def est_retrait(self):
+        return not self.apres_jour
+
+    def __str__(self):
+        return f"{self.date_effet} {self.get_portee_display()} - {self.avant_jour or '+'} → {self.apres_jour or '-'}"

@@ -198,19 +198,43 @@
         $("#emploi-table tbody").append(newRow);
     });
 
-    // Soumission du formulaire de grille
-    $("#grille-form").submit(function(e) {
-        e.preventDefault();
+    // Le serveur demande la portée du changement : cette semaine seulement ou aussi les semaines suivantes
+    {% trans "À partir de quand ce changement s'applique-t-il ?" as question_portee %}
+    function demanderPortee(formulaire, changements) {
+        var liste = $('<ul style="text-align:left"></ul>');
+        $.each(changements, function(i, c) { liste.append($('<li></li>').text(c.texte)); });
+        var contenu = $('<div></div>')
+            .append($('<p></p>').text('{{ question_portee|escapejs }}'))
+            .append(liste);
+        Swal.fire({
+            title: '{% trans "Confirmer la modification" %}',
+            html: contenu.get(0),
+            icon: 'question',
+            showDenyButton: true,
+            showCancelButton: true,
+            confirmButtonText: '{% trans "Cette semaine et les suivantes" %}',
+            denyButtonText: '{% trans "Cette semaine seulement" %}',
+            cancelButtonText: '{% trans "Annuler" %}'
+        }).then(function(choix) {
+            if (choix.isConfirmed) { envoyerGrille(formulaire, 'suivantes'); }
+            else if (choix.isDenied) { envoyerGrille(formulaire, 'semaine'); }
+        });
+    }
 
+    function envoyerGrille(formulaire, portee) {
+        var donnees = $(formulaire).serialize();
+        if (portee) { donnees += '&portee=' + encodeURIComponent(portee); }
         $.ajax({
-            url: $(this).attr('action'),
+            url: $(formulaire).attr('action'),
             type: 'POST',
-            data: $(this).serialize(),
+            data: donnees,
             success: function(response) {
-                if (response.success) {
+                if (response.confirmation) {
+                    demanderPortee(formulaire, response.changements);
+                } else if (response.success) {
                     Swal.fire({
                         title: '{% trans "Succès!" %}',
-                        text: '{% trans "Emploi du temps enregistré avec succès!" %}',
+                        text: response.message || '{% trans "Emploi du temps enregistré avec succès!" %}',
                         icon: 'success',
                         confirmButtonText: '{% trans "OK" %}'
                     }).then(() => {
@@ -234,6 +258,12 @@
                 });
             }
         });
+    }
+
+    // Soumission du formulaire de grille : sans portée d'abord, le serveur la demande si l'emploi du temps change
+    $("#grille-form").submit(function(e) {
+        e.preventDefault();
+        envoyerGrille(this, null);
     });
 </script>
 {% endblock %}

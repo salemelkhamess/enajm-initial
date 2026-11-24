@@ -3240,3 +3240,71 @@ msgstr ""
 
 msgid "Nom affiché en français (à défaut : le code)."
 msgstr "الاسم المعروض بالفرنسية (وإلا فالرمز)."
+
+#: emploie/modifications.py, templates/emploi/confirmer_portee.html
+msgid "Modification enregistrée pour la semaine actuelle seulement : l'emploi du temps hebdomadaire n'a pas changé."
+msgstr "تم حفظ التعديل للأسبوع الحالي فقط: لم يتغير الجدول الزمني الأسبوعي."
+
+#: emploie/modifications.py, templates/emploi/confirmer_portee.html
+msgid "Modification enregistrée pour la semaine actuelle et toutes les semaines suivantes."
+msgstr "تم حفظ التعديل للأسبوع الحالي وجميع الأسابيع اللاحقة."
+
+#: emploie/modifications.py, templates/emploi/confirmer_portee.html
+msgid "Classe introuvable."
+msgstr "القسم غير موجود."
+
+#: emploie/modifications.py, templates/emploi/confirmer_portee.html
+msgid "Ajout : %(creneau)s"
+msgstr "إضافة: %(creneau)s"
+
+#: emploie/modifications.py, templates/emploi/confirmer_portee.html
+msgid "Retrait : %(creneau)s"
+msgstr "سحب: %(creneau)s"
+
+#: emploie/modifications.py, templates/emploi/confirmer_portee.html
+msgid "Cette semaine seulement"
+msgstr "هذا الأسبوع فقط"
+
+#: emploie/modifications.py, templates/emploi/confirmer_portee.html
+msgid "Cette semaine et les semaines suivantes"
+msgstr "هذا الأسبوع والأسابيع اللاحقة"
+
+#: emploie/modifications.py, templates/emploi/confirmer_portee.html
+msgid "Confirmer la modification de l'emploi du temps"
+msgstr "تأكيد تعديل الجدول الزمني"
+
+#: emploie/modifications.py, templates/emploi/confirmer_portee.html
+msgid "Vous allez modifier :"
+msgstr "أنت على وشك تعديل:"
+
+#: emploie/modifications.py, templates/emploi/confirmer_portee.html
+msgid "À partir de quand ce changement s'applique-t-il ?"
+msgstr "ابتداءً من متى يسري هذا التغيير؟"
+
+#: emploie/modifications.py, templates/emploi/confirmer_portee.html
+msgid "Cette semaine et toutes les semaines suivantes"
+msgstr "هذا الأسبوع وجميع الأسابيع اللاحقة"
+
+#: emploie/modifications.py, templates/emploi/confirmer_portee.html
+msgid "l'emploi du temps hebdomadaire est modifié"
+msgstr "يتم تعديل الجدول الزمني الأسبوعي"
+
+#: emploie/modifications.py, templates/emploi/confirmer_portee.html
+msgid "l'emploi du temps hebdomadaire reste inchangé"
+msgstr "يبقى الجدول الزمني الأسبوعي دون تغيير"
+
+#: emploie/modifications.py, templates/emploi/confirmer_portee.html
+msgid "Les semaines déjà passées ne sont jamais modifiées."
+msgstr "لا تُعدَّل الأسابيع المنقضية أبدًا."
+
+#: emploie/modifications.py, templates/emploi/confirmer_portee.html
+msgid "la séance est retirée de l'emploi du temps hebdomadaire"
+msgstr "تُسحب الحصة من الجدول الزمني الأسبوعي"
+
+#: emploie/modifications.py, templates/emploi/confirmer_portee.html
+msgid "Confirmer la modification"
+msgstr "تأكيد التعديل"
+
+#: emploie/modifications.py, templates/emploi/confirmer_portee.html
+msgid "Cette semaine et les suivantes"
+msgstr "هذا الأسبوع والأسابيع اللاحقة"
