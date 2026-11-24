@@ -18,7 +18,8 @@
         <table class="table table-bordered table-striped">
             <thead>
                 <tr>
-                    <th>{% trans "Nom" %}</th>
+                    <th>{% trans "Nom (arabe)" %}</th>
+                    <th>{% trans "Nom (français)" %}</th>
                     <th>{% trans "Secteurs" %}</th>
                     <th>{% trans "Actions" %}</th>
                 </tr>
@@ -26,8 +27,9 @@
             <tbody>
                 {% for secteur in secteurs %}
                 <tr>
-                    <td>{{ secteur.nom }}</td>
-                    <td>{{ secteur.formation.nom }}</td>
+                    <td dir="rtl">{{ secteur.nom }}</td>
+                    <td>{{ secteur.nom_fr|default:"—" }}</td>
+                    <td>{{ secteur.formation.nom_affiche }}</td>
                     <td>
                         <a href="{% url 'secteur_update' secteur.pk %}" class="btn btn-sm btn-warning">
                             <i class="fa fa-edit"></i> {% trans "Modifier" %}

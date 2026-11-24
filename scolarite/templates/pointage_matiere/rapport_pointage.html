@@ -50,7 +50,7 @@
                                 <option value="">{% trans "Tous les secteurs" %}</option>
                                 {% for secteur in secteurs %}
                                 <option value="{{ secteur.id }}" {% if selected_secteur == secteur.id|stringformat:"s" %}selected{% endif %}>
-                                    {{ secteur.nom }}
+                                    {{ secteur.nom_affiche }}
                                 </option>
                                 {% endfor %}
                             </select>
@@ -97,8 +97,8 @@
                         <tr>
                             <td>{{ pointage.date_cours|date:"d/m/Y" }}</td>
                             <td>{{ pointage.matiere.nom }}</td>
-                            <td>{{ pointage.secteur.nom }}</td>
-                            <td>{{ pointage.professeur.nom }} {{ pointage.professeur.prenom }}</td>
+                            <td>{{ pointage.secteur.nom_affiche }}</td>
+                            <td>{{ pointage.professeur.nom_prenom }}</td>
                             <td>{{ pointage.heure_debut|time:"H:i" }} - {{ pointage.heure_fin|time:"H:i" }}</td>
                             <td>{{ pointage.duree|floatformat:2 }}h</td>
                             <td>

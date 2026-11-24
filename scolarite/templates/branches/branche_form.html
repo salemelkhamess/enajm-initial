@@ -13,8 +13,13 @@
         <form method="post">
             {% csrf_token %}
             <div class="form-group">
-                <label>{% trans "Nom du classe" %}</label>
+                <label>{% trans "Nom du classe" %} ({% trans "arabe" %})</label>
                 {{ form.nom }}
+            </div>
+            <div class="form-group">
+                <label>{% trans "Nom en français" %}</label>
+                {{ form.nom_fr }}
+                <small class="text-muted">{% trans "Affiché dans les listes et les écrans en français." %}</small>
             </div>
             <div class="form-group">
                 <label>{% trans "Departement associée" %}</label>

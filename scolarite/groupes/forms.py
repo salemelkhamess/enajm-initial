@@ -8,13 +8,14 @@ from .models import Groupe
 class GroupeForm(forms.ModelForm):
     class Meta:
         model = Groupe
-        fields = ['bloc', 'code', 'nom_ar', 'nom_fr', 'langue', 'intitule', 'niveau_langue', 'professeur', 'professeur_texte',
+        fields = ['bloc', 'code', 'nom_ar', 'nom_fr', 'classe', 'langue', 'intitule', 'niveau_langue', 'professeur', 'professeur_texte',
                   'coordinateur', 'salle', 'horaire', 'actif']
         widgets = {
             'bloc': forms.Select(attrs={'class': 'form-control'}),
             'code': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'G1Ad, G2F, GAar…'}),
             'nom_ar': forms.TextInput(attrs={'class': 'form-control', 'dir': 'rtl'}),
             'nom_fr': forms.TextInput(attrs={'class': 'form-control'}),
+            'classe': forms.Select(attrs={'class': 'form-control select2'}),
             'langue': forms.Select(attrs={'class': 'form-control'}),
             'intitule': forms.TextInput(attrs={'class': 'form-control'}),
             'niveau_langue': forms.TextInput(attrs={'class': 'form-control'}),
@@ -30,6 +31,7 @@ class GroupeForm(forms.ModelForm):
         self.fields['bloc'].empty_label = _("— Aucun —")
         self.fields['professeur'].empty_label = _("— Aucun —")
         self.fields['salle'].empty_label = _("— Aucune —")
+        self.fields['classe'].empty_label = _("— Aucune —")
         # la langue ne change plus dès que le groupe a des élèves (la contrainte « un groupe par langue » en dépend)
         if self.instance.pk and self.instance.affectations.exists():
             self.fields['langue'].disabled = True

@@ -3241,6 +3241,218 @@ msgstr ""
 msgid "Nom affiché en français (à défaut : le code)."
 msgstr "الاسم المعروض بالفرنسية (وإلا فالرمز)."
 
+msgid "Nom et prénom"
+msgstr "الاسم الكامل"
+
+msgid "Classe de l'emploi du temps"
+msgstr "قسم جدول التوقيت"
+
+msgid ""
+"Si renseignée, l'appel et les listes de pointage de cette classe utilisent "
+"les élèves de ce groupe."
+msgstr ""
+"إذا حُدّد، فإن تسجيل الغياب وقوائم الحضور لهذا القسم تستعمل تلاميذ هذه "
+"المجموعة."
+
+msgid "Nom en français"
+msgstr "الاسم بالفرنسية"
+
+msgid "Filière"
+msgstr "التخصص"
+
+msgid "arabe"
+msgstr "بالعربية"
+
+msgid "Affiché dans les listes et les écrans en français."
+msgstr "يُعرض في القوائم والشاشات بالفرنسية."
+
+msgid "Ordre alphabétique"
+msgstr "الترتيب الأبجدي"
+
+msgid "Par matricule"
+msgstr "حسب رقم التسجيل"
+
+msgid "Ordre"
+msgstr "الترتيب"
+
+msgid "Par filière"
+msgstr "حسب التخصص"
+
+msgid "Transférer les élèves cochés vers un autre groupe"
+msgstr "نقل التلاميذ المحددين إلى مجموعة أخرى"
+
+msgid "— Groupe de destination —"
+msgstr "— المجموعة المستقبِلة —"
+
+msgid "Transférer les élèves cochés ?"
+msgstr "هل تريد نقل التلاميذ المحددين ؟"
+
+msgid "Transférer"
+msgstr "نقل"
+
+msgid "Tout cocher"
+msgstr "تحديد الكل"
+
+msgid "Groupes de l'élève"
+msgstr "مجموعات التلميذ"
+
+msgid ""
+"Un élève est dans au plus un groupe par type. Choisissez un autre groupe "
+"pour le transférer (autre niveau), « Aucun » pour le retirer."
+msgstr ""
+"التلميذ ينتمي إلى مجموعة واحدة على الأكثر لكل نوع. اختر مجموعة أخرى لنقله "
+"(مستوى آخر)، أو « لا شيء » لإزالته."
+
+msgid "Groupe actuel"
+msgstr "المجموعة الحالية"
+
+msgid "Transférer vers"
+msgstr "نقل إلى"
+
+msgid "— Ne pas changer —"
+msgstr "— بدون تغيير —"
+
+msgid "Aucun (retirer du groupe)"
+msgstr "لا شيء (إزالة من المجموعة)"
+
+msgid "Historique des transferts"
+msgstr "سجل عمليات النقل"
+
+msgid "De"
+msgstr "من"
+
+msgid "Vers"
+msgstr "إلى"
+
+msgid "Par"
+msgstr "بواسطة"
+
+msgid "Retour à la liste"
+msgstr "العودة إلى القائمة"
+
+msgid "Groupes / transférer"
+msgstr "المجموعات / نقل"
+
+msgid "Choisissez le groupe de destination."
+msgstr "اختر المجموعة المستقبِلة."
+
+msgid ""
+"Le transfert se fait vers un groupe du même type (français, arabe ou "
+"section)."
+msgstr "يتم النقل إلى مجموعة من نفس النوع (فرنسية أو عربية أو قسم فرعي)."
+
+msgid "Le groupe de destination est le groupe actuel."
+msgstr "المجموعة المستقبِلة هي المجموعة الحالية."
+
+msgid "Cochez au moins un élève à transférer."
+msgstr "حدد تلميذًا واحدًا على الأقل للنقل."
+
+#, python-format
+msgid "%(n)d élève(s) transféré(s) de %(a)s vers %(b)s : %(noms)s"
+msgstr "تم نقل %(n)d تلميذ من %(a)s إلى %(b)s : %(noms)s"
+
+#, python-format
+msgid "%(g)s : retiré"
+msgstr "%(g)s : تمت الإزالة"
+
+#, python-format
+msgid "%(a)s → %(b)s"
+msgstr "%(a)s ← %(b)s"
+
+#, python-format
+msgid "niveau de %(g)s : %(n)s"
+msgstr "مستوى %(g)s : %(n)s"
+
+#, python-format
+msgid "Groupes de %(nom)s mis à jour : %(c)s"
+msgstr "تم تحديث مجموعات %(nom)s : %(c)s"
+
+#, python-format
+msgid "Aucun changement pour %(nom)s."
+msgstr "لا تغيير بالنسبة إلى %(nom)s."
+
+msgid "Membres du groupe"
+msgstr "أعضاء المجموعة"
+
+msgid "Ajouter des élèves"
+msgstr "إضافة تلاميذ"
+
+msgid "Rechercher (matricule, nom)…"
+msgstr "بحث (رقم التسجيل، الاسم)…"
+
+msgid "Cocher les élèves affichés"
+msgstr "تحديد التلاميذ المعروضين"
+
+msgid "Niveau individuel"
+msgstr "المستوى الفردي"
+
+msgid "Niveau de l’élève dans le groupe (facultatif)"
+msgstr "مستوى التلميذ داخل المجموعة (اختياري)"
+
+msgid "Retirer du groupe les élèves cochés ?"
+msgstr "هل تريد إزالة التلاميذ المحددين من المجموعة ؟"
+
+msgid "Retirer les élèves cochés"
+msgstr "إزالة التلاميذ المحددين"
+
+msgid "Enregistrer les niveaux individuels"
+msgstr "حفظ المستويات الفردية"
+
+msgid ""
+"Ce groupe n'a pas encore d'élèves : ajoutez-en avec le tableau de droite."
+msgstr "هذه المجموعة لا تحتوي على تلاميذ بعد : أضف تلاميذ من الجدول المجاور."
+
+msgid "Ajouter les élèves cochés"
+msgstr "إضافة التلاميذ المحددين"
+
+msgid "coché(s)"
+msgstr "محدد"
+
+msgid "Sera déplacé depuis ce groupe"
+msgstr "سيتم نقله من هذه المجموعة"
+
+#, python-format
+msgid "%(n)d élève(s) ajouté(s) au groupe %(g)s."
+msgstr "تمت إضافة %(n)d تلميذ إلى المجموعة %(g)s."
+
+msgid "Aucun élève coché à ajouter."
+msgstr "لم يتم تحديد أي تلميذ للإضافة."
+
+#, python-format
+msgid "%(n)d élève(s) retiré(s) du groupe %(g)s."
+msgstr "تمت إزالة %(n)d تلميذ من المجموعة %(g)s."
+
+msgid "Aucun élève coché à retirer."
+msgstr "لم يتم تحديد أي تلميذ للإزالة."
+
+#, python-format
+msgid "Niveaux individuels enregistrés (%(n)d modifié(s))."
+msgstr "تم حفظ المستويات الفردية (%(n)d تعديل)."
+
+msgid "Déplacés depuis un autre groupe du même type : "
+msgstr "منقولون من مجموعة أخرى من نفس النوع : "
+
+msgid ""
+"Les sections correspondent aux classes : leur composition ne se modifie pas "
+"ici."
+msgstr "الأقسام الفرعية تقابل الأقسام : لا يمكن تعديل تركيبتها من هنا."
+
+msgid ""
+"Les sections correspondent aux classes : on ne transfère pas d'élève d'une "
+"classe à une autre ici."
+msgstr ""
+"الأقسام الفرعية تقابل الأقسام : لا يتم نقل تلميذ من قسم إلى آخر من هنا."
+
+msgid ""
+"Les sections correspondent aux classes : leur composition est en lecture "
+"seule ici (aucun transfert entre classes)."
+msgstr ""
+"الأقسام الفرعية تقابل الأقسام : تركيبتها للقراءة فقط هنا (لا نقل بين "
+"الأقسام)."
+
+msgid "Section = classe : non modifiable ici (pas de transfert entre classes)"
+msgstr "قسم فرعي = قسم : غير قابل للتعديل هنا (لا نقل بين الأقسام)"
+
 #: emploie/modifications.py, templates/emploi/confirmer_portee.html
 msgid "Modification enregistrée pour la semaine actuelle seulement : l'emploi du temps hebdomadaire n'a pas changé."
 msgstr "تم حفظ التعديل للأسبوع الحالي فقط: لم يتغير الجدول الزمني الأسبوعي."

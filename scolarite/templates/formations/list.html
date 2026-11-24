@@ -15,21 +15,23 @@
         <table class="table table-bordered">
             <thead>
                 <tr>
-                    <th>{% trans "Nom" %}</th>
+                    <th>{% trans "Nom (arabe)" %}</th>
+                    <th>{% trans "Nom (français)" %}</th>
                     <th>{% trans "Actions" %}</th>
                 </tr>
             </thead>
             <tbody>
                 {% for formation in formations %}
                 <tr>
-                    <td>{{ formation.nom }}</td>
+                    <td dir="rtl">{{ formation.nom }}</td>
+                    <td>{{ formation.nom_fr|default:"—" }}</td>
                     <td>
                         <a href="{% url 'formation_edit' formation.pk %}" class="btn btn-sm btn-warning">{% trans "Modifier" %}</a>
                         <a href="{% url 'formation_delete' formation.pk %}" class="btn btn-sm btn-danger">{% trans "Supprimer" %}</a>
                     </td>
                 </tr>
                 {% empty %}
-                <tr><td colspan="3">{% trans "Aucun département trouvé." %}</td></tr>
+                <tr><td colspan="4">{% trans "Aucun département trouvé." %}</td></tr>
                 {% endfor %}
             </tbody>
         </table>

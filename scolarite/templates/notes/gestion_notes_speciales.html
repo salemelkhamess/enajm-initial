@@ -29,7 +29,7 @@
                     <option value="">{% trans "-- Secteur --" %}</option>
                     {% for secteur in secteurs %}
                     <option value="{{ secteur.id }}" {% if selected_secteur == secteur.id|stringformat:"s" %}selected{% endif %}>
-                        {{ secteur.nom }}
+                        {{ secteur.nom_affiche }}
                     </option>
                     {% endfor %}
                 </select>
@@ -69,7 +69,7 @@
                 <tbody>
                     {% for etu in etudiants %}
                     <tr>
-                        <td>{{ etu.nom }} {{ etu.prenom }} <small>({{ etu.matricule }})</small></td>
+                        <td>{{ etu.nom_prenom }} <small>({{ etu.matricule }})</small></td>
                         <td>
                             <input type="number" step="0.01" min="0" max="20"
                                    name="note_directeur_{{ etu.id }}" class="form-control"

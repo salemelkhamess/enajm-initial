@@ -129,9 +129,9 @@ table {
                         {% for secteur in secteurs %}
                             <option value="{{ secteur.id }}" {% if secteur.id|stringformat:"s" == selected_secteur %}selected{% endif %}>
                                 {% if LANGUAGE_CODE == 'ar' or LANGUAGE_CODE == 'ar-ma' %}
-                                    {{ secteur.nom }}
+                                    {{ secteur.nom_affiche }}
                                 {% else %}
-                                    {{ secteur.nom }}
+                                    {{ secteur.nom_affiche }}
                                 {% endif %}
                             </option>
                         {% endfor %}

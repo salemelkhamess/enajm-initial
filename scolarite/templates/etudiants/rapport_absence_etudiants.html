@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load etudiant_extras %}
 {% load i18n_jours %}
 {% load i18n %}
 {% block styles %}
@@ -92,7 +93,7 @@ table thead th {
                                 <td>{{ presence.jour|jour_i18n }} {{ presence.date_cours|time:"H:i" }}</td>
                                 <td rowspan="{{ specialite.list|length }}">{{ specialite.grouper }}</td>
                                 <td>{{ presence.matiere.nom }}</td>
-                                <td>{{ presence.etudiant.nom }} {{ presence.etudiant.prenom }}</td>
+                                <td>{{ presence.etudiant.nom_prenom }}</td>
                                 <td>
                                     <span>{% if presence.present %}{% trans "Present" %}{% else %}{% trans "Absent" %}{% endif %}</span>
                                 </td>
@@ -101,7 +102,7 @@ table thead th {
                             <tr>
                                 <td>{{ presence.jour|jour_i18n }} {{ presence.date_cours|time:"H:i" }}</td>
                                 <td>{{ presence.matiere.nom }}</td>
-                                <td>{{ presence.etudiant.nom }} {{ presence.etudiant.prenom }}</td>
+                                <td>{{ presence.etudiant.nom_prenom }}</td>
                                 <td>
                                     <span>{% if presence.present %}{% trans "Present" %}{% else %}{% trans "Absent" %}{% endif %}</span>
                                 </td>
@@ -133,7 +134,7 @@ table thead th {
                 <tbody>
                     {% for absence in absences_par_etudiant %}
                     <tr>
-                        <td>{{ absence.etudiant__nom }} {{ absence.etudiant__prenom }}</td>
+                        <td>{{ absence.etudiant__prenom|fusion:absence.etudiant__nom }}</td>
                         <td>{{ absence.etudiant__matricule }}</td>
                         <td>{{ absence.total_absences }}</td>
                     </tr>

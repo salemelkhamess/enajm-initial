@@ -43,7 +43,7 @@
             <tbody>
                 {% for note in notes %}
                 <tr>
-                    <td>{{ note.etudiant.nom }} {{ note.etudiant.prenom }}</td>
+                    <td>{{ note.etudiant.nom_prenom }}</td>
                     <td>{{ note.evaluation.type }} - {{ note.evaluation.date }}</td>
                     <td>{{ note.note_sur_20 }}</td>
                     <td>

@@ -12,7 +12,7 @@
         <div class="card-body">
             <h5 class="card-title">{% trans "Détails du cours" %}</h5>
             <p class="card-text">
-                <strong>{% trans "Secteur" %}:</strong> {{ secteur.nom }}<br>
+                <strong>{% trans "Secteur" %}:</strong> {{ secteur.nom_affiche }}<br>
                 <strong>{% trans "Matière" %}:</strong> {{ matiere.nom }}<br>
                 <strong>{% trans "Date" %}:</strong> {{ date_cours }}<br>
                 <strong>{% trans "Jour" %}:</strong> {{ jour|jour_i18n }}<br>
@@ -34,7 +34,7 @@
             <tbody>
                 {% for etudiant in etudiants %}
                 <tr>
-                    <td>{{ etudiant.nom }} {{ etudiant.prenom }}</td>
+                    <td>{{ etudiant.nom_prenom }}</td>
                     <td>{{ etudiant.matricule }}</td>
                     <td>
                         <div class="form-check form-switch">

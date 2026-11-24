@@ -33,7 +33,7 @@
 
         {% if show_grille %}
         <hr>
-        <h4>{% trans "Emploi du temps pour" %} {{ secteur.nom }} - {{ trimestre.nom }} {{ annee.nom }}</h4>
+        <h4>{% trans "Emploi du temps pour" %} {{ secteur.nom_affiche }} - {{ trimestre.nom }} {{ annee.nom }}</h4>
 
         <form method="post" id="grille-form" action="{% url 'sauvegarder_grille' %}">
             {% csrf_token %}
@@ -81,7 +81,7 @@
                                         {% for professeur in professeurs %}
                                             <option value="{{ professeur.id }}"
                                                 {% if existing and existing.professeur_id == professeur.id %}selected{% endif %}>
-                                                {{ professeur.nom }} {{ professeur.prenom }}
+                                                {{ professeur.nom_prenom }}
                                             </option>
                                         {% endfor %}
                                     </select>
@@ -182,7 +182,7 @@
                 <select name="new_professeur_{{ jour }}" class="form-control professeur-select">
                     <option value="">-- {% trans "Professeur" %} --</option>
                     {% for professeur in professeurs %}
-                        <option value="{{ professeur.id }}">{{ professeur.nom }} {{ professeur.prenom }}</option>
+                        <option value="{{ professeur.id }}">{{ professeur.nom_prenom }}</option>
                     {% endfor %}
                 </select>
 

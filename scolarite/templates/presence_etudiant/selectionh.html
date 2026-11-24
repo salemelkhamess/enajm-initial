@@ -4,16 +4,7 @@
 {% block content %}
 <div class="container mt-5">
     <h2 class="mb-4">{% trans "Gestion des présences" %}</h2>
-           {% if messages %}
-            <div class="messages">
-                {% for message in messages %}
-                <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %}">
-                    {{ message }}
-                </div>
-                {% endfor %}
-            </div>
-            {% endif %}
-
+           
     <form method="post" action="{% url 'presence:enregistrer' %}" id="presenceForm" class="card p-4">
         {% csrf_token %}
         <div class="row">

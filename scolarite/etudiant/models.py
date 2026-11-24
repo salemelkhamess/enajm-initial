@@ -118,7 +118,7 @@ class Etudiant(models.Model):
     )
 
     def __str__(self):
-        return f"{self.nom} {self.prenom} ({self.matricule})"
+        return f"{self.nom_prenom} ({self.matricule})"
 
     # --- affichage selon la langue active (arabe / français, avec repli sur l'autre langue) ---
     @staticmethod
@@ -130,7 +130,7 @@ class Etudiant(models.Model):
         arabe = (self.nom or '', self.prenom or '')
         francais = (self.nom_fr or '', self.prenom_fr or '')
         prefere, autre = (arabe, francais) if self._langue_arabe() else (francais, arabe)
-        return prefere if prefere[0] else autre
+        return prefere if (prefere[0] or prefere[1]) else autre
 
     @property
     def nom_langue(self):
@@ -141,21 +141,36 @@ class Etudiant(models.Model):
         return self._paire_langue()[1]
 
     @property
+    def nom_prenom(self):
+        """Nom complet en arabe, NOM DE LA PERSONNE EN PREMIER (champ « prénom »), puis nom du père (champ « nom »),
+        sans doublon si l'un contient déjà l'autre."""
+        from .noms import fusionner_noms
+        return fusionner_noms(self.prenom, self.nom)
+
+    @property
+    def nom_prenom_fr(self):
+        """Nom complet en français : PRÉNOMS d'abord (champ « prénom »), puis nom de famille (champ « nom »),
+        comme dans les listes officielles (ex. « Ikhalihenna Yahya Beida »), sans doublon."""
+        from .noms import fusionner_noms
+        return fusionner_noms(self.prenom_fr, self.nom_fr)
+
+    @property
     def nom_complet_ar(self):
-        """Nom complet en arabe : prénom puis nom."""
-        return f"{self.prenom or ''} {self.nom or ''}".strip()
+        """Nom complet en arabe : prénom puis nom, sans doublon."""
+        from .noms import fusionner_noms
+        return fusionner_noms(self.prenom, self.nom)
 
     @property
     def nom_complet_fr(self):
-        """Nom complet en français : nom puis prénom (vide si non renseigné)."""
-        return f"{self.nom_fr or ''} {self.prenom_fr or ''}".strip()
+        """Nom complet en français : nom puis prénom, sans doublon (vide si non renseigné)."""
+        return self.nom_prenom_fr
 
     @property
     def nom_complet_langue(self):
-        """Arabe : prénom puis nom ; français : nom puis prénom (usage des listes officielles)."""
-        if self._langue_arabe():
-            return f"{self.prenom_langue} {self.nom_langue}".strip()
-        return f"{self.nom_langue} {self.prenom_langue}".strip()
+        """Nom complet dans la langue active, sans doublon (à défaut de nom dans cette langue : l'autre langue)."""
+        from .noms import fusionner_noms
+        nom, prenom = self._paire_langue()
+        return fusionner_noms(prenom, nom)   # prénoms (nom de la personne) d'abord, dans les deux langues
 
     @property
     def lieu_naissance_langue(self):

@@ -25,7 +25,7 @@
     <tbody>
         {% for presence in presences %}
         <tr>
-            <td>{{ presence.professeur.nom }} {{ presence.professeur.prenom }}</td>
+            <td>{{ presence.professeur.nom_prenom }}</td>
             <td>{{ presence.matiere.nom }}</td>
             <td>{{ presence.present|yesno:"Oui,Non" }}</td>
             <td>{{ presence.justification|default:"-" }}</td>

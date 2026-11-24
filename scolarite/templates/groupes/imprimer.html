@@ -16,6 +16,7 @@
     table tbody td { padding: 5px 7px; border: 1px solid #444; }
     td.num, td.mle { text-align: center; width: 70px; } td.signature { width: 160px; height: 30px; }
     tr { page-break-inside: avoid; }
+    tr.filiere-sep td { border-top: 2.5px solid #1b7a3a; }
     .no-print { margin-bottom: 14px; }
     @media print { .no-print { display: none; } body { padding: 0; } @page { margin: 12mm; } }
   </style>
@@ -23,19 +24,24 @@
 <body>
   <div class="no-print">
     <button class="btn btn-primary" onclick="window.print()"><i class="fa fa-print"></i> {% trans "Imprimer" %}</button>
-    {% if emargement %}<a class="btn btn-default" href="?emargement=0">{% trans "Sans émargement" %}</a>{% else %}<a class="btn btn-default" href="?">{% trans "Avec émargement" %}</a>{% endif %}
+    {% if emargement %}<a class="btn btn-default" href="?emargement=0&langue={{ langue }}&tri={{ tri }}">{% trans "Sans émargement" %}</a>{% else %}<a class="btn btn-default" href="?langue={{ langue }}&tri={{ tri }}">{% trans "Avec émargement" %}</a>{% endif %}
+    <a class="btn btn-default {% if langue == 'fr' %}active{% endif %}" href="?langue=fr&tri={{ tri }}{% if not emargement %}&emargement=0{% endif %}">Français</a>
+    <a class="btn btn-default {% if langue == 'ar' %}active{% endif %}" href="?langue=ar&tri={{ tri }}{% if not emargement %}&emargement=0{% endif %}">العربية</a>
+    <a class="btn btn-default {% if tri == 'filiere' %}active{% endif %}" href="?langue={{ langue }}&tri=filiere{% if not emargement %}&emargement=0{% endif %}">{% trans "Par filière" %}</a>
+    <a class="btn btn-default {% if tri == 'nom' %}active{% endif %}" href="?langue={{ langue }}&tri=nom{% if not emargement %}&emargement=0{% endif %}">{% trans "Ordre alphabétique" %}</a>
+    <a class="btn btn-default {% if tri == 'matricule' %}active{% endif %}" href="?langue={{ langue }}&tri=matricule{% if not emargement %}&emargement=0{% endif %}">{% trans "Par matricule" %}</a>
   </div>
   <div class="entete">
     {% if ar %}
       <p>المدرسة الوطنية للإدارة والصحافة والقضاء</p><p>مركز تدريس اللغات</p>
       <p>التكوين الأولي{% if groupe.bloc %} — {{ groupe.bloc.nom }}{% endif %}</p><p>السنة الجامعية {{ groupe.annee }}</p>
     {% else %}
-      <p>ENAJM / Service de la scolarité</p><p>Formation initiale{% if groupe.bloc %} / {{ groupe.bloc.nom }}{% endif %}</p>
+      <p>ENAJM / Service de la scolarité</p><p>Formation initiale{% if groupe.bloc %} / {{ groupe.bloc.nom_francais }}{% endif %}</p>
       <p>Année universitaire {{ groupe.annee }}</p>
     {% endif %}
   </div>
   <div class="titre">
-    {% if groupe.langue == 'ar' %}مجموعة اللغة العربية{% elif groupe.langue == 'fr' %}Français{% else %}{% if ar %}مجموعة{% else %}Groupe{% endif %}{% endif %} / {% if ar %}{{ groupe.nom_ar|default:groupe.code }}{% else %}{{ groupe.nom_fr|default:groupe.code }} ({{ groupe.code }}){% endif %}{% if groupe.niveau_langue %} – {% if ar %}المستوى{% else %}Niveau{% endif %} {{ groupe.niveau_langue }}{% endif %}
+    {% if groupe.langue == 'ar' %}{% if ar %}مجموعة اللغة العربية{% else %}Arabe{% endif %}{% elif groupe.langue == 'fr' %}{% if ar %}مجموعة اللغة الفرنسية{% else %}Français{% endif %}{% else %}{% if ar %}مجموعة{% else %}Groupe{% endif %}{% endif %} / {% if ar %}{{ groupe.nom_ar|default:groupe.code }}{% elif groupe.langue %}{{ groupe.intitule|default:groupe.code }} ({{ groupe.code }}){% else %}{{ groupe.nom_fr|default:groupe.code }} ({{ groupe.code }}){% endif %}{% if groupe.niveau_langue %} – {% if ar %}المستوى{% else %}Niveau{% endif %} {{ groupe.niveau_langue }}{% endif %}
   </div>
   <div class="infos">
     {% if groupe.horaire or groupe.salle %}<p>{% if groupe.horaire %}{% if ar %}التوقيت{% else %}Horaire{% endif %} : {{ groupe.horaire }}{% endif %}{% if groupe.salle %} &nbsp; {% if ar %}القاعة{% else %}Salle{% endif %} : {{ groupe.salle.nom }}{% endif %}</p>{% endif %}
@@ -45,18 +51,18 @@
   <h4>{% if ar %}قائمة حضور التلاميذ الموظفين{% else %}Liste de présence des élèves fonctionnaires{% endif %}</h4>
   <table>
     <thead><tr>
-      <th>{% if ar %}الرقم الترتيبي{% else %}N° Ordre{% endif %}</th><th>{% if ar %}رقم التسجيل{% else %}Mle{% endif %}</th>
+      <th>{% if ar %}رقم التسجيل{% else %}Mle{% endif %}</th>
       <th>{% if ar %}الاسم{% else %}Noms et prénoms{% endif %}</th><th>{% if ar %}الشعبة{% else %}Filière{% endif %}</th>
       {% if avec_niveau %}<th>{% if ar %}المستوى{% else %}Niveau{% endif %}</th>{% endif %}
       {% if emargement %}<th>{% if ar %}التوقيع{% else %}Émargement{% endif %}</th>{% endif %}
     </tr></thead>
     <tbody>
     {% for l in lignes %}
-      <tr><td class="num">{{ forloop.counter }}</td><td class="mle">{{ l.e.matricule }}</td><td>{{ l.nom }}</td><td>{{ l.e.secteur.nom }}</td>
+      <tr{% if l.nouvelle_filiere %} class="filiere-sep"{% endif %}><td class="mle">{{ l.e.matricule }}</td><td>{{ l.nom }}</td><td>{{ l.filiere }}</td>
           {% if avec_niveau %}<td class="num">{{ l.a.niveau_eleve }}</td>{% endif %}
           {% if emargement %}<td class="signature"></td>{% endif %}</tr>
     {% empty %}
-      <tr><td colspan="6" style="text-align:center;padding:20px;">{% if ar %}لا يوجد تلاميذ في هذه المجموعة{% else %}Aucun élève dans ce groupe{% endif %}</td></tr>
+      <tr><td colspan="5" style="text-align:center;padding:20px;">{% if ar %}لا يوجد تلاميذ في هذه المجموعة{% else %}Aucun élève dans ce groupe{% endif %}</td></tr>
     {% endfor %}
     </tbody>
   </table>

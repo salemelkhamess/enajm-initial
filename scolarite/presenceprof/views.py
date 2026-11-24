@@ -65,7 +65,7 @@ def rapport_presence_professeurs(request):
             'heure_fin': p.seance.heure_fin if p.seance else None,
             'secteur': p.seance.secteur.nom if p.seance and p.seance.secteur else '',
             'matiere': p.seance.matiere.nom if p.seance and p.seance.matiere else '',
-            'professeur': f"{p.professeur.nom} {p.professeur.prenom}",
+            'professeur': p.professeur.nom_prenom,
             'etat': p.etat,
             'contenu': None
         })
@@ -79,7 +79,7 @@ def rapport_presence_professeurs(request):
             'heure_fin': pm.heure_fin,
             'secteur': pm.secteur.nom,
             'matiere': pm.matiere.nom,
-            'professeur': f"{pm.professeur.nom} {pm.professeur.prenom}",
+            'professeur': pm.professeur.nom_prenom,
             'etat': 'present',  # On considère EF comme "présent"
             'contenu': pm.contenu
         })

@@ -23,12 +23,14 @@
             <div>
                 <select id="classeImpression" class="form-control" style="width:240px;">
                     <option value="">{% trans "Toutes les classes" %}</option>
-                    {% for s in secteurs %}<option value="{{ s.id }}">{{ s.nom }}</option>{% endfor %}
+                    {% for s in secteurs %}<option value="{{ s.id }}">{{ s.nom_affiche }}</option>{% endfor %}
                 </select>
+                {% if a_niveaux_actifs %}
                 <select id="niveauImpression" class="form-control" style="width:240px;">
                     <option value="">{% trans "Tous les niveaux" %}</option>
                     {% for n in niveaux %}<option value="{{ n.id }}">{{ n.libelle }}</option>{% endfor %}
                 </select>
+                {% endif %}
                 <label class="checkbox-inline" style="margin:0 8px;">
                     <input type="checkbox" id="avecSignature"> {% if LANGUAGE_CODE == 'ar' %}مع التوقيع{% else %}{% trans "Avec signature" %}{% endif %}
                 </label>
@@ -56,10 +58,9 @@
                     <th>{% trans "Photo" %}</th>
                     <th>{% trans "Matricule" %}</th>
 
-                    <th>{% trans "Nom" %}</th>
-                    <th>{% trans "Prénom" %}</th>
+                    <th>{% trans "Nom et prénom" %}</th>
                     <th>{% trans "Classe" %}</th>
-                    <th>{% trans "Niveau" %}</th>
+                    {% if a_niveaux_actifs %}<th>{% trans "Niveau" %}</th>{% endif %}
                     <th>{% trans "Groupes" %}</th>
                     <th>{% trans "Année" %}</th>
                     <th>{% trans "Documents" %}</th>
@@ -79,11 +80,10 @@
                         </td>
                         <td>{{ etudiant.matricule }}</td>
 
-                        <td>{{ etudiant.nom }}</td>
-                        <td>{{ etudiant.prenom }}</td>
-                        <td>{{ etudiant.secteur.nom }}</td>
-                        <td>{{ etudiant.niveau.nom|default_if_none:"" }}</td>
-                        <td>{% for a in etudiant.affectations.all %}<div style="white-space:nowrap; margin:1px 0;"><small class="text-muted">{% if a.langue == 'fr' %}{% trans "Français" %}{% elif a.langue == 'ar' %}{% trans "Arabe" %}{% else %}{% trans "Section" %}{% endif %} :</small> <span class="label {% if a.langue == 'fr' %}label-primary{% elif a.langue == 'ar' %}label-success{% else %}label-warning{% endif %}" title="{{ a.groupe.code }}">{{ a.groupe.nom_affiche }}</span></div>{% endfor %}</td>
+                        <td>{{ etudiant.nom_prenom }}{% if etudiant.nom_prenom_fr %}<br><small class="text-muted">{{ etudiant.nom_prenom_fr }}</small>{% endif %}</td>
+                        <td>{{ etudiant.secteur.nom_affiche }}</td>
+                        {% if a_niveaux_actifs %}<td>{{ etudiant.niveau.nom|default_if_none:"" }}</td>{% endif %}
+                        <td>{% for a in etudiant.affectations.all %}<div style="white-space:nowrap; margin:1px 0;"><small class="text-muted">{% if a.langue == 'fr' %}{% trans "Français" %}{% elif a.langue == 'ar' %}{% trans "Arabe" %}{% else %}{% trans "Section" %}{% endif %} :</small> <span class="label {% if a.langue == 'fr' %}label-primary{% elif a.langue == 'ar' %}label-success{% else %}label-warning{% endif %}" title="{{ a.groupe.code }}">{{ a.groupe.nom_affiche }}</span></div>{% endfor %}{% if user|has_any_role:"ADMIN,SUPER_ADMIN" %}<a href="{% url 'eleve_groupes' etudiant.pk %}" class="btn btn-xs btn-default" title="{% trans 'Groupes / transférer' %}"><i class="fa fa-exchange"></i></a>{% endif %}</td>
                         <td>{{ etudiant.annee.numero_annee }}</td>
                         <td class="text-center" data-order="{{ etudiant.types_documents|length }}">
                             {% for type, nb in etudiant.types_documents %}
@@ -107,6 +107,7 @@
 </li>
 <li>                                    <a href="{% url 'carte_etudiant' etudiant.matricule %}">{% trans "Voir Carte" %}</a>
 </li>
+                                    {% if user|has_any_role:"ADMIN,SUPER_ADMIN" %}<li><a href="{% url 'eleve_groupes' etudiant.pk %}"><i class="fa fa-exchange"></i> {% trans "Groupes / transférer" %}</a></li>{% endif %}
                                     {#                                    <li>#}
 {#                                        <a href="{% url 'nscription' etudiant.pk %}" >#}
 {#                                            {% trans 'attestation d inscription' %}#}
@@ -159,7 +160,7 @@
                     </tr>
                 {% empty %}
                     <tr>
-                        <td colspan="10">{% trans "Aucun étudiant trouvé." %}</td>
+                        <td colspan="{% if a_niveaux_actifs %}9{% else %}8{% endif %}">{% trans "Aucun étudiant trouvé." %}</td>
                     </tr>
                 {% endfor %}
                 </tbody>
@@ -172,14 +173,15 @@
 <script>
 // Choix de la classe avec recherche (select2), exécuté directement : ne dépend pas du $(document).ready du layout
 if (window.jQuery && jQuery.fn.select2) {
-    jQuery('#classeImpression, #niveauImpression').select2({ width: '240px', dropdownAutoWidth: true });
+    jQuery('#classeImpression' + (document.getElementById('niveauImpression') ? ', #niveauImpression' : '')).select2({ width: '240px', dropdownAutoWidth: true });
 }
 
 // Filtres choisis (classe, niveau) sous forme de paramètres d'adresse
 function filtresListe(debut) {
     var parts = [];
     var classe = document.getElementById('classeImpression').value;
-    var niveau = document.getElementById('niveauImpression').value;
+    var champNiveau = document.getElementById('niveauImpression');
+    var niveau = champNiveau ? champNiveau.value : '';
     if (classe) parts.push('secteur=' + classe);
     if (niveau) parts.push('niveau=' + niveau);
     return parts.length ? debut + parts.join('&') : '';

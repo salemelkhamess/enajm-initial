@@ -285,6 +285,17 @@
 <audio id="alert-sound" preload="auto" loop>
     <source src="{% static 'sounds/alert.mp3' %}" type="audio/mpeg">
 </audio>
+                {# Messages de confirmation / d'erreur : affichés ici, une seule fois, sur n'importe quelle page (sinon ils s'accumulent) #}
+                {% if messages %}
+                <div id="messages-globaux" style="margin-top:15px;">
+                    {% for message in messages %}
+                    <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags|default:'info' }}{% endif %} alert-dismissible" role="alert">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        {{ message }}
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
                 {% block content %}
 
                 {% endblock %}

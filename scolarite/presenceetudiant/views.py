@@ -19,6 +19,8 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from etudiant.models import Etudiant
 from niveaux.models import Niveau
+from matiers.models import matieres_de_classe
+from etudiant.noms import fusionner_noms
 from .models import PresenceEtudiant, DocumentJustification, JustificationPeriode, q_comptee, q_en_attente
 from django.http import HttpResponseForbidden, FileResponse, Http404
 from django.core.exceptions import PermissionDenied
@@ -138,7 +140,7 @@ def rapport_absences(request):
 
         if etudiant_id not in absences_par_secteur[secteur_id]['etudiants']:
             absences_par_secteur[secteur_id]['etudiants'][etudiant_id] = {
-                'nom_complet': f"{item['etudiant__nom']} {item['etudiant__prenom']}",
+                'nom_complet': fusionner_noms(item['etudiant__prenom'], item['etudiant__nom']),
                 'matricule': item['etudiant__matricule'],
                 'absences': []
             }
@@ -574,12 +576,12 @@ class EnregistrerPresenceViewH(TemplateView):
 
 def charger_matieres(request):
     secteur_id = request.GET.get('secteur_id')
-    matieres = Matiere.objects.filter(secteur_id=secteur_id).order_by('nom')
+    matieres = matieres_de_classe(secteur_id)
     return JsonResponse([{'id': m.id, 'nom': m.nom} for m in matieres], safe=False)
 
 def load_matieres(request):
     secteur_id = request.GET.get('secteur_id')
-    matieres = Matiere.objects.filter(secteur_id=secteur_id).order_by('nom')
+    matieres = matieres_de_classe(secteur_id)
     return JsonResponse([{'id': m.id, 'nom': m.nom} for m in matieres], safe=False)
 
 
@@ -724,7 +726,7 @@ class EnregistrementPresenceEtudiantsView(TemplateView):
 def matieres_api(request):
     secteur_id = request.GET.get('secteur_id')
     if secteur_id:
-        matieres = Matiere.objects.filter(secteur_id=secteur_id).values('id', 'nom')
+        matieres = matieres_de_classe(secteur_id).values('id', 'nom')
         return JsonResponse(list(matieres), safe=False)
     return JsonResponse([], safe=False)
 
@@ -980,7 +982,7 @@ def check_absence_alerts(request):
 
     if critical_students.exists():
         students_list = [
-            f"{s['etudiant__nom']} {s['etudiant__prenom']} ({s['total_hours']}h)"
+            f"{fusionner_noms(s['etudiant__prenom'], s['etudiant__nom'])} ({s['total_hours']}h)"
             for s in critical_students
         ]
         return JsonResponse({
@@ -1125,7 +1127,7 @@ def justification_periode(request):
                         a.save()
                         nb += 1
             messages.success(request, _("Justification enregistrée pour %(nom)s (%(n)s absence(s)) : elle doit être validée par l'administration.")
-                             % {'nom': f"{selection.nom} {selection.prenom or ''}".strip(), 'n': nb})
+                             % {'nom': selection.nom_prenom, 'n': nb})
             # élève suivant : celui qui vient après dans la liste, sinon le premier restant
             apres = _file_attente()
             ids_apres = [g['etudiant'].id for g in apres if g['etudiant'].id != selection.id]
@@ -1271,6 +1273,10 @@ def groupes_classe_api(request):
     secteur_id = request.GET.get('secteur_id')
     if not (secteur_id and secteur_id.isdigit()):
         return JsonResponse({'sections': False, 'groupes': []})
+    from groupes.models import groupes_lies
+    lie = groupes_lies(Secteur.objects.filter(pk=int(secteur_id)).first()).first() if Secteur.objects.filter(pk=int(secteur_id)).exists() else None
+    if lie:   # la classe est représentée par un groupe : pas de choix, on indique simplement le groupe
+        return JsonResponse({'lie': {'id': lie.id, 'label': lie.nom_affiche, 'effectif': lie.affectations.count()}, 'sections': False, 'groupes': []})
     groupes = list(Groupe.objects.filter(actif=True, affectations__etudiant__secteur_id=int(secteur_id)).distinct()
                    .order_by('langue', 'code'))
     return JsonResponse({
@@ -1285,7 +1291,10 @@ JOURS_FR = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanc
 def _eleves_des_listes(secteur, choix):
     """[(groupe ou None, [élèves])] : une liste pour toute la classe, pour un groupe, ou une liste par section."""
     from etudiant.models import ordre_matricule_croissant
-    from groupes.models import Groupe
+    from groupes.models import Groupe, groupes_lies
+    lies = list(groupes_lies(secteur))
+    if lies:   # classe représentée par un ou plusieurs groupes : une liste par groupe
+        return [(g, list(Etudiant.objects.filter(affectations__groupe=g).order_by(*ordre_matricule_croissant()))) for g in lies]
     tous = Etudiant.objects.filter(secteur=secteur).order_by(*ordre_matricule_croissant())
     sections = list(Groupe.objects.filter(actif=True, langue='', affectations__etudiant__secteur=secteur).distinct().order_by('code'))
     if choix.isdigit():
@@ -1316,10 +1325,13 @@ def _donnees_pointage(request):
     except ValueError:
         jour_date = timezone.localdate()
     ctx = {'secteurs': secteurs, 'secteur': secteur, 'date': jour_date, 'jour': JOURS_FR[jour_date.weekday()],
+           'tri': 'matricule' if request.GET.get('tri') == 'matricule' else 'nom',
            'choix': request.GET.get('groupe', ''), 'groupes': [], 'seances': [], 'sections': False,
            'langue': request.GET.get('langue') if request.GET.get('langue') in ('ar', 'fr') else ('ar' if (get_language() or '').startswith('ar') else 'fr')}
     if secteur:
-        groupes = list(Groupe.objects.filter(actif=True, affectations__etudiant__secteur=secteur).distinct().order_by('langue', 'code'))
+        from groupes.models import groupes_lies
+        ctx['lie'] = list(groupes_lies(secteur))
+        groupes = [] if ctx['lie'] else list(Groupe.objects.filter(actif=True, affectations__etudiant__secteur=secteur).distinct().order_by('langue', 'code'))
         ctx['groupes'] = groupes
         ctx['sections'] = any(g.langue == '' for g in groupes)
         trimestre = (Trimestre.objects.filter(debut__lte=jour_date, fin__gte=jour_date).first()
@@ -1349,7 +1361,10 @@ def listes_pointage_imprimer(request):
     pages = []
     for seance in seances:
         for groupe, eleves in listes:
-            lignes = [{'e': e, 'nom': (e.nom if ar else (e.nom_fr or e.nom)), 'prenom': (e.prenom if ar else (e.prenom_fr or e.prenom))} for e in eleves]
+            lignes = [{'e': e, 'nom': (e.nom_prenom if ar else (e.nom_prenom_fr or e.nom_prenom))} for e in eleves]
+            if ctx['tri'] == 'nom':   # ordre alphabétique (les listes arrivent triées par matricule)
+                from etudiant.noms import _mots
+                lignes.sort(key=lambda l: (' '.join(_mots(l['nom'])), len(l['e'].matricule), l['e'].matricule))
             pages.append({'seance': seance, 'groupe': groupe, 'lignes': lignes})
     ctx.update({'pages': pages, 'ar': ar, 'annee': get_annee_courante()})
     return render(request, 'presence_etudiant/listes_pointage_print.html', ctx)

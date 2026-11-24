@@ -15,6 +15,10 @@
                 <label>{% trans "Date" %}</label>
                 <input type="date" name="date" value="{{ date|date:'Y-m-d' }}" class="form-control" onchange="this.form.submit()">
             </div></div>
+            {% if secteur and lie %}
+            <div class="col-md-3"><div class="form-group"><label>{% trans "Groupe" %}</label>
+                <p class="form-control-static"><span class="label label-info">{% for g in lie %}{{ g.nom_affiche }} ({{ g.affectations.count }}){% if not forloop.last %}، {% endif %}{% endfor %}</span></p></div></div>
+            {% endif %}
             {% if secteur and groupes %}
             <div class="col-md-3"><div class="form-group">
                 <label>{% trans "Groupe" %}</label>
@@ -25,6 +29,12 @@
                 </select></div></div>
             {% endif %}
             <div class="col-md-2"><div class="form-group">
+                <label>{% trans "Ordre" %}</label>
+                <select name="tri" class="form-control" onchange="this.form.submit()">
+                    <option value="nom" {% if tri == 'nom' %}selected{% endif %}>{% trans "Ordre alphabétique" %}</option>
+                    <option value="matricule" {% if tri == 'matricule' %}selected{% endif %}>{% trans "Par matricule" %}</option>
+                </select></div></div>
+            <div class="col-md-2"><div class="form-group">
                 <label>{% trans "Noms en" %}</label>
                 <select name="langue" class="form-control" onchange="this.form.submit()">
                     <option value="ar" {% if langue == 'ar' %}selected{% endif %}>{% trans "Arabe" %}</option>
@@ -33,7 +43,7 @@
         </form>
 
         {% if secteur %}
-            <h4>{{ secteur.nom }} — {% trans jour %} {{ date|date:"d/m/Y" }}</h4>
+            <h4>{{ secteur.nom_affiche }} — {% trans jour %} {{ date|date:"d/m/Y" }}</h4>
             {% if listes_apercu %}
             <p class="text-muted">
                 {% for g, eleves in listes_apercu %}
@@ -49,12 +59,12 @@
                     <tr>
                         <td>{{ s.heure_debut|time:"H:i" }} - {{ s.heure_fin|time:"H:i" }}</td>
                         <td>{{ s.matiere }}</td><td>{{ s.professeur }}</td><td>{{ s.salle }}</td>
-                        <td><a class="btn btn-sm btn-primary" target="_blank" href="{% url 'listes_pointage_imprimer' %}?secteur={{ secteur.id }}&date={{ date|date:'Y-m-d' }}&groupe={{ choix }}&langue={{ langue }}&seance={{ s.id }}"><i class="fa fa-print"></i> {% trans "Imprimer la liste" %}</a></td>
+                        <td><a class="btn btn-sm btn-primary" target="_blank" href="{% url 'listes_pointage_imprimer' %}?secteur={{ secteur.id }}&date={{ date|date:'Y-m-d' }}&groupe={{ choix }}&langue={{ langue }}&tri={{ tri }}&seance={{ s.id }}"><i class="fa fa-print"></i> {% trans "Imprimer la liste" %}</a></td>
                     </tr>
                 {% endfor %}
                 </tbody>
             </table>
-            <a class="btn btn-success" target="_blank" href="{% url 'listes_pointage_imprimer' %}?secteur={{ secteur.id }}&date={{ date|date:'Y-m-d' }}&groupe={{ choix }}&langue={{ langue }}&seance=all"><i class="fa fa-print"></i> {% trans "Imprimer toutes les séances du jour" %}</a>
+            <a class="btn btn-success" target="_blank" href="{% url 'listes_pointage_imprimer' %}?secteur={{ secteur.id }}&date={{ date|date:'Y-m-d' }}&groupe={{ choix }}&langue={{ langue }}&tri={{ tri }}&seance=all"><i class="fa fa-print"></i> {% trans "Imprimer toutes les séances du jour" %}</a>
             {% else %}
             <div class="alert alert-warning">{% trans "Aucune séance prévue dans l'emploi du temps pour cette classe ce jour-là." %}</div>
             {% endif %}

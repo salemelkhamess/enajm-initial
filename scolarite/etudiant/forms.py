@@ -77,7 +77,7 @@ class EtudiantForm(forms.ModelForm):
             raise forms.ValidationError(
                 _("Ce matricule (%(matricule)s) est déjà attribué à un autre élève : %(nom)s (année %(annee)s)."),
                 code='matricule_unique',
-                params={'matricule': matricule, 'nom': f"{autre.nom} {autre.prenom or ''}".strip(), 'annee': autre.annee})
+                params={'matricule': matricule, 'nom': autre.nom_prenom, 'annee': autre.annee})
         return matricule
 
     def clean_nni(self):
@@ -89,7 +89,7 @@ class EtudiantForm(forms.ModelForm):
             raise forms.ValidationError(
                 _("Ce NNI (%(nni)s) est déjà attribué à un autre élève : %(nom)s (matricule %(matricule)s)."),
                 code='nni_unique',
-                params={'nni': nni, 'nom': f"{autre.nom} {autre.prenom or ''}".strip(), 'matricule': autre.matricule})
+                params={'nni': nni, 'nom': autre.nom_prenom, 'matricule': autre.matricule})
         return nni
 
     def __init__(self, *args, **kwargs):
@@ -124,6 +124,8 @@ class EtudiantForm(forms.ModelForm):
         self.fields['niveau'].label_from_instance = lambda n: n.libelle
         self.fields['niveau'].widget.attrs.pop('required', None)
         self.fields['niveau'].widget.attrs['class'] += ' select'
+        if not niveaux.exists():   # ancienne fonction « niveaux » : pas de niveau créé -> champ inutile, on le masque
+            del self.fields['niveau']
         self.fields['diplomes'].widget.attrs['class'] = ''
         # les diplômes sont stockés sous forme de texte : on les relit en liste pour recocher les cases à l'édition
         if self.instance.pk and not self.is_bound:

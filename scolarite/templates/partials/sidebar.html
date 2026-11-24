@@ -219,9 +219,9 @@ Absences par matiere                                {% endif %}
 
             {% endif %}
 
-            {# Niveaux (paramétrage) #}
-            {% if user|has_any_role:"ADMIN,SUPER_ADMIN" %}
-                <li class="treeview">
+            {# Ancienne fonction « Niveaux » : remplacée par les groupes, masquée tant qu'aucun niveau n'existe #}
+            {% if user|has_any_role:"ADMIN,SUPER_ADMIN" and a_niveaux_actifs %}
+                            <li class="treeview">
                     <a href="#">
                         <i class="fa fa-sitemap"></i>
                         <span>{% trans "Niveaux" %}</span>

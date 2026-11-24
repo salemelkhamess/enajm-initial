@@ -74,7 +74,7 @@
         <select name="secteur" class="form-control">
             <option value="">{% trans "Tous les secteurs" %}</option>
             {% for secteur in secteurs %}
-            <option value="{{ secteur.id }}" {% if secteur.id|stringformat:"s" == secteur_id %}selected{% endif %}>{{ secteur.nom }}</option>
+            <option value="{{ secteur.id }}" {% if secteur.id|stringformat:"s" == secteur_id %}selected{% endif %}>{{ secteur.nom_affiche }}</option>
             {% endfor %}
         </select>
     </div>
@@ -103,7 +103,7 @@
             <tbody>
                 {% for pv in pvs %}
                 <tr>
-                    <td>{{ pv.etudiant.nom }} {{ pv.etudiant.prenom }}</td>
+                    <td>{{ pv.etudiant.nom_prenom }}</td>
                     <td>{{ pv.etudiant.matricule }}</td>
                     <td>{{ pv.get_type_display }}</td>
                     <td>{{ pv.date_creation|date:"d/m/Y" }}</td>

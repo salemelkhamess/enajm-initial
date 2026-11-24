@@ -43,8 +43,8 @@
                             <tr>
                                 <td>{{ forloop.counter }}</td>
                                 <td>{{ pointage.matiere.nom }}</td>
-                                <td>{{ pointage.professeur.nom }} {{ pointage.professeur.prenom }}</td>
-                                <td>{{ pointage.secteur.nom }}</td>
+                                <td>{{ pointage.professeur.nom_prenom }}</td>
+                                <td>{{ pointage.secteur.nom_affiche }}</td>
                                 <td>{{ pointage.heure_debut|time:"H:i" }}</td>
                                 <td>{{ pointage.heure_fin|time:"H:i" }}</td>
 <td>

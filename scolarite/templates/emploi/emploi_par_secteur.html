@@ -59,7 +59,7 @@ table td {
                         <option value="">{% trans "Classe" %}</option>
                         {% for secteur in secteurs %}
                             <option value="{{ secteur.id }}" {% if secteur_selectionne and secteur.id == secteur_selectionne.id %}selected{% endif %}>
-                                {{ secteur.nom }} ({{ secteur.formation.nom }})
+                                {{ secteur.nom_affiche }} ({{ secteur.formation.nom }})
                             </option>
                         {% endfor %}
                     </select>
@@ -113,7 +113,7 @@ table td {
                 {% for cours in emploi %}
                     {% if cours.jour == 'Vendredi' and cours.heure_debut.hour == 8 %}
                         {{ cours.matiere.nom }}<br>
-                        {{ cours.professeur.nom }} {{ cours.professeur.prenom }}<br>
+                        {{ cours.professeur.nom_prenom }}<br>
                         {{ cours.salle.nom }}{% if cours.niveau_id %}<br><small><strong>{{ cours.niveau.nom }} — {{ cours.get_langue_display }}</strong></small>{% endif %}
                     {% endif %}
                 {% endfor %}
@@ -122,7 +122,7 @@ table td {
                 {% for cours in emploi %}
                     {% if cours.jour == 'Jeudi' and cours.heure_debut.hour == 8 %}
                         {{ cours.matiere.nom }}<br>
-                        {{ cours.professeur.nom }} {{ cours.professeur.prenom }}<br>
+                        {{ cours.professeur.nom_prenom }}<br>
                         {{ cours.salle.nom }}{% if cours.niveau_id %}<br><small><strong>{{ cours.niveau.nom }} — {{ cours.get_langue_display }}</strong></small>{% endif %}
                     {% endif %}
                 {% endfor %}
@@ -131,7 +131,7 @@ table td {
                 {% for cours in emploi %}
                     {% if cours.jour == 'Mercredi' and cours.heure_debut.hour == 8 %}
                         {{ cours.matiere.nom }}<br>
-                        {{ cours.professeur.nom }} {{ cours.professeur.prenom }}<br>
+                        {{ cours.professeur.nom_prenom }}<br>
                         {{ cours.salle.nom }}{% if cours.niveau_id %}<br><small><strong>{{ cours.niveau.nom }} — {{ cours.get_langue_display }}</strong></small>{% endif %}
                     {% endif %}
                 {% endfor %}
@@ -140,7 +140,7 @@ table td {
                 {% for cours in emploi %}
                     {% if cours.jour == 'Mardi' and cours.heure_debut.hour == 8 %}
                         {{ cours.matiere.nom }}<br>
-                        {{ cours.professeur.nom }} {{ cours.professeur.prenom }}<br>
+                        {{ cours.professeur.nom_prenom }}<br>
                         {{ cours.salle.nom }}{% if cours.niveau_id %}<br><small><strong>{{ cours.niveau.nom }} — {{ cours.get_langue_display }}</strong></small>{% endif %}
                     {% endif %}
                 {% endfor %}
@@ -149,7 +149,7 @@ table td {
                 {% for cours in emploi %}
                     {% if cours.jour == 'Lundi' and cours.heure_debut.hour == 8 %}
                         {{ cours.matiere.nom }}<br>
-                        {{ cours.professeur.nom }} {{ cours.professeur.prenom }}<br>
+                        {{ cours.professeur.nom_prenom }}<br>
                         {{ cours.salle.nom }}{% if cours.niveau_id %}<br><small><strong>{{ cours.niveau.nom }} — {{ cours.get_langue_display }}</strong></small>{% endif %}
                     {% endif %}
                 {% endfor %}
@@ -163,7 +163,7 @@ table td {
                 {% for cours in emploi %}
                     {% if cours.jour == 'Vendredi' and cours.heure_debut.hour == 10 %}
                         {{ cours.matiere.nom }}<br>
-                        {{ cours.professeur.nom }} {{ cours.professeur.prenom }}<br>
+                        {{ cours.professeur.nom_prenom }}<br>
                         {{ cours.salle.nom }}{% if cours.niveau_id %}<br><small><strong>{{ cours.niveau.nom }} — {{ cours.get_langue_display }}</strong></small>{% endif %}
                     {% endif %}
                 {% endfor %}
@@ -172,7 +172,7 @@ table td {
                 {% for cours in emploi %}
                     {% if cours.jour == 'Jeudi' and cours.heure_debut.hour == 10 %}
                         {{ cours.matiere.nom }}<br>
-                        {{ cours.professeur.nom }} {{ cours.professeur.prenom }}<br>
+                        {{ cours.professeur.nom_prenom }}<br>
                         {{ cours.salle.nom }}{% if cours.niveau_id %}<br><small><strong>{{ cours.niveau.nom }} — {{ cours.get_langue_display }}</strong></small>{% endif %}
                     {% endif %}
                 {% endfor %}
@@ -181,7 +181,7 @@ table td {
                 {% for cours in emploi %}
                     {% if cours.jour == 'Mercredi' and cours.heure_debut.hour == 10 %}
                         {{ cours.matiere.nom }}<br>
-                        {{ cours.professeur.nom }} {{ cours.professeur.prenom }}<br>
+                        {{ cours.professeur.nom_prenom }}<br>
                         {{ cours.salle.nom }}{% if cours.niveau_id %}<br><small><strong>{{ cours.niveau.nom }} — {{ cours.get_langue_display }}</strong></small>{% endif %}
                     {% endif %}
                 {% endfor %}
@@ -190,7 +190,7 @@ table td {
                 {% for cours in emploi %}
                     {% if cours.jour == 'Mardi' and cours.heure_debut.hour == 10 %}
                         {{ cours.matiere.nom }}<br>
-                        {{ cours.professeur.nom }} {{ cours.professeur.prenom }}<br>
+                        {{ cours.professeur.nom_prenom }}<br>
                         {{ cours.salle.nom }}{% if cours.niveau_id %}<br><small><strong>{{ cours.niveau.nom }} — {{ cours.get_langue_display }}</strong></small>{% endif %}
                     {% endif %}
                 {% endfor %}
@@ -199,7 +199,7 @@ table td {
                 {% for cours in emploi %}
                     {% if cours.jour == 'Lundi' and cours.heure_debut.hour == 10 %}
                         {{ cours.matiere.nom }}<br>
-                        {{ cours.professeur.nom }} {{ cours.professeur.prenom }}<br>
+                        {{ cours.professeur.nom_prenom }}<br>
                         {{ cours.salle.nom }}{% if cours.niveau_id %}<br><small><strong>{{ cours.niveau.nom }} — {{ cours.get_langue_display }}</strong></small>{% endif %}
                     {% endif %}
                 {% endfor %}
@@ -213,7 +213,7 @@ table td {
                 {% for cours in emploi %}
                     {% if cours.jour == 'Vendredi' and cours.heure_debut.hour == 12 %}
                         {{ cours.matiere.nom }}<br>
-                        {{ cours.professeur.nom }} {{ cours.professeur.prenom }}<br>
+                        {{ cours.professeur.nom_prenom }}<br>
                         {{ cours.salle.nom }}{% if cours.niveau_id %}<br><small><strong>{{ cours.niveau.nom }} — {{ cours.get_langue_display }}</strong></small>{% endif %}
                     {% endif %}
                 {% endfor %}
@@ -222,7 +222,7 @@ table td {
                 {% for cours in emploi %}
                     {% if cours.jour == 'Jeudi' and cours.heure_debut.hour == 12 %}
                         {{ cours.matiere.nom }}<br>
-                        {{ cours.professeur.nom }} {{ cours.professeur.prenom }}<br>
+                        {{ cours.professeur.nom_prenom }}<br>
                         {{ cours.salle.nom }}{% if cours.niveau_id %}<br><small><strong>{{ cours.niveau.nom }} — {{ cours.get_langue_display }}</strong></small>{% endif %}
                     {% endif %}
                 {% endfor %}
@@ -231,7 +231,7 @@ table td {
                 {% for cours in emploi %}
                     {% if cours.jour == 'Mercredi' and cours.heure_debut.hour == 12 %}
                         {{ cours.matiere.nom }}<br>
-                        {{ cours.professeur.nom }} {{ cours.professeur.prenom }}<br>
+                        {{ cours.professeur.nom_prenom }}<br>
                         {{ cours.salle.nom }}{% if cours.niveau_id %}<br><small><strong>{{ cours.niveau.nom }} — {{ cours.get_langue_display }}</strong></small>{% endif %}
                     {% endif %}
                 {% endfor %}
@@ -240,7 +240,7 @@ table td {
                 {% for cours in emploi %}
                     {% if cours.jour == 'Mardi' and cours.heure_debut.hour == 12 %}
                         {{ cours.matiere.nom }}<br>
-                        {{ cours.professeur.nom }} {{ cours.professeur.prenom }}<br>
+                        {{ cours.professeur.nom_prenom }}<br>
                         {{ cours.salle.nom }}{% if cours.niveau_id %}<br><small><strong>{{ cours.niveau.nom }} — {{ cours.get_langue_display }}</strong></small>{% endif %}
                     {% endif %}
                 {% endfor %}
@@ -249,7 +249,7 @@ table td {
                 {% for cours in emploi %}
                     {% if cours.jour == 'Lundi' and cours.heure_debut.hour == 12 %}
                         {{ cours.matiere.nom }}<br>
-                        {{ cours.professeur.nom }} {{ cours.professeur.prenom }}<br>
+                        {{ cours.professeur.nom_prenom }}<br>
                         {{ cours.salle.nom }}{% if cours.niveau_id %}<br><small><strong>{{ cours.niveau.nom }} — {{ cours.get_langue_display }}</strong></small>{% endif %}
                     {% endif %}
                 {% endfor %}
